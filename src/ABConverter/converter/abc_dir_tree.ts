@@ -247,7 +247,7 @@ export class DirProcess{
       }
 
       // 折叠全列表格 事件绑定 // TODO，可以简化、复用。tr.onclick(这里加上可空传参)
-      const btn = document.createElement("button"); div.appendChild(btn); btn.textContent="全部折叠/展开"; btn.setAttribute("is_fold", "false");
+      const btn = document.createElement("button"); table.appendChild(btn); btn.classList.add("ab-table-fold"); btn.textContent="全部折叠/展开"; btn.setAttribute("is_fold", "false");
       btn.onclick = ()=>{
         const l_tr:NodeListOf<HTMLElement> = table.querySelectorAll("tr");
         for (let i=0; i<l_tr.length; i++) {

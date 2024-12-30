@@ -470,6 +470,12 @@ html[data-theme="dark"] #app {
   border-bottom: none;
 }
 
+.ab-note table.ab-list-table .ab-table-fold {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
 .ab-note table.ab-table-timeline td {
   border-right: none;
   padding-left: 20px;
