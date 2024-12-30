@@ -50,7 +50,7 @@ const abc_fold = ABConvert.factory({
     sub_el.style.display = "none"
     const mid_el = document.createElement("div"); content.appendChild(mid_el); mid_el.classList.add("ab-deco-fold");
     const sub_button = document.createElement("div"); mid_el.appendChild(sub_button); sub_button.classList.add("ab-deco-fold-button"); sub_button.textContent = "展开";
-    sub_button.onclick = ()=>{
+    const fn_fold = ()=>{
       const is_hide = sub_el.getAttribute("is_hide")
       if (is_hide && is_hide=="false") {
         sub_el.setAttribute("is_hide", "true"); 
@@ -63,8 +63,31 @@ const abc_fold = ABConvert.factory({
         sub_button.textContent = "折叠"
       }
     }
+    sub_button.onclick = fn_fold
     mid_el.appendChild(sub_button)
     mid_el.appendChild(sub_el)
+
+    // 特殊：如果折叠内容是列表格。将该处理器的折叠行为修改该按钮的折叠功能
+    if (sub_el.classList.contains("ab-list-table")) {
+      const btn = sub_el.querySelector(":scope>.ab-table-fold")
+      if (btn) {
+        // 1. 回溯原折叠
+        fn_fold()
+        sub_button.textContent = "全部折叠/展开"
+        // 2. 使用新折叠
+        const fn_fold2 = ()=>{
+          const clickEvent = new MouseEvent("click", {
+            view: window,
+            bubbles: true,
+            cancelable: true
+          });
+          btn.dispatchEvent(clickEvent);
+        }
+        fn_fold2()
+        // 3. 按钮功能替换
+        sub_button.onclick = fn_fold2
+      }
+    }
     return content
   }
 })
