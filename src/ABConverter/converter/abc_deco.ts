@@ -352,7 +352,7 @@ const abc_transposition = ABConvert.factory({
     const origi_colCount: number = origi_rows[0].cells.length;  // 列数 (只取第一行的列数)
 
     // 2. 准备表格元素
-    const trans_table = document.createElement('table'); content.appendChild(trans_table); origi_table.classList.add("transposition");
+    const trans_table = document.createElement('table'); content.appendChild(trans_table); origi_table.classList.add("ab-transposition"); origi_table.classList.add("ab-table");
     origi_table.classList.forEach(className => { // 并应用原表格的样式
       trans_table.classList.add(className);
     });
@@ -484,7 +484,7 @@ const abc_transpose = ABConvert.factory({
     }
 
     // 2. 准备表格元素
-    const trans_table = document.createElement('table'); content.appendChild(trans_table); origi_table.classList.add("transposition");
+    const trans_table = document.createElement('table'); content.appendChild(trans_table); origi_table.classList.add("ab-transposition"); origi_table.classList.add("ab-table");
     origi_table.classList.forEach(className => { // 并应用原表格的样式
       trans_table.classList.add(className);
     });
