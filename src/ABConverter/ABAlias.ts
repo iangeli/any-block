@@ -188,6 +188,8 @@ const ABAlias_json_general: ABAlias_json_item[] = [
   {regex: "|折叠|", replacement: "|fold|"},
   {regex: "|滚动|", replacement: "|scroll|"},
   {regex: "|超出折叠|", replacement: "|overfold|"},
+  {regex: "|转置|", replacement: "|transpose|"},
+  {regex: "|trs|", replacement: "|trs|"},
   // 便捷样式
   {regex: "|红字|", replacement: "|addClass(ab-custom-text-red)|"},
   {regex: "|橙字|", replacement: "|addClass(ab-custom-text-orange)|"},

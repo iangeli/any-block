@@ -345,13 +345,13 @@ const abc_transposition = ABConvert.factory({
   process_return: ABConvert_IOEnum.el,
   process: (el, header, content: HTMLElement): HTMLElement=>{
 
-    // 1. 分析旧表格 (暂时仅支持规范列表，不支持跨行跨列或缺格)
+    // 1. 数据准备 - 旧表格简单解析 (暂时仅支持规范列表，不支持跨行跨列或缺格)
     const origi_table: HTMLTableElement | null = content.querySelector('table'); if (!origi_table) return content;
     const origi_rows = origi_table.rows;
     const origi_rowCount: number = origi_rows.length;           // 行数
-    const origi_colCount: number = origi_rows[0].cells.length;  // 第一行的列数
+    const origi_colCount: number = origi_rows[0].cells.length;  // 列数 (只取第一行的列数)
 
-    // 2. 为转置的数据创建一个新的表元素
+    // 2. 准备表格元素
     const trans_table = document.createElement('table'); content.appendChild(trans_table); origi_table.classList.add("transposition");
     origi_table.classList.forEach(className => { // 并应用原表格的样式
       trans_table.classList.add(className);
@@ -359,13 +359,151 @@ const abc_transposition = ABConvert.factory({
     // const trans_header = document.createElement('thead'); trans_table.appendChild(trans_header); // 转置不支持表头
     const trans_body = document.createElement('tbody'); trans_table.appendChild(trans_body);
 
-    // 3. 遍历旧表格、填充新表格
+    // 3. 数据填充表格
     for (let col = 0; col < origi_colCount; col++) {
       const newRow = trans_body.insertRow();
       for (let row = 0; row < origi_rowCount; row++) {
         const oldCell = origi_rows[row].cells[col]; if (!oldCell) continue; // 需要注意的是：如果是obsidian的可视化编辑表格，tbody前两个tr会是空的，很怪
         const newCell = newRow.insertCell();
         newCell.innerHTML = oldCell.innerHTML;
+      }
+    }
+
+    origi_table.remove();
+    return content;
+  }
+})
+
+const abc_transpose = ABConvert.factory({
+  id: "transpose",
+  name: "表格转置",
+  match: "trs",
+  detail: "将表格进行转置，就像矩阵转置那样。该版本支持有跨行跨列的表格",
+  process_param: ABConvert_IOEnum.el,
+  process_return: ABConvert_IOEnum.el,
+  process: (el, header, content: HTMLElement): HTMLElement=>{
+    /**
+     * 架构：
+     * 
+     * 这里我们把每个单元格的位置和尺寸用四个变量描述：rowSpan, colSpan, rowIndex, colIndex
+     * 
+     * 注意区分以下几个变量：
+     * - 这四个是绝对的：rowSpan、colSpan、rowIndex、colIndex
+     * - 这两个是相对的（起点不一定从0开始）：rel_row、rel_col
+     *   例如对于下表来说，C的 (rowIndex, colIndex)是(1,1)，但 (rel_row, rel_col)是(1,0)
+     *   | A | B |
+     *   | ^ | C |
+     * - 这两个不是纯粹的位置描述：table_rowCount、table_colCount。他们有可能大于rowIndex、colIndex的取值
+     *   行数的值应该等于单元格中(rowIndex+rowSpan)最大的值
+     */
+    type type_tableCell = {
+      html: HTMLTableCellElement,
+      rowSpan: number,
+      colSpan: number,
+      rowIndex: number,
+      colIndex: number,
+    }
+
+    // 1.1. 数据准备 - 旧表格简单解析 (支持rowspan和colspan)
+    const origi_table: HTMLTableElement | null = content.querySelector('table'); if (!origi_table) return content;
+    const origi_rows = origi_table.rows;
+    const origi_rowCount: number = origi_rows.length;             // 最大行数 (不算span范围扩展，只算左上格的原点)
+    let origi_colCount: number = origi_rows[0].cells.length;      // 最大列数 (不算span范围扩展，只算左上格的原点)
+    // for (let relRow = 0; relRow < origi_rowCount; relRow++) {  // 如果要算span范围扩展，则按这个来算
+    //   let colCount = 0;
+    //   for (let cell of origi_rows[relRow].cells) {
+    //     colCount += cell.colSpan || 1;
+    //   }
+    //   if (colCount > origi_colCount) {
+    //     origi_colCount = colCount;
+    //   }
+    // }
+
+    // 1.2. 数据准备 - 旧表格解析到map
+    // 创建一个二维数组来记录旧表格, size: [origi_rowCount][origi_colCount]
+    let map_table: (type_tableCell|null|"<"|"^")[][] = new Array(origi_rowCount).fill(null).map(() => new Array(origi_colCount).fill(null));
+    for (let relRow = 0; relRow < origi_rowCount; relRow++) {
+      for (let relCol = 0; relCol < origi_rows[relRow].cells.length; relCol++) {
+        const cell: HTMLTableCellElement = origi_rows[relRow].cells[relCol];
+
+        // 调整当前格位置
+        let rowIndex = relRow;
+        let colIndex = relCol;
+        while(true) {
+          if (colIndex >= map_table[rowIndex].length) { console.error("表格解析错误: colIndex超出范围", map_table, rowIndex, colIndex, relRow, relCol); return content; }
+          if (!map_table[rowIndex][colIndex]) { break }         // 位置正确 (null)
+          else colIndex++                                       // 继续找位置
+        }
+        // 填充下占位
+        if (cell.rowSpan>1) {
+          for (let i = 1; i < cell.rowSpan; i++) {
+            if (rowIndex+i >= map_table.length) { break; }            // 允许范围溢出
+            map_table[rowIndex+i][colIndex] = "^"
+          }
+        }
+        // 填充右占位
+        if (cell.colSpan>1) {
+          for (let i = 1; i < cell.rowSpan; i++) {
+            if (colIndex+i >= map_table[rowIndex].length) { break; }  // 允许范围溢出
+            map_table[rowIndex][colIndex+i] = "<"
+          }
+        }
+        // 填充本格
+        map_table[rowIndex][colIndex] = {
+          html: cell,
+          rowSpan: cell.rowSpan,
+          colSpan: cell.colSpan,
+          rowIndex: rowIndex,
+          colIndex: colIndex,
+        };
+      }
+    }
+
+    // 1.3. 数据准备 - map转置
+    let map_table2: (type_tableCell|null|"<"|"^")[][] = new Array(origi_colCount).fill(null).map(() => new Array(origi_rowCount).fill(null));
+    for (let i = 0; i < origi_rowCount; i++) {
+      for (let j = 0; j < origi_colCount; j++) {
+        let origi_cell = map_table[i][j]
+        if (!origi_cell) continue;
+        else if (origi_cell == "<") {
+          map_table2[j][i] = "^"
+        }
+        else if (origi_cell == "^") {
+          map_table2[j][i] = "<"
+        }
+        else {
+          map_table2[j][i] = {
+            html: origi_cell.html,
+            rowSpan: origi_cell.colSpan || 1,
+            colSpan: origi_cell.rowSpan || 1,
+            rowIndex: origi_cell.colIndex,
+            colIndex: origi_cell.rowIndex,
+          }
+        }
+      }
+    }
+
+    // 2. 准备表格元素
+    const trans_table = document.createElement('table'); content.appendChild(trans_table); origi_table.classList.add("transposition");
+    origi_table.classList.forEach(className => { // 并应用原表格的样式
+      trans_table.classList.add(className);
+    });
+    // const trans_header = document.createElement('thead'); trans_table.appendChild(trans_header); // 转置不支持表头
+    const trans_body = document.createElement('tbody'); trans_table.appendChild(trans_body);
+
+    // 3. 数据填充
+    for (let i = 0; i < origi_colCount; i++) {
+      const newRow = trans_body.insertRow();
+      for (let j = 0; j < origi_rowCount; j++) {
+        const cell = map_table2[i][j]
+        if (!cell) continue;
+        if (cell == "<" || cell == "^") continue;
+        const newCell = newRow.insertCell();
+        newCell.innerHTML = cell.html.innerHTML;
+        newCell.rowSpan = cell.rowSpan;
+        newCell.colSpan = cell.colSpan;
+        newCell.setAttribute("rowIndex", String(cell.rowIndex));
+        newCell.setAttribute("colIndex", String(cell.colIndex));
       }
     }
 
