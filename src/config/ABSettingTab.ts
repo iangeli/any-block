@@ -9,7 +9,7 @@ import type AnyBlockPlugin from "../main"
 import {ABConvertManager} from "src/ABConverter/ABConvertManager"
 import {ABConvert, type ABConvert_SpecUser} from "src/ABConverter/converter/ABConvert"
 import { ABAlias_json, ABAlias_json_default } from "src/ABConverter/ABAlias"
-import { ABCSetting } from "src/ABConverter/ABReg"
+import { ABCSetting, ABReg } from "src/ABConverter/ABReg"
 
 // 加载所有选择器
 import {} from "src/ab_manager/abm_cm/ABSelector_MdBase"
@@ -34,10 +34,11 @@ export interface ABSettingInterface {
     regex: string,
     replacement: string
   }[],
-  user_processor: ABConvert_SpecUser[],  // 别名系统 (旧)，用户自定义的别名处理器
+  user_processor: ABConvert_SpecUser[],  // @deprecated 别名系统 (旧)，用户自定义的别名处理器
 
   // 其他
-  is_debug: boolean                 // 是否开启调试打印
+  is_debug: boolean,                // 是否开启调试打印
+  inline_split: string,             // 正则里的内联分隔符
 }
 export enum ConfSelect{
   no = "no",
@@ -81,7 +82,8 @@ export const AB_SETTINGS: ABSettingInterface = {
     "process_alias": "|addClass(ab-custom-text-blue)|addClass(ab-custom-bg-red)|"
   }],
 
-  is_debug: false
+  is_debug: false,
+  inline_split: "/\\| |,  |， |\\.  |。 |:  |： /",
 }
 
 /** 设置值面板 */
@@ -96,6 +98,7 @@ export class ABSettingTab extends PluginSettingTab {
 
     // Convert模块
     ABCSetting.is_debug = this.plugin.settings.is_debug
+    ABReg.inline_split = new RegExp(this.plugin.settings.inline_split)
 
     // Alias模块，加载自定义别名
     if (!plugin.settings.alias_use_default) {

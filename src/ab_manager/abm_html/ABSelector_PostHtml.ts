@@ -3,7 +3,7 @@ import type {
   MarkdownPostProcessorContext,
 } from "obsidian"
 
-import { ABReg } from "src/config/ABReg"
+import { ABReg } from "src/ABConverter/ABReg"
 import { ConfDecoration } from "src/config/ABSettingTab"
 import type AnyBlockPlugin from "../../main"
 import { ABReplacer_Render } from "./ABReplacer_Render"
