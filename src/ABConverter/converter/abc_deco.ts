@@ -340,7 +340,7 @@ const abc_transposition = ABConvert.factory({
   id: "transposition",
   name: "表格转置",
   match: "transposition",
-  detail: "将表格进行转置，就像矩阵转置那样",
+  detail: "将表格进行转置，就像矩阵转置那样。该版本不支持有跨行跨列单元格",
   process_param: ABConvert_IOEnum.el,
   process_return: ABConvert_IOEnum.el,
   process: (el, header, content: HTMLElement): HTMLElement=>{
@@ -378,7 +378,7 @@ const abc_transpose = ABConvert.factory({
   id: "transpose",
   name: "表格转置",
   match: "trs",
-  detail: "将表格进行转置，就像矩阵转置那样。该版本支持有跨行跨列的表格",
+  detail: "将表格进行转置，就像矩阵转置那样。该版本支持有跨行跨列单元格",
   process_param: ABConvert_IOEnum.el,
   process_return: ABConvert_IOEnum.el,
   process: (el, header, content: HTMLElement): HTMLElement=>{
