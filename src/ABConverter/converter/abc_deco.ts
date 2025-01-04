@@ -345,28 +345,27 @@ const abc_transposition = ABConvert.factory({
   process_return: ABConvert_IOEnum.el,
   process: (el, header, content: HTMLElement): HTMLElement=>{
 
-    // 分析旧表格 (暂时仅支持规范列表，不支持跨行跨列或缺格)
-    const origi_table = content.querySelector('table');
-    if (!origi_table) return content;
-    // content.remove();
+    // 1. 分析旧表格 (暂时仅支持规范列表，不支持跨行跨列或缺格)
+    const origi_table: HTMLTableElement | null = content.querySelector('table'); if (!origi_table) return content;
     const origi_rows = origi_table.rows;
-    const origi_rowCount = origi_rows.length;           // 行数
-    const origi_colCount = origi_rows[0].cells.length;  // 第一行的列数
+    const origi_rowCount: number = origi_rows.length;           // 行数
+    const origi_colCount: number = origi_rows[0].cells.length;  // 第一行的列数
 
-    // 为转置的数据创建一个新的表元素
+    // 2. 为转置的数据创建一个新的表元素
     const trans_table = document.createElement('table'); content.appendChild(trans_table); origi_table.classList.add("transposition");
     origi_table.classList.forEach(className => { // 并应用原表格的样式
       trans_table.classList.add(className);
     });
-    // const trans_header = document.createElement('thead'); trans_table.appendChild(trans_header);
+    // const trans_header = document.createElement('thead'); trans_table.appendChild(trans_header); // 转置不支持表头
     const trans_body = document.createElement('tbody'); trans_table.appendChild(trans_body);
 
-    // 填充新表格
+    // 3. 遍历旧表格、填充新表格
     for (let col = 0; col < origi_colCount; col++) {
       const newRow = trans_body.insertRow();
       for (let row = 0; row < origi_rowCount; row++) {
+        const oldCell = origi_rows[row].cells[col]; if (!oldCell) continue; // 需要注意的是：如果是obsidian的可视化编辑表格，tbody前两个tr会是空的，很怪
         const newCell = newRow.insertCell();
-        newCell.innerHTML = origi_rows[row].cells[col].innerHTML;
+        newCell.innerHTML = oldCell.innerHTML;
       }
     }
 
