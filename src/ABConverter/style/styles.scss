@@ -204,6 +204,7 @@ html[data-theme="dark"] #app {
       color: var(--ab-tab-root-tx-color);
       border-bottom: none;
       border-radius: 10px 10px 0 0;
+      padding-right: 60px; // 这个是为了避免与编辑按钮重叠
       .ab-tab-nav-item {
         height: 38px; // 40-2
         box-shadow: none;
