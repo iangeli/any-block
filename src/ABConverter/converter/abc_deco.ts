@@ -335,3 +335,42 @@ const abc_title = ABConvert.factory({
     return content
   }
 })
+
+const abc_transposition = ABConvert.factory({
+  id: "transposition",
+  name: "表格转置",
+  match: "transposition",
+  detail: "将表格进行转置，就像矩阵转置那样",
+  process_param: ABConvert_IOEnum.el,
+  process_return: ABConvert_IOEnum.el,
+  process: (el, header, content: HTMLElement): HTMLElement=>{
+
+    // 分析旧表格 (暂时仅支持规范列表，不支持跨行跨列或缺格)
+    const origi_table = content.querySelector('table');
+    if (!origi_table) return content;
+    // content.remove();
+    const origi_rows = origi_table.rows;
+    const origi_rowCount = origi_rows.length;           // 行数
+    const origi_colCount = origi_rows[0].cells.length;  // 第一行的列数
+
+    // 为转置的数据创建一个新的表元素
+    const trans_table = document.createElement('table'); content.appendChild(trans_table); origi_table.classList.add("transposition");
+    origi_table.classList.forEach(className => { // 并应用原表格的样式
+      trans_table.classList.add(className);
+    });
+    // const trans_header = document.createElement('thead'); trans_table.appendChild(trans_header);
+    const trans_body = document.createElement('tbody'); trans_table.appendChild(trans_body);
+
+    // 填充新表格
+    for (let col = 0; col < origi_colCount; col++) {
+      const newRow = trans_body.insertRow();
+      for (let row = 0; row < origi_rowCount; row++) {
+        const newCell = newRow.insertCell();
+        newCell.innerHTML = origi_rows[row].cells[col].innerHTML;
+      }
+    }
+
+    origi_table.remove();
+    return content;
+  }
+})
