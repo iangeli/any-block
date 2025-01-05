@@ -389,8 +389,8 @@ const abc_transpose = ABConvert.factory({
      * 
      * 注意区分以下几个变量：
      * - 这四个是绝对的：rowSpan、colSpan、rowIndex、colIndex
-     * - 这两个是相对的（起点不一定从0开始）：rel_row、rel_col
-     *   例如对于下表来说，C的 (rowIndex, colIndex)是(1,1)，但 (rel_row, rel_col)是(1,0)
+     * - 这两个是相对的（起点不一定从0开始）：relRow、relCol
+     *   例如对于下表来说，C的 (rowIndex, colIndex)是(1,1)，但 (relRow, relCol)是(1,0)
      *   | A | B |
      *   | ^ | C |
      * - 这两个不是纯粹的位置描述：table_rowCount、table_colCount。他们有可能大于rowIndex、colIndex的取值
@@ -407,20 +407,21 @@ const abc_transpose = ABConvert.factory({
     // 1.1. 数据准备 - 旧表格简单解析 (支持rowspan和colspan)
     const origi_table: HTMLTableElement | null = content.querySelector('table'); if (!origi_table) return content;
     const origi_rows = origi_table.rows;
-    const origi_rowCount: number = origi_rows.length;             // 最大行数 (不算span范围扩展，只算左上格的原点)
-    let origi_colCount: number = origi_rows[0].cells.length;      // 最大列数 (不算span范围扩展，只算左上格的原点)
-    // for (let relRow = 0; relRow < origi_rowCount; relRow++) {  // 如果要算span范围扩展，则按这个来算
-    //   let colCount = 0;
-    //   for (let cell of origi_rows[relRow].cells) {
-    //     colCount += cell.colSpan || 1;
-    //   }
-    //   if (colCount > origi_colCount) {
-    //     origi_colCount = colCount;
-    //   }
-    // }
+    const origi_rowCount: number = origi_rows.length;             // 最大行数 (算span范围扩展)
+    let origi_colCount: number = 0;                               // 最大列数 (算span范围扩展)
+    for (let relRow = 0; relRow < origi_rowCount; relRow++) {
+      let colCount = 0;
+      for (let cell of origi_rows[relRow].cells) {
+        colCount += cell.colSpan || 1;
+      }
+      if (colCount > origi_colCount) {
+        origi_colCount = colCount;
+      }
+    }
 
     // 1.2. 数据准备 - 旧表格解析到map
     // 创建一个二维数组来记录旧表格, size: [origi_rowCount][origi_colCount]
+    // 要分析带span的表格，必须用到占位符才有解。`^` 和 `<` 都是占位符，不过目前不区分作用
     let map_table: (type_tableCell|null|"<"|"^")[][] = new Array(origi_rowCount).fill(null).map(() => new Array(origi_colCount).fill(null));
     for (let relRow = 0; relRow < origi_rowCount; relRow++) {
       for (let relCol = 0; relCol < origi_rows[relRow].cells.length; relCol++) {
