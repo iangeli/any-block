@@ -98,7 +98,7 @@ export class ABSettingTab extends PluginSettingTab {
 
     // Convert模块
     ABCSetting.is_debug = this.plugin.settings.is_debug
-    ABReg.inline_split = new RegExp(this.plugin.settings.inline_split)
+    ABReg.inline_split = new RegExp(this.plugin.settings.inline_split.slice(1,-1)) // 去除两侧的`/`并变回regExp
 
     // Alias模块，加载自定义别名
     if (!plugin.settings.alias_use_default) {
