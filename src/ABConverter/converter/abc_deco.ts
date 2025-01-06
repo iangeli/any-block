@@ -67,6 +67,7 @@ const abc_fold = ABConvert.factory({
     mid_el.appendChild(sub_button)
     mid_el.appendChild(sub_el)
 
+    // 二选一。仅ob环境，mdit环境不支持
     // 特殊：如果折叠内容是列表格。将该处理器的折叠行为修改该按钮的折叠功能
     if (sub_el.classList.contains("ab-list-table")) {
       const btn = sub_el.querySelector(":scope>.ab-table-fold")
@@ -409,8 +410,17 @@ const abc_transpose = ABConvert.factory({
     const origi_rows = origi_table.rows;
     const origi_rowCount: number = origi_rows.length;             // 最大行数 (算span范围扩展)
     let origi_colCount: number = 0;                               // 最大列数 (算span范围扩展)
+    // TODO: 这里有bug: 如果第一行的spanRow是2，第2的col数又多出一个，这里会计少。如下面的列数是3，但第一行只能找到2
+    // - r1c1
+    //   - r1c2
+    //   - r2c2
+    //     - r2c3
+    //     - r3c3
+    // - r4c1
+    //   - r4c2
+    //   - r5c2
     for (let relRow = 0; relRow < origi_rowCount; relRow++) {
-      let colCount = 0;
+      let colCount = 0; // 此行的最大列数
       for (let cell of origi_rows[relRow].cells) {
         colCount += cell.colSpan || 1;
       }
