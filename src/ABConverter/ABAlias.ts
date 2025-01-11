@@ -103,10 +103,6 @@ const ABAlias_json_withSub: ABAlias_json_item[] = [
 
 // mdit块
 const ABAlias_json_mdit: ABAlias_json_item[] = [
-  // {regex: "|::: 140lne|info|", replacement: "|add([!info])|quote|"},
-  // {regex: "|::: 140lne|note|", replacement: "|add([!note])|quote|"},
-  // {regex: /\|::: 140lne\|(warn|warning)\|/, replacement: "|add([!warning])|quote|"},
-  // {regex: "|::: 140lne|error|", replacement: "|add([!error])|quote|"},
   {regex: /\|::: 140lne\|(2?tabs?|标签页?)\|/, replacement: "|mditTabs|"},
   {regex: "|::: 140lne|demo|", replacement: "|mditDemo|"},
   {regex: "|::: 140lne|abDemo|", replacement: "|mditABDemo|"},
@@ -189,7 +185,6 @@ const ABAlias_json_general: ABAlias_json_item[] = [
   {regex: "|滚动|", replacement: "|scroll|"},
   {regex: "|超出折叠|", replacement: "|overfold|"},
   {regex: "|转置|", replacement: "|transpose|"},
-  {regex: "|trs|", replacement: "|trs|"},
   // 便捷样式
   {regex: "|红字|", replacement: "|addClass(ab-custom-text-red)|"},
   {regex: "|橙字|", replacement: "|addClass(ab-custom-text-orange)|"},

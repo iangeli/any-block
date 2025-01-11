@@ -177,14 +177,15 @@ const abc_overfold = ABConvert.factory({
   }
 })
 
-  // 可以匹配如:
-  // width(25%,25%,50%)
-  // width(100px,10rem,10.5) 
-  // width(100)
+  /// 可以匹配如:
+  /// width(25%,25%,50%)
+  /// width(100px,10rem,10.5) 
+  /// width(100)
   const abc_width = ABConvert.factory({
     id: "width",
     name: "宽度控制",
     match: /^width\(((?:\d*\.?\d+(?:%|px|rem)?,\s*)*\d*\.?\d+(?:%|px|rem)?)\)$/,
+    detail: "用于控制表格或分栏的每列的宽度",
     process_param: ABConvert_IOEnum.el,
     process_return: ABConvert_IOEnum.el,
     process: (el, header, content: HTMLElement): HTMLElement=>{
