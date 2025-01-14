@@ -54,18 +54,22 @@ export class ABReplacer_Render extends MarkdownRenderChild {
     dom_edit2.onclick = ()=>{abConvertEvent(div)}
 
     // 下拉框格式部分
-    const dom_edit = div.createEl("select", {
-      cls: ["ab-button", "ab-button-2", "edit-block-button"], 
+    const dom_edit = div.createEl("div", {
+      cls: ["ab-button", "ab-button-2", "edit-block-button", "ab-button-select"],
+    })
+    const dom_edit_mask = dom_edit.createEl("button", {}) // 遮挡select元素的, text: "v"
+    dom_edit_mask.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>`
+    const dom_edit_select = dom_edit.createEl("select", {
       attr: {"aria-label": "Change the block - "+this.header}
     });
-    const first_dom_option = dom_edit.createEl("option",{ // 这个需要在首选
-      text:"复合格式:"+this.header,
-      attr:{"value":this.header},
+    const first_dom_option = dom_edit_select.createEl("option",{ // 这个需要在首选
+      text: "复合格式:"+this.header,
+      attr: {"value": this.header, "title": this.header},
     })
     first_dom_option.selected=true
     let header_name_flag = ""   // 当前填写的处理器是否标准处理器，如过则隐藏第一个option改用标准的那个
     for (let item of ABConvertManager.getInstance().getConvertOptions()){
-      const dom_option = dom_edit.createEl("option",{
+      const dom_option = dom_edit_select.createEl("option",{
         text:item.name,
         attr:{"value":item.id},
       })
@@ -79,8 +83,8 @@ export class ABReplacer_Render extends MarkdownRenderChild {
       // dom_edit.removeChild(first_dom_option)
       first_dom_option.setText(header_name_flag)
     }
-    dom_edit.onchange = ()=>{
-      const new_header = dom_edit.options[dom_edit.selectedIndex].value
+    dom_edit_select.onchange = ()=>{
+      const new_header = dom_edit_select.options[dom_edit_select.selectedIndex].value
       const new_dom_replaceEl = dom_note.createDiv({
         cls: ["ab-replaceEl"]
       })

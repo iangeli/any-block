@@ -154,6 +154,31 @@ html[data-theme="dark"] #app {
     &.ab-button-3 {
       right: 76px;
     }
+    &.ab-button-select {
+      >* {
+        padding: 0 10px;
+        width: 24px;
+        height: 24px;
+        box-sizing: border-box;
+      }
+      >button {
+        padding: 0;
+        position: absolute;
+        pointer-events: none; // 点击穿透
+        z-index: 2;
+        text-align: center;
+        border: none;
+        box-shadow: none;
+        background: none;
+      }
+      >select {
+        z-index: 1;
+        opacity: 0; // select透明不影响option
+      }
+      option {
+        padding: 0 10px;
+      }
+    }
   }
 
   img.cm-widgetBuffer{
