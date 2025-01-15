@@ -4,9 +4,9 @@
 
 ![Obsidian plugin](https://img.shields.io/endpoint?url=https%3A%2F%2Fscambier.xyz%2Fobsidian-endpoints%2Fany-block.json) ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/LincZero/obsidian-any-block)
 
-A Obsidian Plugin. You can flexibility to create a 'Block' by some means. It also provides some useful features, like `list to table`.
+A Obsidian Plugin. You can flexibility to create a 'Block' by some means. It also provides some useful features, like `list to table` and so on.
 
-一个Obsidain插件。您可以通过某种方式灵活地创建一个“块”。它还提供了一些有用的功能，如“列表转表格”。
+一个Obsidain插件。您可以通过某种方式灵活地创建一个“块”。它还提供了一些有用的功能，如“列表转表格”等。
 
 This is a **【Syntax free, Extensible、Powerful and flexible、Multi-platform】** Markdown block extension rendering plugin
 
@@ -18,33 +18,28 @@ This is a **【Syntax free, Extensible、Powerful and flexible、Multi-platform�
 - Extensible (可扩展性)
     - Facilitate secondary development （插件方便二次开发）
 - Powerful and flexible (灵活且强大)
-    - 选择器：选择范围灵活，六种方式，简单易用
+    - 选择器：选择范围灵活，六种选择方式，简单易用
 	- 处理器：丰富多样、功能强大、扩展性强
 - Multi-platform (多平台)
     - Obsidian
 	- Blogs such as vuepress/vitepress that support markdown-it parsing
 	- V3版本重构并迁移到markdown-it插件，可以使Obsidian和你发布的VuePress/VitePress保持高度一致性（至于在VuePress上的效果如何，可以点击上面的第一个链接查看）
 
-## Multi-Language (多语言)
+## More Links (相关链接)
 
 - en
-	- Language issues: Documentation is multilingual (zh/en), don't worry
+	- Related links：tutorial、use skill、contribution、secondary development. Documentation is multilingual (zh/en), don't worry.
+	- [Online Wiki - github.io](https://linczero.github.io/MdNote_Public/ProductDoc/AnyBlock/)
+	- [Online Effects warrior/Tutorial - github.io](https://linczero.github.io/MdNote_Public/ProductDoc/AnyBlock/README.show.md), You can learn how to use it by switching between tabs.
+	- [Docs Repo - github](https://github.com/LincDocs/MdNote_Public/tree/main/ProductDoc/AnyBlock), You can translate or supplement documents here
 	- Alternate site links：When the website link to this article fails, try replacing `linczero.github.io` with `linczero-github-io.pages.dev` in the url
 - zh
-	- 语言问题：文档是多语言的（zh/en），不用担心
+	- 相关链接：教程、使用技能、贡献、二次开发。文档是多语言的（zh/en），不用担心
+	- [在线文档 - github.io](https://linczero.github.io/MdNote_Public/ProductDoc/AnyBlock/)
+	- [在线效果展示/教程 - github.io](https://linczero.github.io/MdNote_Public/ProductDoc/AnyBlock/README.show.md), 你可以通过切换里面的标签页来学习用法
+	- [文档对应的仓库 - github](https://github.com/LincDocs/MdNote_Public/tree/main/ProductDoc/AnyBlock), 你可以在此翻译或补充文档
 	- 备用网站链接：如果网站失效，则将网站链接部分的 `linczero.github.io` 替换成 `linczero-github-io.pages.dev` 就可以了
 	  （**本文的默认网站链接指向 github.io，如果国内有不能访问的朋友，那么大概率需要做这一步**）
-
-## Docs、More Links (相关链接)
-
-- en
-	- Related links：tutorial、use skill、contribution、secondary development
-	- [Online Wiki - github.io](https://linczero.github.io/MdNote_Public/ProductDoc/AnyBlock/)
-	- [Online Effects warrior - github.io](https://linczero.github.io/MdNote_Public/ProductDoc/AnyBlock/README.show.md)
-- zh
-	- 相关链接：教程、使用技能、贡献、二次开发
-	- [在线文档 - github.io](https://linczero.github.io/MdNote_Public/ProductDoc/AnyBlock/)
-	- [在线效果展示 - github.io](https://linczero.github.io/MdNote_Public/ProductDoc/AnyBlock/README.show.md)
 
 ## Effects warrior (效果展示)
 
