@@ -61,7 +61,7 @@ jobs:
       - name: 文档 - 文档库克隆
         working-directory: ./src/
         run: |
-          rm README.md
+          rm -f README.md
           
           # 文档的克隆、构建、部署。注意 `clone --depth 1` 只拉最近一次提交，减少时间
           # git clone --depth 1 https://github.com/${GITHUB_REPOSITORY}.git # 如果有多个clone项则替换成这个，避免冲突
