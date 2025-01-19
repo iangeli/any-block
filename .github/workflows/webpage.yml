@@ -21,7 +21,7 @@ jobs:
       - name: 环境 - 构建库
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
           repository: LincZero/LincZero.github.io
           ref: 'main' # 分支，旧raw
           
@@ -70,6 +70,9 @@ jobs:
             GIT_LINK=$(head -n 1 temp_repo/agency)
             rm -rf temp_repo
             git clone --depth 1 $GIT_LINK temp_repo
+            echo "with agency"
+          else
+            echo "without agency"
           fi
 
       - name: 文档 - 文档库docs文件夹的处理
@@ -79,9 +82,11 @@ jobs:
             find temp_repo/* -maxdepth 0 -name docs -prune -o -exec rm -rf {} \;
             mv temp_repo/docs/* .
             rm -rf temp_repo
+            echo "with docs"
           else
             rsync -a temp_repo/ .
             rm -rf temp_repo
+            echo "without docs"
           fi
 
       # [!code] 根据实际情况修改 (需要在仓库配置写入以及和文档仓库clone这两个步骤的后面)
