@@ -45,61 +45,61 @@ This is a **【Syntax free, Extensible、Powerful and flexible、Multi-platform�
 
 `multiWay table`/`multiCross table`/`Cross table` (`多叉表格`/`跨行表格`)
 
-![](./docs/zh/png/Pasted%20image%2020240808202548.png)
+![](./docs/assets/Pasted%20image%2020240808202548.png)
 
-![](./docs/zh/png/Pasted%20image%2020240808203055.png)
+![](./docs/assets/Pasted%20image%2020240808203055.png)
 
 `ListTable`/`TreeTable`/`TreeGrid` (`列表格`/`树型表格`)
 
-![](./docs/zh/png/Pasted%20image%2020240808203143.png)
+![](./docs/assets/Pasted%20image%2020240808203143.png)
 
 Optimized list (优化列表)
 
 The essence is "listtable" based on the addition of a mock list style (本质是 "列表格" 的基础上增加仿列表样式)
 
-![](./docs/zh/png/listtable_likelist.png)
+![](./docs/assets/listtable_likelist.png)
 
 Dir Tree (目录树)
 
 The essence is "listtable" based on the addition of imitation directory style (本质是"列表格"的基础上增加仿目录样式)
 
-![](./docs/zh/png/Pasted%20image%2020240808203216.png)
+![](./docs/assets/Pasted%20image%2020240808203216.png)
 
 ASCII Dir Tree (ascii 目录树) 
 
-![](./docs/zh/png/Pasted%20image%2020240808203232.png)
+![](./docs/assets/Pasted%20image%2020240808203232.png)
 
   WBS (Work Breakdown Structure, 工作分解结构)
 
-![](./docs/zh/png/Pasted%20image%2020240808203252.png)
+![](./docs/assets/Pasted%20image%2020240808203252.png)
 
 timeline (时间线)
 
-![](./docs/zh/png/Pasted%20image%2020240808203455.png)
+![](./docs/assets/Pasted%20image%2020240808203455.png)
 
 tabs & card (标签页和卡片)
 
-![](./docs/zh/png/tag%20and%20card.png)
+![](./docs/assets/tag%20and%20card.png)
 
 mermaid flow (mermaid流程图)
 
-![](./docs/zh/png/Pasted%20image%2020240808203517.png)
+![](./docs/assets/Pasted%20image%2020240808203517.png)
 
 plantuml mindmap (plantuml 思维导图)
 
-![](./docs/zh/png/Pasted%20image%2020240808203534.png)
+![](./docs/assets/Pasted%20image%2020240808203534.png)
 
 nodes (ab mindmap) (转节点树图，AnyBlock版思维导图)
 
-![](./docs/zh/png/list2node.png)
+![](./docs/assets/list2node.png)
 
 markmap mindmap (markmap 思维导图)
 
-![](./docs/zh/png/Pasted%20image%2020240808203605.png)
+![](./docs/assets/Pasted%20image%2020240808203605.png)
 
 mermaid mindmap (mermaid 思维导图)
 
-![](./docs/zh/png/Pasted%20image%2020240808203621.png)
+![](./docs/assets/Pasted%20image%2020240808203621.png)
 
 [more……](https://linczero.github.io/MdNote_Public/%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3/AnyBlock/)
 
@@ -114,31 +114,31 @@ Here are some of the more common processors:
 - list2timeline
 - title2list + list2somthing
 
-![](./docs/zh/png/list2table.png)
+![](./docs/assets/list2table.png)
 
-![](./docs/zh/png/list2tableT.png)
+![](./docs/assets/list2tableT.png)
 
-![](./docs/zh/png/list2lt.gif)
+![](./docs/assets/list2lt.gif)
  
-![](./docs/zh/png/list2tab.gif)
+![](./docs/assets/list2tab.gif)
  
-![](./docs/zh/png/list2mermaid.png)
+![](./docs/assets/list2mermaid.png)
 
-![](./docs/zh/png/list2mindmap.png)
+![](./docs/assets/list2mindmap.png)
 
-![](./docs/zh/png/titleSelector.png)
+![](./docs/assets/titleSelector.png)
 
-![](./docs/zh/png/addTitle.png)
+![](./docs/assets/addTitle.png)
 
-![](./docs/zh/png/scroll.gif)
+![](./docs/assets/scroll.gif)
  
-![](./docs/zh/png/overfold.png)
+![](./docs/assets/overfold.png)
 
-![](./docs/zh/png/flod.gif)
+![](./docs/assets/flod.gif)
 
-![](./docs/zh/png/heimu.gif)
+![](./docs/assets/heimu.gif)
 
-![](./docs/zh/png/userProcessor.png)
+![](./docs/assets/userProcessor.png)
 
 ## Star History
 
