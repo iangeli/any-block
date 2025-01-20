@@ -614,7 +614,9 @@ const abc_exTable = ABConvert.factory({
           map_table[rowIndex][colIndex] = "^"
           for (let i=rowIndex-1; i>=0; i--) {
             const item = map_table[i][colIndex]
-            if (!item || typeof item == "string") break
+            if (!item) break
+            if (item == "<") break
+            if (item == "^") continue
             if (item.html.textContent == "<") break
             if (item.html.textContent != "^" || i==0) {
               item.rowSpan += 1
@@ -626,7 +628,9 @@ const abc_exTable = ABConvert.factory({
           map_table[rowIndex][colIndex] = "<"
           for (let j=colIndex-1; j>=0; j--) {
             const item = map_table[rowIndex][j]
-            if (!item || typeof item == "string") break
+            if (!item) break
+            if (item == "^") break
+            if (item == "<") continue
             if (item.html.textContent == "^") break
             if (item.html.textContent != "<" || j==0) {
               item.colSpan += 1
