@@ -650,8 +650,6 @@ const abc_exTable = ABConvert.factory({
       }
     }
 
-    console.log("map_table", map_table)
-
     // 1.3. 数据准备 - map转置 // [!code]
     let map_table2 = map_table
     // let map_table2: (type_tableCell|null|"<"|"^")[][] = new Array(origi_colCount).fill(null).map(() => new Array(origi_rowCount).fill(null));
