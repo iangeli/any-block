@@ -524,6 +524,7 @@ const abc_transpose = ABConvert.factory({
   }
 })
 
+// 实现上与表格转置大差不差
 const abc_exTable = ABConvert.factory({
   id: "exTable",
   name: "表格扩展",
