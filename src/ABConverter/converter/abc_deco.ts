@@ -686,7 +686,7 @@ const abc_exTable = ABConvert.factory({
     // 3. 数据填充
     for (let i = 0; i < origi_rowCount; i++) { // [!code]
       const newRow = trans_body.insertRow();
-      for (let j = 0; j < origi_rowCount; j++) {
+      for (let j = 0; j < origi_colCount; j++) { // [!code]
         const cell = map_table2[i][j]
         if (!cell) continue;
         if (cell == "<" || cell == "^") continue;
