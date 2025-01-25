@@ -5,8 +5,8 @@
  * md_str <-> html
  */
 
-import {ABConvert_IOEnum, ABConvert, type ABConvert_SpecSimp} from "./ABConvert"
-import {ABConvertManager} from "../ABConvertManager"
+import { ABConvert_IOEnum, ABConvert } from "./ABConvert"
+import { ABConvertManager } from "../ABConvertManager"
 
 export const DECOProcessor = 0  // 用于模块化，防报错，其实没啥用
 
@@ -422,7 +422,7 @@ const abc_transpose = ABConvert.factory({
     //   - r5c2
     for (let relRow = 0; relRow < origi_rowCount; relRow++) {
       let colCount = 0; // 此行的最大列数
-      for (let cell of origi_rows[relRow].cells) {
+      for (const cell of origi_rows[relRow].cells) {
         colCount += cell.colSpan || 1;
       }
       if (colCount > origi_colCount) {
@@ -433,13 +433,13 @@ const abc_transpose = ABConvert.factory({
     // 1.2. 数据准备 - 旧表格解析到map
     // 创建一个二维数组来记录旧表格, size: [origi_rowCount][origi_colCount]
     // 要分析带span的表格，必须用到占位符才有解。`^` 和 `<` 都是占位符，不过目前不区分作用
-    let map_table: (type_tableCell|null|"<"|"^")[][] = new Array(origi_rowCount).fill(null).map(() => new Array(origi_colCount).fill(null));
+    const map_table: (type_tableCell|null|"<"|"^")[][] = new Array(origi_rowCount).fill(null).map(() => new Array(origi_colCount).fill(null));
     for (let relRow = 0; relRow < origi_rowCount; relRow++) {
       for (let relCol = 0; relCol < origi_rows[relRow].cells.length; relCol++) {
         const cell: HTMLTableCellElement = origi_rows[relRow].cells[relCol];
 
         // 调整当前格位置
-        let rowIndex = relRow;
+        const rowIndex = relRow;
         let colIndex = relCol;
         while(true) {
           if (colIndex >= map_table[rowIndex].length) { console.error("表格解析错误: colIndex超出范围", map_table, rowIndex, colIndex, relRow, relCol); return content; }
@@ -472,10 +472,10 @@ const abc_transpose = ABConvert.factory({
     }
 
     // 1.3. 数据准备 - map转置
-    let map_table2: (type_tableCell|null|"<"|"^")[][] = new Array(origi_colCount).fill(null).map(() => new Array(origi_rowCount).fill(null));
+    const map_table2: (type_tableCell|null|"<"|"^")[][] = new Array(origi_colCount).fill(null).map(() => new Array(origi_rowCount).fill(null));
     for (let i = 0; i < origi_rowCount; i++) {
       for (let j = 0; j < origi_colCount; j++) {
-        let origi_cell = map_table[i][j]
+        const origi_cell = map_table[i][j]
         if (!origi_cell) continue;
         else if (origi_cell == "<") {
           map_table2[j][i] = "^"
@@ -571,7 +571,7 @@ const abc_exTable = ABConvert.factory({
     //   - r5c2
     for (let relRow = 0; relRow < origi_rowCount; relRow++) {
       let colCount = 0; // 此行的最大列数
-      for (let cell of origi_rows[relRow].cells) {
+      for (const cell of origi_rows[relRow].cells) {
         colCount += cell.colSpan || 1;
       }
       if (colCount > origi_colCount) {
@@ -582,13 +582,13 @@ const abc_exTable = ABConvert.factory({
     // 1.2. 数据准备 - 旧表格解析到map
     // 创建一个二维数组来记录旧表格, size: [origi_rowCount][origi_colCount]
     // 要分析带span的表格，必须用到占位符才有解。`^` 和 `<` 都是占位符，不过目前不区分作用
-    let map_table: (type_tableCell|null|"<"|"^")[][] = new Array(origi_rowCount).fill(null).map(() => new Array(origi_colCount).fill(null));
+    const map_table: (type_tableCell|null|"<"|"^")[][] = new Array(origi_rowCount).fill(null).map(() => new Array(origi_colCount).fill(null));
     for (let relRow = 0; relRow < origi_rowCount; relRow++) {
       for (let relCol = 0; relCol < origi_rows[relRow].cells.length; relCol++) {
         const cell: HTMLTableCellElement = origi_rows[relRow].cells[relCol];
 
         // 调整当前格位置
-        let rowIndex = relRow;
+        const rowIndex = relRow;
         let colIndex = relCol;
         while(true) {
           if (colIndex >= map_table[rowIndex].length) { console.error("表格解析错误: colIndex超出范围", map_table, rowIndex, colIndex, relRow, relCol); return content; }
@@ -652,7 +652,7 @@ const abc_exTable = ABConvert.factory({
     }
 
     // 1.3. 数据准备 - map转置 // [!code]
-    let map_table2 = map_table
+    const map_table2 = map_table
     // let map_table2: (type_tableCell|null|"<"|"^")[][] = new Array(origi_colCount).fill(null).map(() => new Array(origi_rowCount).fill(null));
     // for (let i = 0; i < origi_rowCount; i++) {
     //   for (let j = 0; j < origi_colCount; j++) {

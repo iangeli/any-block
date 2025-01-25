@@ -57,11 +57,11 @@ export class C2ListProcess{
   static data_mL_2_2L1B(
     list_itemInfo: List_ListItem
   ): List_C2ListItem{
-    let list_itemInfo2: List_C2ListItem = []
+    const list_itemInfo2: List_C2ListItem = []
     const level1:0 = 0
     const level2:1 = 1
     let flag_leve2 = false  // 表示触发过level2，当遇到level1会重置
-    for (let itemInfo of list_itemInfo) {
+    for (const itemInfo of list_itemInfo) {
       if (level1>=itemInfo.level){                                // 是level1
         list_itemInfo2.push({
           content: itemInfo.content.trim(),
@@ -80,7 +80,7 @@ export class C2ListProcess{
           continue
         }
         else {                                                      // 内换行
-          let old_itemInfo = list_itemInfo2.pop()
+          const old_itemInfo = list_itemInfo2.pop()
           if(old_itemInfo){
             let new_content = itemInfo.content.trim()
             if (itemInfo.level>level2) new_content = "- "+new_content
@@ -116,10 +116,10 @@ export class C2ListProcess{
   static data_mL_2_2L(
     list_itemInfo: List_ListItem
   ): List_C2ListItem{
-    let list_itemInfo2: List_C2ListItem = []
+    const list_itemInfo2: List_C2ListItem = []
     const level1:0 = 0
     const level2:1 = 1
-    for (let itemInfo of list_itemInfo) {
+    for (const itemInfo of list_itemInfo) {
       if (level1>=itemInfo.level){                                // 是level1
         list_itemInfo2.push({
           content: itemInfo.content.trim(),
@@ -135,7 +135,7 @@ export class C2ListProcess{
         continue
       }
       else{                                                       // level2+，内换行                                                     // 
-        let old_itemInfo = list_itemInfo2.pop()
+        const old_itemInfo = list_itemInfo2.pop()
         if(old_itemInfo){
           let new_content = itemInfo.content.trim()
           if (itemInfo.level>level2) new_content = "- "+new_content
@@ -193,7 +193,7 @@ export class C2ListProcess{
    * @param modeG 识别内换行符号。内换行符被替换为换行+前缀，比listdata的处理简单些，后面不需要再提高level // TODO 这部分逻辑应该抽离出来做成独立的处理器
    */
   static list2c2data(text: string, modeG=true){
-    let list_itemInfo:List_C2ListItem = []
+    const list_itemInfo:List_C2ListItem = []
     const list_text = text.trimStart().split("\n")
 
     // 获取最大的标题级别
@@ -260,7 +260,7 @@ export class C2ListProcess{
    * 因为title2list会损失标题信息
    */
   static title2c2data(text: string){
-    let list_itemInfo:List_C2ListItem = []
+    const list_itemInfo:List_C2ListItem = []
     const list_text = text.trimStart().split("\n")
 
     // 获取最大的标题级别
@@ -273,7 +273,7 @@ export class C2ListProcess{
     
     // 循环填充
     let current_content:string = ""
-    for (let line of list_text) {
+    for (const line of list_text) {
       const match_heading = line.match(ABReg.reg_heading_noprefix)
       if (match_heading && !match_heading[1] && (match_heading[3].length-1)<=root_title_level){ // 遇到同等标题
         add_current_content()
@@ -374,7 +374,7 @@ export class C2ListProcess{
   static c2data2items(c2listdata:List_C2ListItem, el:HTMLElement): HTMLElement {
     const el_items = document.createElement("div"); el.appendChild(el_items); el_items.classList.add("ab-items")
     let el_item:HTMLElement|null = null;
-    for (let item of c2listdata) {
+    for (const item of c2listdata) {
       if (item.level == 0) {
         el_item = document.createElement("div"); el_items.appendChild(el_item); el_item.classList.add("ab-items-item")
         const el_title = document.createElement("div"); el_item.appendChild(el_title); el_title.classList.add("ab-items-title")

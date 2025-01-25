@@ -59,15 +59,15 @@ export class DirProcess{
    */
   static list2dtdata(text: string): List_LTableItem{
     // 表格行处理
-    let list_itemInfo:List_LTableItem = []
+    const list_itemInfo:List_LTableItem = []
     const list_text = text.split("\n")
     let row_index = -1;
-    for (let line of list_text) { // 遍历文本行
+    for (const line of list_text) { // 遍历文本行
       const m_line = line.match(ABReg.reg_list_noprefix)
       if (m_line) { // 新的表格行
         row_index++;
-        const content = m_line[4]                   // 这一行的内容
-        let level_inline: number = m_line[1].length // 缩进数
+        const content = m_line[4]                     // 这一行的内容
+        const level_inline: number = m_line[1].length // 缩进数
         list_itemInfo.push({
           content: content.trimStart(),
           level: level_inline,
@@ -78,7 +78,7 @@ export class DirProcess{
         })
       }
       else{ // 旧的表格行 (即内换行追加)
-        let itemInfo = list_itemInfo.pop()
+        const itemInfo = list_itemInfo.pop()
         if(itemInfo){
           list_itemInfo.push({
             content: itemInfo.content+"\n"+line.trim(), // modi
@@ -93,9 +93,9 @@ export class DirProcess{
     }
 
     // 表格列处理
-    let list_itemInfo2:List_LTableItem = []
-    for (let row_item of list_itemInfo) { // 遍历表格行
-      let list_column_item: string[] = row_item.content.split(ABReg.inline_split)
+    const list_itemInfo2:List_LTableItem = []
+    for (const row_item of list_itemInfo) { // 遍历表格行
+      const list_column_item: string[] = row_item.content.split(ABReg.inline_split)
       for (let column_index=0; column_index<list_column_item.length; column_index++) { // 遍历表格列
         // 第一列，需处理文件扩展名
         let type = "";
@@ -184,9 +184,9 @@ export class DirProcess{
         }
 
         // 创建表格单元格 (md版)
-        let td = document.createElement(is_head?"th":"td"); tr!.appendChild(td); td.setAttribute("rowspan", cell_item.tableRowSpan.toString());        
+        const td = document.createElement(is_head?"th":"td"); tr!.appendChild(td); td.setAttribute("rowspan", cell_item.tableRowSpan.toString());        
         if (cell_item.tableColumn==0 && is_folder) { // 首列，处理文件夹
-          let td_svg = document.createElement("div"); td.appendChild(td_svg); td_svg.classList.add("ab-list-table-svg")
+          const td_svg = document.createElement("div"); td.appendChild(td_svg); td_svg.classList.add("ab-list-table-svg")
           // 文件夹/文件图标 // https://www.w3schools.com/css/css_icons.asp, https://fontawesome.com/
           if (!is_head) {
             if (cell_item.type=="folder") {
@@ -197,7 +197,7 @@ export class DirProcess{
             }
           }
         }
-        let td_cell = document.createElement("div"); td.appendChild(td_cell); td_cell.classList.add("ab-list-table-witharrow");
+        const td_cell = document.createElement("div"); td.appendChild(td_cell); td_cell.classList.add("ab-list-table-witharrow");
         ABConvertManager.getInstance().m_renderMarkdownFn(cell_item.content, td_cell);
       }
 
@@ -348,11 +348,11 @@ function listdata2dirdata(list: List_ListItem): List_DirListItem {
   // is_have_vbar[x]表示在该项的后面直到出现>x的level前，会出现x level
   // 用于控制 "|  " or "   "，以及 "├─ " or "└─ "
   // 空视为true
-  let is_have_vbar: boolean[] = [];
+  const is_have_vbar: boolean[] = [];
   
-  let newlist: List_DirListItem = [];
+  const newlist: List_DirListItem = [];
   for (let i=0; i<list.length; i++) {
-    let item = list[i];
+    const item = list[i];
 
     // 文件扩展名
     let type: string;
@@ -410,7 +410,7 @@ const abc_list2astreeH = ABConvert.factory({
     const dirlistdata: List_DirListItem = listdata2dirdata(listdata)
 
     let newContent = ""
-    for (let item of dirlistdata) {
+    for (const item of dirlistdata) {
       if (item.level == 0) {
         newContent += item.content + "\n"
       } else {
