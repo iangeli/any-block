@@ -166,9 +166,13 @@ export function abConvertEvent(d: Element|Document) {
     }
   }
 
-  // list2card，瀑布流卡片顺序重调事件
-  if (d.querySelector('.ab-items.ab-card:not(.js-waterfall)')) {
-    const root_el_list = d.querySelectorAll(".ab-items.ab-card:not(.js-waterfall)")
+  // tips: 这里说一下items布局的问题，TODO 是有计划将布局方式分开成一个独立的处理器，而部分布局需要js
+  // 普通纵向瀑布流: 纯css、有序纵向瀑布流: js
+  // 横向瀑布流: 纯css、高精度横向瀑布流: 未实现js
+
+  // list2card，纵向瀑布流 (等宽瀑布流) 顺序重调事件
+  if (d.querySelector('.ab-items.ab-vfall:not(.js-waterfall):not(.ab-hfall)')) {
+    const root_el_list = d.querySelectorAll(".ab-items.ab-vfall:not(.js-waterfall):not(.ab-hfall)")
     for (const root_el of root_el_list) {
       // 1. 准备原元素
       root_el.classList.add("js-waterfall") // 避免：触发两次时，第二次触发会以第一次触发的顺序为基准，再进行调整
