@@ -46,7 +46,7 @@ html[data-theme="dark"] #app {
   --ab-tab-root-bg-color: var(--bg-color);
   --ab-tab-root-bd-color: var(--border-color);
   --ab-tab-root-tx-color: var(--text-color);
-  --ab-bright-color: var(--theme-color);
+  --ab-bright-color: var(--vp-c-accent);
   --pre-background-color: var(--code-bg-color);
 }
 
@@ -728,7 +728,6 @@ html[data-theme="dark"] #app {
 }
 
 .ab-note .ab-items.ab-card .ab-items-item .ab-items-title {
-  color: var(--ab-bright-color);
   border-bottom: 1px solid var(--ab-bright-color);
 }
 
@@ -773,6 +772,11 @@ html[data-theme="dark"] #app {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
+}
+
+.ab-note .ab-items.ab-card.ab-hfall .ab-items-item .ab-items-title {
+  color: currentColor;
+  border-bottom: none;
 }
 
 .ab-note .ab-items.ab-card.ab-hfall::after {

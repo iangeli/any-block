@@ -775,6 +775,11 @@ html[data-theme="dark"] #app {
   flex-direction: row;
 }
 
+.ab-note .ab-items.ab-card.ab-hfall .ab-items-item .ab-items-title {
+  color: currentColor;
+  border-bottom: none;
+}
+
 .ab-note .ab-items.ab-card.ab-hfall::after {
   content: "";
   flex-grow: 99999;

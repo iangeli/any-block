@@ -52,7 +52,8 @@ html[data-theme="dark"] #app{
   --ab-tab-root-bd-color: var(--border-color); // --code-border-color
   --ab-tab-root-tx-color: var(--text-color);   // --code-color
 
-  --ab-bright-color: var(--theme-color);
+  // --ab-bright-color: var(--theme-color); // vuepress old version
+  --ab-bright-color: var(--vp-c-accent);
   --pre-background-color: var(--code-bg-color);
 }
 html[data-theme="light"] #app {
@@ -728,7 +729,7 @@ html[data-theme="dark"] #app {
         }
 
         .ab-items-title {
-          color: var(--ab-bright-color);
+          // color: var(--ab-bright-color);
           border-bottom: 1px solid var(--ab-bright-color);
         }
         .ab-items-content {
@@ -789,6 +790,12 @@ html[data-theme="dark"] #app {
 
       // 布局2，横向瀑布流
       &.ab-hfall {
+        // 布局无关
+        .ab-items-item .ab-items-title {
+          color: currentColor;
+          border-bottom: none;
+        }
+
         // flex方案 (但是文字会把卡片撑到100%，仅图片并且最好是做成background的形式，那就不错)
         display: flex;
         flex-wrap: wrap;
