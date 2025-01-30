@@ -724,8 +724,8 @@ html[data-theme="dark"] #app {
         padding: 5px 10px;
 
         &>div {
-          padding-top: 5px;
-          padding-bottom: 5px;
+          padding-top: 2px;
+          padding-bottom: 2px;
         }
 
         .ab-items-title {
@@ -738,7 +738,7 @@ html[data-theme="dark"] #app {
       }
 
       // 布局1，纵向瀑布流 (有js)
-      &.ab-vfall:not(.ab-hfall) {
+      &.ab-lay-vfall:not(.ab-hfall) {
         // 方式一，对齐, flex布局
         /*display: flex; // Flexbox 布局
         flex-wrap: wrap; // 元素换行显示
@@ -789,7 +789,7 @@ html[data-theme="dark"] #app {
       }
 
       // 布局2，横向瀑布流
-      &.ab-hfall {
+      &.ab-lay-hfall {
         // 布局无关
         .ab-items-item .ab-items-title {
           color: currentColor;
@@ -832,10 +832,10 @@ html[data-theme="dark"] #app {
       }
 
       // 布局3，网格整齐排列 (内容特别整齐时可用) (此处代码有点乱)
-      &.ab-deco-grid {
+      &.ab-lay-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 10px;
+        gap: 0px !important;
         margin: 0 auto;
         &::after {
           content: "";
@@ -855,9 +855,11 @@ html[data-theme="dark"] #app {
             max-height: 200px;
             width: 100%; /* 确保图片宽度为100%，适应网格布局 */
             height: auto;
+            margin: 0;
           }
           &>.ab-items-content {
             width: 100%;
+            padding: 0;
           }
         }
       }
