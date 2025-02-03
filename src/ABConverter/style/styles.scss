@@ -1096,7 +1096,15 @@ div.md-table-fig1{
 .ab-custom-font-bold {font-weight: bold !important;}
 // 首列重点表格
 table.ab-table-fc {
-  td[col_index="0"] {
+  th[col_index="0"], td[col_index="0"] {
+    white-space: pre;
+    font-weight: 500;
+    vertical-align: top;
+    width: 0px;
+  }
+}
+.ab-table-fc>table {
+  th:first-child, td:first-child {
     white-space: pre;
     font-weight: 500;
     vertical-align: top;

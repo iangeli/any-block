@@ -1202,7 +1202,14 @@ div.md-table-fig1 table.ab-setting.md-table-fig2 {
   font-weight: bold !important;
 }
 
-table.ab-table-fc td[col_index="0"] {
+table.ab-table-fc th[col_index="0"], table.ab-table-fc td[col_index="0"] {
+  white-space: pre;
+  font-weight: 500;
+  vertical-align: top;
+  width: 0px;
+}
+
+.ab-table-fc > table th:first-child, .ab-table-fc > table td:first-child {
   white-space: pre;
   font-weight: 500;
   vertical-align: top;
