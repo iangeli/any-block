@@ -46,7 +46,7 @@ html[data-theme="dark"] #app {
   --ab-tab-root-bg-color: var(--bg-color);
   --ab-tab-root-bd-color: var(--border-color);
   --ab-tab-root-tx-color: var(--text-color);
-  --ab-bright-color: var(--theme-color);
+  --ab-bright-color: var(--vp-c-accent);
   --pre-background-color: var(--code-bg-color);
 }
 
@@ -723,16 +723,15 @@ html[data-theme="dark"] #app {
 }
 
 .ab-note .ab-items.ab-card .ab-items-item > div {
-  padding-top: 5px;
-  padding-bottom: 5px;
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 
 .ab-note .ab-items.ab-card .ab-items-item .ab-items-title {
-  color: var(--ab-bright-color);
   border-bottom: 1px solid var(--ab-bright-color);
 }
 
-.ab-note .ab-items.ab-card.ab-vfall:not(.ab-hfall) {
+.ab-note .ab-items.ab-card.ab-lay-vfall:not(.ab-hfall) {
   /*display: flex; // Flexbox 布局
         flex-wrap: wrap; // 元素换行显示
         gap: 1rem; // 间隙
@@ -765,27 +764,27 @@ html[data-theme="dark"] #app {
         }*/
 }
 
-.ab-note .ab-items.ab-card.ab-vfall:not(.ab-hfall) .ab-items-item {
+.ab-note .ab-items.ab-card.ab-lay-vfall:not(.ab-hfall) .ab-items-item {
   break-inside: avoid-column;
 }
 
-.ab-note .ab-items.ab-card.ab-hfall {
+.ab-note .ab-items.ab-card.ab-lay-hfall {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
 }
 
-.ab-note .ab-items.ab-card.ab-hfall .ab-items-item .ab-items-title {
+.ab-note .ab-items.ab-card.ab-lay-hfall .ab-items-item .ab-items-title {
   color: currentColor;
   border-bottom: none;
 }
 
-.ab-note .ab-items.ab-card.ab-hfall::after {
+.ab-note .ab-items.ab-card.ab-lay-hfall::after {
   content: "";
   flex-grow: 99999;
 }
 
-.ab-note .ab-items.ab-card.ab-hfall > .ab-items-item {
+.ab-note .ab-items.ab-card.ab-lay-hfall > .ab-items-item {
   flex-grow: 1;
   margin: 5px;
   padding: 0 10px;
@@ -793,7 +792,7 @@ html[data-theme="dark"] #app {
   overflow: hidden;
 }
 
-.ab-note .ab-items.ab-card.ab-hfall > .ab-items-item img {
+.ab-note .ab-items.ab-card.ab-lay-hfall > .ab-items-item img {
   max-width: 100%;
   min-width: 100%;
   height: 200px;
@@ -802,29 +801,29 @@ html[data-theme="dark"] #app {
   vertical-align: bottom;
 }
 
-.ab-note .ab-items.ab-card.ab-hfall > .ab-items-item p {
+.ab-note .ab-items.ab-card.ab-lay-hfall > .ab-items-item p {
   max-width: 300px;
   margin: 0;
 }
 
-.ab-note .ab-items.ab-card.ab-hfall > .ab-items-item > .ab-items-content {
+.ab-note .ab-items.ab-card.ab-lay-hfall > .ab-items-item > .ab-items-content {
   height: 100%;
   min-width: 100%;
 }
 
-.ab-note .ab-items.ab-card.ab-deco-grid {
+.ab-note .ab-items.ab-card.ab-lay-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 10px;
+  gap: 0px !important;
   margin: 0 auto;
 }
 
-.ab-note .ab-items.ab-card.ab-deco-grid::after {
+.ab-note .ab-items.ab-card.ab-lay-grid::after {
   content: "";
   flex-grow: 99999;
 }
 
-.ab-note .ab-items.ab-card.ab-deco-grid > .ab-items-item {
+.ab-note .ab-items.ab-card.ab-lay-grid > .ab-items-item {
   position: relative;
   overflow: hidden;
   margin: 5px;
@@ -835,16 +834,18 @@ html[data-theme="dark"] #app {
   /* 确保文字居中 */
 }
 
-.ab-note .ab-items.ab-card.ab-deco-grid > .ab-items-item img {
+.ab-note .ab-items.ab-card.ab-lay-grid > .ab-items-item img {
   max-width: 200px;
   max-height: 200px;
   width: 100%;
   /* 确保图片宽度为100%，适应网格布局 */
   height: auto;
+  margin: 0;
 }
 
-.ab-note .ab-items.ab-card.ab-deco-grid > .ab-items-item > .ab-items-content {
+.ab-note .ab-items.ab-card.ab-lay-grid > .ab-items-item > .ab-items-content {
   width: 100%;
+  padding: 0;
 }
 
 .ab-note .ab-items.ab-card.ab-deco-scroll-x {
