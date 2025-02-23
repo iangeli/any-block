@@ -272,7 +272,6 @@ const abc_addStyle = ABConvert.factory({
   process_param: ABConvert_IOEnum.el,
   process_return: ABConvert_IOEnum.el,
   process: (el, header, content: HTMLElement): HTMLElement => {
-    console.log('匹配到addStyle了')
     const matchs = header.match(/^addStyle\(\s(.*)\s\)$/)
     if (!matchs || !matchs[1]) return content
     if (content.children.length != 1) return content
