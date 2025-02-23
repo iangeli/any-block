@@ -246,7 +246,7 @@ const abc_overfold = ABConvert.factory({
 const abc_addClass = ABConvert.factory({
   id: "addClass",
   name: "增加class",
-  detail: "给当前块增加一个类名。支持使用逗号来添加多个class, 不需要加dot符",
+  detail: "给当前块增加一个类名。支持正常使用空格来添加多个class, 不需要加dot符, 就像在class=''里写的那样",
   match: /^addClass\((.*)\)$/,
   process_param: ABConvert_IOEnum.el,
   process_return: ABConvert_IOEnum.el,
@@ -256,7 +256,7 @@ const abc_addClass = ABConvert.factory({
     if(content.children.length!=1) return content
     const sub_el = content.children[0]
 
-    const args = matchs[1].split(",")
+    const args = matchs[1].split(' ')
     for (const arg of args) {
       sub_el.classList.add(arg)
     }
