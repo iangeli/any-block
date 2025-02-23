@@ -246,7 +246,7 @@ const abc_overfold = ABConvert.factory({
 const abc_addClass = ABConvert.factory({
   id: "addClass",
   name: "增加class",
-  detail: "给当前块增加一个类名, 支持使用逗号来添加多个class, 不需要加dot符",
+  detail: "给当前块增加一个类名。支持使用逗号来添加多个class, 不需要加dot符",
   match: /^addClass\((.*)\)$/,
   process_param: ABConvert_IOEnum.el,
   process_return: ABConvert_IOEnum.el,
@@ -267,7 +267,7 @@ const abc_addClass = ABConvert.factory({
 const abc_addStyle = ABConvert.factory({
   id: "addStyle",
   name: "增加style",
-  detail: "给当前块增加一个样式, 注意最外的括号往内要留一个空格",
+  detail: "给当前块增加一个样式, 注意最外的括号往内要留一个空格, 避免rotate这种用括号时冲突。添加多个则正常使用分号",
   match: /^addStyle\(\s(.*)\s\)$/, // 中间可能有括号，要加空格保证不误识别
   process_param: ABConvert_IOEnum.el,
   process_return: ABConvert_IOEnum.el,
@@ -276,8 +276,8 @@ const abc_addStyle = ABConvert.factory({
     if (!matchs || !matchs[1]) return content
     if (content.children.length != 1) return content
     const sub_el = content.children[0]
-    sub_el.setAttribute("style", String(matchs[1])) // setStyle
-    // ;(sub_el as HTMLElement).style.cssText += String(matchs[1])
+    // sub_el.setAttribute("style", String(matchs[1])) // setStyle
+    ;(sub_el as HTMLElement).style.cssText += String(matchs[1])
     return content
   }
 })
