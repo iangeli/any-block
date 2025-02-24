@@ -47,6 +47,9 @@ jobs:                         # 工作流
       run: |
         # npm run app:build
         npm ci
+        cd ./src/ABConverter/
+        npm ci
+        cd ../../
         cd ./src/App/
         npm ci
         npm run build
