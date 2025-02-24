@@ -10,20 +10,32 @@ const miniRowConfig: LayoutConfig = {
 		content: [
 			{
 				type: "component",
+				title: "White",
+				header: { show: "left", popout: false },
+				componentType: "White",
+				width: 0
+			} as ComponentItemConfig,
+			{
+				type: "component",
 				title: "MdEditor",
 				header: { show: "top", popout: false },
-				// isClosable: false,
 				componentType: "MdEditor",
-				componentState: undefined,
-				width: 35
+				width: 50
 			} as ComponentItemConfig,
 			{
 				type: "component",
 				title: "MdViewer",
 				header: { show: "top", popout: false },
 				componentType: "MdViewer",
-				width: 65
-			} as ComponentItemConfig
+				width: 50
+			} as ComponentItemConfig,
+			{
+				type: "component",
+				title: "White",
+				header: { show: "right", popout: false },
+				componentType: "White",
+				width: 0
+			} as ComponentItemConfig,
 		]
 	}
 };

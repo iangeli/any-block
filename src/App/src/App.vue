@@ -10,15 +10,10 @@ const GLayoutRootRef = ref(null); // Golden-Layout
 provide("LAYOUT", GLayoutRootRef);
 
 // md数据
+import { preset_map } from "./utils/preset_map.js"
 const mdData = ref<any>({
-  string: `# this **MarkDown** *test*\n\ntest text\n
-
-- a
-  a2
-  - b
-  - c
-    - d
-`
+  mdPreset: 'Normal markdown',
+  string: preset_map['Normal markdown']
 })
 </script>
 
@@ -36,6 +31,10 @@ const mdData = ref<any>({
     
     <template #MdViewer>
       <MarkdownViewer :mdData="mdData"></MarkdownViewer>
+    </template>
+
+    <template #White>
+      <div style="width: 100%; height: 100%;"></div>
     </template>
   </golden-layout>
 </template>

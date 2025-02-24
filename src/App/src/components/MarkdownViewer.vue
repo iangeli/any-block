@@ -26,7 +26,6 @@ watch(() => props.mdData.string, (newVal)=>{
 })
 onMounted(()=>{
   nextTick().then(() => {
-    console.log('ref_markdownViewer.value', ref_markdownViewer.value)
     if (!ref_markdownViewer.value) return
     fn_renderMarkdown(props.mdData.string, ref_markdownViewer.value)
   })
@@ -44,15 +43,24 @@ onMounted(()=>{
   width: 100%;
   margin: 0;
 
-  padding: 12px;
+  padding: 10px 20px;
 }
 </style>
 
 <style>
 /** 一些markdown样式校正 */
-ul {
+.ab-app-render ul {
   margin: 0;
   padding-left: 20px;
   list-style-type: disc;
+}
+.ab-app-render strong {
+  color: red;
+}
+.ab-app-render em {
+  color: yellow;
+}
+.ab-app-render s {
+  color: gray;
 }
 </style>
