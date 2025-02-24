@@ -1,6 +1,6 @@
 <template>
   <div class="main-bar menus-1">
-    <div class="menu-1" style="padding: 0 16px;; font-weight:bold; font-size: 16px; color: #11b981;">AnyBlock Online</div>
+    <div class="menu-1" style="padding: 0 16px;; font-weight:bold; font-size: 16px; color: #11b981;">Markdown Online (with AnyBlock)</div>
   </div>
 </template>
 

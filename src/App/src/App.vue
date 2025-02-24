@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, provide, computed, watch, onMounted, nextTick } from 'vue'
 import TabBar from './components/TabBar.vue'
+import MarkdownEditor from './components/MarkdownEditor.vue'
 import MarkdownViewer from './components/MarkdownViewer.vue'
 
 import GoldenLayout from './components/goldenLayout/GoldenLayout.vue'
@@ -30,9 +31,7 @@ const mdData = ref<any>({
     :config="prefinedLayouts.miniRow"
   >
     <template #MdEditor>
-      <div style="width: 100%; height: 100%;">
-        <textarea class="ab-app-editor" v-model="mdData.string"></textarea>
-      </div>
+      <MarkdownEditor :mdData="mdData"></MarkdownEditor>
     </template>
     
     <template #MdViewer>
@@ -65,17 +64,5 @@ html, body, #app {
 .main-golden {
   height: calc(100% - 28px);
   width: 100%;
-}
-
-.ab-app-editor {
-  box-sizing: border-box;
-  height: 100%;
-  width: 100%;
-  margin: 0;
-
-  padding: 10px;
-  overflow-x: auto;
-  overflow-y: auto;
-  resize: none;
 }
 </style>
