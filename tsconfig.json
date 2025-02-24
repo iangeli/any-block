@@ -26,5 +26,6 @@
   },
   "include": [
     "**/*.ts"
-  ]
+  ],
+  "exclude": ["src/App/", "src/MarkdownIt/"]
 }

@@ -1,11 +1,37 @@
 <script lang="ts" setup>
+import { ref, provide, computed, watch, onMounted, nextTick } from 'vue'
+import TabBar from './components/TabBar.vue'
+import MarkdownViewer from './components/MarkdownViewer.vue'
 
+import GoldenLayout from './components/goldenLayout/GoldenLayout.vue'
+import { prefinedLayouts } from './components/goldenLayout/predefined-layouts'
+const GLayoutRootRef = ref(null); // Golden-Layout
+provide("LAYOUT", GLayoutRootRef);
+
+// md数据
+const mdData = ref<any>({
+  string: "this **MarkDown** *test*"
+})
 </script>
 
 <template>
-  <div>
-    <div>lalala</div>
-  </div>
+  <TabBar class="main-nav"></TabBar>
+
+  <golden-layout
+    class="golden-layout main-golden"
+    ref="GLayoutRootRef"
+    :config="prefinedLayouts.miniRow"
+  >
+    <template #MdEditor>
+      <div style="width: 100%; height: 100%;">
+        <textarea class="ab-app-editor" v-model="mdData.string"></textarea>
+      </div>
+    </template>
+    
+    <template #MdViewer>
+      <MarkdownViewer :mdData="mdData"></MarkdownViewer>
+    </template>
+  </golden-layout>
 </template>
 
 <!--goldenlayout必须样式-->
@@ -32,5 +58,17 @@ html, body, #app {
 .main-golden {
   height: calc(100% - 28px);
   width: 100%;
+}
+
+.ab-app-editor {
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+
+  padding: 10px;
+  overflow-x: auto;
+  overflow-y: auto;
+  resize: none;
 }
 </style>

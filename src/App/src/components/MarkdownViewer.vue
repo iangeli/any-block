@@ -1,0 +1,47 @@
+<script setup lang="ts">
+import { nextTick, onMounted, ref, watch } from 'vue'
+
+const props = defineProps<{
+  mdData: any
+}>()
+
+// 渲染方法
+import MarkdownIt from "markdown-it";
+const md = MarkdownIt()
+function fn_renderMarkdown(markdown: string, el: HTMLElement, ctx?: any): void {
+  if (!el) return;
+  el.classList.add("markdown-rendered"); el.innerHTML = ''
+
+  const result: string = (md as MarkdownIt).render(markdown)
+  const el_child = document.createElement("div"); el.appendChild(el_child); el_child.innerHTML = result;
+}
+
+// 绑定事件
+const ref_markdownViewer = ref<HTMLElement | null>(null)
+watch(() => props.mdData.string, (newVal)=>{
+  if (!ref_markdownViewer.value) return
+  fn_renderMarkdown(newVal, ref_markdownViewer.value)
+})
+onMounted(()=>{
+  nextTick().then(() => {
+    console.log('ref_markdownViewer.value', ref_markdownViewer.value)
+    if (!ref_markdownViewer.value) return
+    fn_renderMarkdown(props.mdData.string, ref_markdownViewer.value)
+  })
+})
+</script>
+
+<template>
+  <div class="ab-app-render" ref="ref_markdownViewer"></div>
+</template>
+
+<style lang="scss" scoped>
+.ab-app-render {
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+
+  padding: 12px;
+}
+</style>
