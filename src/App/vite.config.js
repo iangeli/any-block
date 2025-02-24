@@ -15,13 +15,10 @@ export default defineConfig({
       }
     }
   },
-  // base: '/any-block/', // [!code] 临时，需要根据你要部署的位置进行修改
+  base: '/obsidian-any-block/', // [!code] 临时，需要根据你要部署的位置进行修改
   server: {
     host: 'localhost',
     port: 3012,
-    hmr: {
-      port: 3012,
-    },
   },
   root: path.resolve(__dirname, './'), // 确保 Vite 使用正确的根目录
   build: {
