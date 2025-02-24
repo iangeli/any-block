@@ -12,8 +12,8 @@ provide("LAYOUT", GLayoutRootRef);
 // md数据
 import { preset_map } from "./utils/preset_map.js"
 const mdData = ref<any>({
-  mdPreset: 'Normal markdown',
-  string: preset_map['Normal markdown']
+  mdPreset: 'Normal markdown', // default
+  string: '# ' + 'Normal markdown' + '\n\n' + preset_map['Normal markdown']
 })
 </script>
 

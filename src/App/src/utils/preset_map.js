@@ -13,8 +13,6 @@ this is ~~a~~ **MarkDown** *test*
 `,
 //
 'list2table (列表转多叉表格)': `\
-# list2table (列表转多叉表格)
-
 [list2table]
 
 - Gymnosperm<br> 裸子植物
