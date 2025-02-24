@@ -45,6 +45,10 @@ onMounted(()=>{
 
   padding: 10px 20px 500px;
   overflow: auto;
+
+  >div.ab-note { // ob和vuepress版本外面有一层，但这里没有，要给间距
+    margin: 26px 0;
+  }
 }
 </style>
 
