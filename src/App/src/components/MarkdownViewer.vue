@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { nextTick, onMounted, ref, watch } from 'vue'
+import ab_mdit from "../index_mdit"
 
 const props = defineProps<{
   mdData: any
@@ -8,6 +9,7 @@ const props = defineProps<{
 // 渲染方法
 import MarkdownIt from "markdown-it";
 const md = MarkdownIt()
+md.use(ab_mdit) // 使用anyblock插件
 function fn_renderMarkdown(markdown: string, el: HTMLElement, ctx?: any): void {
   if (!el) return;
   el.classList.add("markdown-rendered"); el.innerHTML = ''
