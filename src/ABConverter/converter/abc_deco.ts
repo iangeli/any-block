@@ -506,6 +506,9 @@ const abc_transpose = ABConvert.factory({
           map_table2[j][i] = "<"
         }
         else {
+          let content = origi_cell.html
+          if (content.innerHTML == '<' || content.innerHTML == '&lt;') content.innerHTML = '^'
+          else if (content.innerHTML == '^') content.innerHTML = '<'
           map_table2[j][i] = {
             html: origi_cell.html,
             rowSpan: origi_cell.colSpan || 1,
