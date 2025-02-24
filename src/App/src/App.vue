@@ -10,7 +10,14 @@ provide("LAYOUT", GLayoutRootRef);
 
 // md数据
 const mdData = ref<any>({
-  string: "this **MarkDown** *test*"
+  string: `# this **MarkDown** *test*\n\ntest text\n
+
+- a
+  a2
+  - b
+  - c
+    - d
+`
 })
 </script>
 

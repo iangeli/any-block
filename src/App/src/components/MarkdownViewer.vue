@@ -47,3 +47,12 @@ onMounted(()=>{
   padding: 12px;
 }
 </style>
+
+<style>
+/** 一些markdown样式校正 */
+ul {
+  margin: 0;
+  padding-left: 20px;
+  list-style-type: disc;
+}
+</style>

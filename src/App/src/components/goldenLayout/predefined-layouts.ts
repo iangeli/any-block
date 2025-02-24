@@ -15,14 +15,14 @@ const miniRowConfig: LayoutConfig = {
 				// isClosable: false,
 				componentType: "MdEditor",
 				componentState: undefined,
-				width: 25
+				width: 35
 			} as ComponentItemConfig,
 			{
 				type: "component",
 				title: "MdViewer",
 				header: { show: "top", popout: false },
 				componentType: "MdViewer",
-				width: 75
+				width: 65
 			} as ComponentItemConfig
 		]
 	}
