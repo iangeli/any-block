@@ -31,6 +31,35 @@ this is ~~a~~ **MarkDown** *test*
 	- Chrysanthemum<br> 菊花 | Chamomile<br> 甘菊`,
 //
 'table+transposition (扩展表格+转置)': `\
+## demo1
+
+|*a*|*b*|
+|:--|:--|
+| c | d |
+
+转置
+
+[trs]
+
+|*a*|*b*|
+|---|---|
+| c | d |
+
+## demo2
+
+[table]
+
+- 1
+  - 2 | _
+  - 3
+    - 3.1
+    - 3.2
+- 4
+  - 5
+  - 6
+
+转置
+
 [table|trs]
 
 - 1
@@ -41,5 +70,49 @@ this is ~~a~~ **MarkDown** *test*
 - 4
   - 5
   - 6
+
+## demo3
+
+[exTable]
+
+|*A*| < | a |
+|---|---|---|
+| 1 | 2 | ^ |
+
+转置
+
+[trs|exTable]
+
+|*A*|<| a |
+|---|---|---|
+| 1 | 2 |^|
+
+## demo4
+
+[exTable]
+
+|*A*| < | a |
+|---|---|---|
+| ^ | ^ | b |
+| 1 | 2 | 3c|
+
+转置
+
+[trs|exTable]
+
+|*A*| < | a |
+|---|---|---|
+| ^ | ^ | b |
+| 1 | 2 | 3c|
+
+## 其他
+
+(TODO \`exTable + trs\` 顺序反过来会有问题，有空研究下)
+
+[exTable|trs]
+
+|*A*|<| a |
+|---|---|---|
+| 1 | 2 |^|
 `
 }

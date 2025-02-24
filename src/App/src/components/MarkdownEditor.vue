@@ -27,32 +27,41 @@ function onSelect(event: any) {
 </script>
 
 <template>
-  <select class="preset-select" @change="onSelect" :value="mdData.mdPreset">
-    <option v-for="(value, key) in preset_map" :key="key" :value="key">{{ key }}</option>
-  </select>
-  <textarea class="ab-app-editor" spellcheck="false" v-model="mdData.string"></textarea>
+  <div class="ab-app-editor">
+    <select class="preset-select" @change="onSelect" :value="mdData.mdPreset">
+      <option v-for="(value, key) in preset_map" :key="key" :value="key">{{ key }}</option>
+    </select>
+    <textarea class="editor" spellcheck="false" v-model="mdData.string"></textarea>
+  </div>
 </template>
 
 <style lang="scss" scoped>
-.preset-select {
-  width: 100%;
-}
 .ab-app-editor {
-  box-sizing: border-box;
   height: 100%;
   width: 100%;
-  margin: 0;
 
-  tab-size: 2;
-  white-space: pre;
-  border: none;
-  padding: 10px;
-  overflow-x: auto;
-  overflow-y: auto;
-  resize: none;
-  background-color: #2b2a33;
-  color: #eee;
-  font-size: 16px;
+  .preset-select {
+    width: 100%;
+    height: 20px;
+    padding: 0 10px;
+  }
+
+  .editor {
+    box-sizing: border-box;
+    height: calc(100% - 20px);
+    width: 100%;
+    margin: 0;
+
+    tab-size: 2;
+    white-space: pre;
+    border: none;
+    padding: 10px 10px 500px;
+    overflow-x: auto;
+    overflow-y: auto;
+    resize: none;
+    background-color: #2b2a33;
+    color: #eee;
+    font-size: 16px;
+  }
 }
 </style>
-./preset_map.js/index.js

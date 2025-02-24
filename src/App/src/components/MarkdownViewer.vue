@@ -43,7 +43,8 @@ onMounted(()=>{
   width: 100%;
   margin: 0;
 
-  padding: 10px 20px;
+  padding: 10px 20px 500px;
+  overflow: auto;
 }
 </style>
 
@@ -53,6 +54,18 @@ onMounted(()=>{
   margin: 0;
   padding-left: 20px;
   list-style-type: disc;
+}
+.ab-app-render table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+}
+.ab-app-render th, .ab-app-render td {
+  border: solid 1px currentColor;
+  padding: 0 4px;
+}
+.ab-app-render h2 {
+  color: #ffc078;
 }
 .ab-app-render strong {
   color: red;
