@@ -28,14 +28,14 @@ This is a **【Syntax free, Extensible、Powerful and flexible、Multi-platform�
 ## More Links (相关链接)
 
 - en
-	- Related links：tutorial、use skill、contribution、secondary development. Documentation is **multilingual** (zh/en), don't worry.
+	- Related links：**tutorial**、use skill、contribution、secondary development、online use. Documentation is **multilingual** (zh/en), don't worry.
 	- [Online Wiki - github.io](https://linczero.github.io/MdNote_Public/ProductDoc/AnyBlock/)
 	- [Online Effects warrior/Tutorial - github.io](https://linczero.github.io/MdNote_Public/ProductDoc/AnyBlock/README.show.md), You can learn how to use it by switching between tabs.
 	- [Online Interaction - github.io](https://any-block.github.io/obsidian-any-block/). You can write experiences here and learn usage through templates
 	- [Docs Repo - github](https://github.com/LincDocs/MdNote_Public/tree/main/ProductDoc/AnyBlock), You can translate or supplement documents here
 	- Alternate site links：When the website link to this article fails, try replacing `linczero.github.io` with `linczero-github-io.pages.dev` in the url
 - zh
-	- 相关链接：教程、使用技能、贡献、二次开发。文档是**多语言**的（zh/en），不用担心
+	- 相关链接：**教程**、使用技能、贡献、二次开发、在线使用。文档是**多语言**的（zh/en），不用担心
 	- [在线文档 - github.io](https://linczero.github.io/MdNote_Public/ProductDoc/AnyBlock/)
 	- [在线效果展示/教程 - github.io](https://linczero.github.io/MdNote_Public/ProductDoc/AnyBlock/README.show.md), 你可以通过切换里面的标签页来学习用法
 	- [在线交互 - github.io](https://any-block.github.io/obsidian-any-block/)，你可以在这里编写体验、通过模板学习用法
