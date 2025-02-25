@@ -36,6 +36,18 @@ onMounted(()=>{
   <div class="ab-app-render" ref="ref_markdownViewer"></div>
 </template>
 
+<style lang="scss" scoped>
+.ab-app-render {
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+
+  padding: 10px 20px 500px;
+  overflow: auto;
+}
+</style>
+
 <style lang="scss">
 .ab-app-render {
   /* ob和vuepress版本外面有一层，但这里没有，要给间距 */
@@ -63,7 +75,7 @@ onMounted(()=>{
     color: #ffc078;
   }
   p {
-    display: inline;
+    display: block;
   }
   strong {
     color: red;
