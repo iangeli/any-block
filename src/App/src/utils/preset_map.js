@@ -152,8 +152,6 @@ this is ~~a~~ **MarkDown** *test*
 `,
 //
 'list2table (列表转多叉表格)': `\
-(不知道为什么 br 标签在这里失效了, 在ob和在vuepress环境都是能用的)
-
 [list2table]
 
 - Gymnosperm<br> 裸子植物
