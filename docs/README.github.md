@@ -4,13 +4,14 @@
 
 ![Obsidian plugin](https://img.shields.io/endpoint?url=https%3A%2F%2Fscambier.xyz%2Fobsidian-endpoints%2Fany-block.json) ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/LincZero/obsidian-any-block)
 
-A Obsidian Plugin. You can flexibility to create a 'Block' by some means. It also provides some useful features, like `list to table` and so on.
+- en
+  - A Obsidian Plugin. You can flexibility to create a 'Block' by some means. It also provides some useful features, like `list to table` and so on.
+    This is a **【Syntax free, Extensible、Powerful and flexible、Multi-platform】** Markdown block extension rendering plugin
+- zh
+  - 一个Obsidain插件。您可以通过某种方式灵活地创建一个“块”。它还提供了一些有用的功能，如“列表转表格”等。
+    (这是一个 **【无语法、可扩展、灵活强大、多平台】** 的 Markdown 块扩展渲染插件)
 
-一个Obsidain插件。您可以通过某种方式灵活地创建一个“块”。它还提供了一些有用的功能，如“列表转表格”等。
-
-This is a **【Syntax free, Extensible、Powerful and flexible、Multi-platform】** Markdown block extension rendering plugin
-
-（这是一个 **【无语法、可扩展、灵活强大、多平台】** 的 Markdown 块扩展渲染插件）
+---
 
 - Syntax free (无语法)
     - No new syntax、Syntax-free intrusion (没有新语法、没有语法入侵)

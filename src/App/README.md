@@ -1,5 +1,7 @@
 # AnyBlockApp
 
+纯obsidian用不上这个文件夹
+
 App版本的编译：(两种方法都可以)
 
 方法一：
