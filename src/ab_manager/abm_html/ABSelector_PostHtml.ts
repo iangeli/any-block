@@ -1,6 +1,8 @@
 import html2md from 'html-to-md'
-import type {
-  MarkdownPostProcessorContext,
+import {
+  MarkdownView,
+  type MarkdownPostProcessorContext,
+  type View,
 } from "obsidian"
 
 import { ABReg } from "src/ABConverter/ABReg"
@@ -65,15 +67,32 @@ export class ABSelector_PostHtml{
       const is_start = (mdSrc.from_line == 0 || mdSrc.content_all.split("\n").slice(0, mdSrc.from_line).join("\n").trim() == "") // 片段为md的开头 (且非cache的情况)
       const is_end = (mdSrc.to_line == mdSrc.to_line_all)   // 片段是否为md的结尾
 
-      // 一些基本信息 - 是否存在内容更新。若是，则更新缓存并设置一次强行刷新
+      // 一些基本信息 - 是否存在内容更新、是否是 ![[wiki]] 的子页面
+      // 判断核心：使用cache_map
       let is_newContent:boolean = false // 是否内容变更，若是则需要强制刷新。注意，经过后面多次判断后值才是对的
+      let is_subContent:boolean = false // 是否是 `![[]]`/`![[#]]` 引起的子页面内容，后者极难检测
       let cache_item = null;
-      {
+      (()=>{
         // ATTENTION 这里说一个大坑：
         // app.workspace.activeLeaf?.view.file.path 获取的文件路径名和 ctx 的文件名有可能不一致，这种情况是：
         // 当文件A通过悬浮链接显示文件B时，此时叶子节点方式获取到的是文件A的的文件名，而ctx方式获取到的是文件B的文件名
         // 而这里的mdSrc对应的是对应内容的那个文件名，如果用叶子节点方式，可能产生不一致的 !!! 这里推荐只使用ctx方式 !!!
 
+        // 判断是否悬浮窗口。悬浮窗口禁用强制渲染
+        const view: View|null = app.workspace.getActiveViewOfType(MarkdownView); // 未聚焦(active)会返回null
+        // @ts-ignore 类型“View”上不存在属性“file”
+        const path = view?.file.path
+        if (path && path !== ctx.sourcePath) {
+          if (this.settings.is_debug) console.log(` !! Cache check: [${path}] use ![[${ctx.sourcePath}]] `)
+          cache_item = { // 注意，极难检测是否 `[[#]]`，不存cache_map，也不触发强制刷新
+            name: ctx.sourcePath,
+            content: mdSrc.content_all
+          }
+          is_newContent = false
+          is_subContent = true
+          return
+        }
+        
         // 先查缓存
         for (let item of cache_map) {
           if (item.name == ctx.sourcePath) {
@@ -102,9 +121,10 @@ export class ABSelector_PostHtml{
             is_newContent = false
           }
         }
-      }
+      })();
 
-      if (is_newContent || is_start) { // 内容修改了或处于开头位置
+      // 若内容修改了或处于开头位置，清空页缓存
+      if (is_newContent || is_start) {
         selected_els = []
         selected_mdSrc = null
       }
@@ -116,11 +136,11 @@ export class ABSelector_PostHtml{
         );
       }
 
-      // 特殊，如果是带缓存的情况下，应该强制重新刷新
+      // 若缓存变更，强制重新刷新
       // 如果没有这个，如果从阅读模式切换回实时模式，并只修改一部分内容再切换回阅读模式，那么 `ABPosthtmlManager.processor, called by 'ReadMode'` 只会识别到那些有改动的块，其他不再走这里
       // 本来想用旧版的 `is_onlyPart`，但不准的。因为开头片段被修改过，则判断不了，然后想象还是用回 `is_newContent` 作为判断依据
       // TODO 这里存在改进的空间，如果这里触发了实际上会渲染 n+m 次，n是受影响的div，m是全文的div。前者这里可以弄个flag来消除掉，没必要进行
-      if (is_newContent) {
+      if (!is_subContent && is_newContent) {
         // 性能优化：如果不包含ab块，那就不强制刷新，以免影响正常页面
         if (/\n((\s|>\s|-\s|\*\s|\+\s)*)(%%)?(\[((?!toc)(?!TOC)[0-9a-zA-Z\u4e00-\u9fa5].*)\]):?(%%)?\s*\n/.test(cache_item.content) ||
           /\n((\s|>\s|-\s|\*\s|\+\s)*)(:::)\s?(\S*)\n/.test(cache_item.content)
