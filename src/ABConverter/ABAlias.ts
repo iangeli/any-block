@@ -108,6 +108,7 @@ const ABAlias_json_mdit: ABAlias_json_item[] = [
   {regex: "|::: 140lne|abDemo|", replacement: "|mditABDemo|"},
   {regex: /\|::: 140lne\|(2?col|分栏)\|/, replacement: "|mditCol|"},
   {regex: /\|::: 140lne\|(2?card|卡片)\|/, replacement: "|mditCard|"},
+  {regex: /\|::: 140lne\|(2?chat|聊天)\|/, replacement: "|mditChat|code(chat)|"},
 ]
 
 // 标题块

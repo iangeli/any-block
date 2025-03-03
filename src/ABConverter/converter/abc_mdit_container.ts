@@ -108,3 +108,27 @@ const abc_midt_card = ABConvert.factory({
     return el
   }
 })
+
+const abc_midt_chat = ABConvert.factory({
+  id: "mditChat",
+  name: "mdit对话",
+  detail: "显示渲染对话，需要配合 obsidian-view-chat-qq 插件使用",
+  process_param: ABConvert_IOEnum.text,
+  process_return: ABConvert_IOEnum.text,
+  process: (el, header, content: string): string=>{
+    const content_list = content.split('\n')
+    let newContent = ''
+    for(let i=0; i<content_list.length; i++) {
+      const line = content_list[i]
+      if (/^@chat(.*)$/.test(line)) {
+        const match = line.match(/^@chat(.*)$/)
+        if (match && match[1]) {
+          newContent += '\n' + match[1] + ':\n'
+          continue
+        }
+      }
+      newContent += line + '\n'
+    }
+    return newContent
+  }
+})
