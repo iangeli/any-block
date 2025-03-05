@@ -37,7 +37,7 @@ const abc_code = ABConvert.factory({
     let matchs = header.match(/^code(\((.*)\))?$/)
     if (!matchs) return content
     if (matchs[1]) content = matchs[2]+"\n"+content
-    return "```"+content+"\n```"
+    return "``````"+content+"\n``````"
   }
 })
 
