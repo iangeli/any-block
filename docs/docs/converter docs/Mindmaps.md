@@ -125,12 +125,12 @@
   - 同一level的项无需垂直对齐
 - 缺点：暂不支持像markmap那种缩放拖拽，不支持节点隐藏和展开 (这个理论可做，等issue多不多人提)
 
-## Mehrmaid (非AB插件内容)
+## Mehrmaid
 
-这个不是 AnyBlock 插件的内容，但非常具有代表性，也拉出来说一下
+这个不是 AnyBlock 插件的内容。但AnyBlock V3.2.0 对该插件进行了配合优化，可以使用 `mehrmaid` 处理器快速生成符合Mehrmaid语法的代码并渲染
 
 - 优点：在mermaid的基础上增加了md渲染内容的支持，且md渲染行为由ob提供
-- 缺点：主要是mermaid语法层次上的缺点
+- 缺点：主要是mermaid语法层次上的缺点 (anyblock进行补强)，以及容易受主题影响产生不稳定情况
 
 ## 总结
 
