@@ -72,6 +72,17 @@ const abc_list2mermaid = ABConvert.factory({
   }
 })
 
+const abc_list2mehrmaid = ABConvert.factory({
+  id: "list2mehrmaidText",
+  name: "列表转mehrmaid文本",
+  detail: "需要配合mehrmaid插件和code(mehrmaid)使用，或使用别名简化",
+  process_param: ABConvert_IOEnum.text,
+  process_return: ABConvert_IOEnum.text,
+  process: (el, header, content: string): string=>{
+    return list2mehrmaid(content, el)
+  }
+})
+
 const abc_mermaid = ABConvert.factory({
   id: "mermaid",
   name: "新mermaid",
@@ -96,6 +107,13 @@ function list2mermaid(text: string, div: HTMLDivElement) {
   let list_itemInfo = ListProcess.list2data(text)
   let mermaidText = data2mermaidText(list_itemInfo)
   return render_mermaidText(mermaidText, div)
+}
+
+/** 列表转mehrmaid流程图 */
+function list2mehrmaid(text: string, div: HTMLDivElement) {
+  let list_itemInfo = ListProcess.list2data(text)
+  let mermaidText = data2mehrmaidText(list_itemInfo)
+  return mermaidText
 }
 
 /** 列表数据转mermaid流程图
@@ -133,6 +151,58 @@ function data2mermaidText(
   // list_line_content.push(html_mode?"</pre>":"```")
 
   let text = list_line_content.join("\n")
+  return text
+}
+
+/** 列表数据转mermaid流程图
+ * ~~@bug 旧版bug（未内置mermaid）会闪一下~~ 
+ * 然后注意一下mermaid的(项)不能有空格，或非法字符。空格我处理掉了，字符我先不管。算了，还是不处理空格吧
+ */
+function data2mehrmaidText(
+  list_itemInfo: List_ListItem
+){
+  // mehrmaid较于mermaid的补充1：映射表。先将内容全部映射成数字（TODO 需要处理重名）
+  const mehrmaidMap = []
+  for (let i=0; i<list_itemInfo.length; i++) {
+    mehrmaidMap[i] = list_itemInfo[i].content
+    list_itemInfo[i].content = i.toString()
+  }
+
+  const html_mode = false    // @todo 暂时没有设置来切换这个开关
+
+  let list_line_content:string[] = ["flowchart LR"]
+  // let list_line_content:string[] = html_mode?['<pre class="mermaid">', "graph LR"]:["```mermaid", "graph LR"]
+  let prev_line_content = ""
+  let prev_level = 999
+  for (let i=0; i<list_itemInfo.length; i++) {
+    if (list_itemInfo[i].level>prev_level){ // 向右正常加箭头
+      prev_line_content = prev_line_content+" --> "+list_itemInfo[i].content//.replace(/ /g, "_")
+    } else {                                // 换行，并……
+      list_line_content.push(prev_line_content)
+      prev_line_content = ""
+
+      for (let j=i; j>=0; j--){             // 回退到上一个比自己大的
+        if(list_itemInfo[j].level<list_itemInfo[i].level) {
+          prev_line_content = list_itemInfo[j].content//.replace(/ /g, "_")
+          break
+        }
+      }
+      if (prev_line_content) prev_line_content=prev_line_content+" --> "  // 如果有比自己大的
+      prev_line_content=prev_line_content+list_itemInfo[i].content//.replace(/ /g, "_")
+    }
+    prev_level = list_itemInfo[i].level
+  }
+  list_line_content.push(prev_line_content)
+  // list_line_content.push(html_mode?"</pre>":"```")
+
+  let text = list_line_content.join("\n")
+
+  // mehrmaid较于mermaid的补充2：映射回来
+  text += '\n\n'
+  for (let i=0; i<mehrmaidMap.length; i++) {
+    text += `${i}(("${mehrmaidMap[i]}"))\n`
+  }
+
   return text
 }
 

@@ -124,6 +124,7 @@ const ABAlias_json_title: ABAlias_json_item[] = [
 
   // list  - 多叉多层树
   {regex: /\|heading 140lne\|2?(mermaid|flow|流程图)\|/, replacement: "|title2list" + "|list2mermaid|"},
+  {regex: /\|heading 140lne\|2?(mehrmaid|mdmermaid)\|/, replacement: "|title2list" + "|list2mehrmaidText|code(mehrmaid)|"},
   {regex: /\|heading 140lne\|2?(puml)?(plantuml|mindmap|脑图|思维导图)\|/, replacement: "|title2list" + "|list2pumlMindmap|"},
   {regex: /\|heading 140lne\|2?(markmap|mdMindmap|md脑图|md思维导图)\|/, replacement: "|title2list" + "|list2markmap|"},
   {regex: /\|heading 140lne\|2?(wbs|(工作)?分解(图|结构))\|/, replacement: "|title2list" + "|list2pumlWBS|"},
@@ -151,6 +152,7 @@ const ABAlias_json_list: ABAlias_json_item[] = [
 
   // list  - 多叉多层树
   {regex: /\|list 140lne\|2?(mermaid|flow|流程图)\|/, replacement: "|list2mermaid|"},
+  {regex: /\|list 140lne\|2?(mehrmaid|mdmermaid)\|/, replacement: "|list2mehrmaidText|code(mehrmaid)|"},
   {regex: /\|list 140lne\|2?(puml)?(plantuml|mindmap|脑图|思维导图)\|/, replacement: "|list2pumlMindmap|"},
   {regex: /\|list 140lne\|2?(markmap|mdMindmap|md脑图|md思维导图)\|/, replacement: "|list2markmap|"},
   {regex: /\|list 140lne\|2?(wbs|(工作)?分解(图|结构))\|/, replacement: "|list2pumlWBS|"},
