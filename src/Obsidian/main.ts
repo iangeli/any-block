@@ -18,7 +18,7 @@ import { ABStateManager } from "./ab_manager/abm_cm/ABStateManager"
 import { ABSelector_PostHtml } from "./ab_manager/abm_html/ABSelector_PostHtml"
 import type { ABSettingInterface } from "./config/ABSettingTab"
 import { ABSettingTab, AB_SETTINGS } from "./config/ABSettingTab"
-import { ABCSetting } from "./ABConverter/ABReg"
+import { ABCSetting } from "src/ABConverter/ABReg"
 
 
 export default class AnyBlockPlugin extends Plugin {

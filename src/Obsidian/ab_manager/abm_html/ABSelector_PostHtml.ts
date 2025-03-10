@@ -5,10 +5,10 @@ import {
   type View,
 } from "obsidian"
 
-import { ABReg } from "src/ABConverter/ABReg"
-import { ConfDecoration } from "src/config/ABSettingTab"
+import { ConfDecoration } from "../../config/ABSettingTab"
 import type AnyBlockPlugin from "../../main"
 import { ABReplacer_Render } from "./ABReplacer_Render"
+import { ABReg } from "src/ABConverter/ABReg"
 import { ABConvertManager } from "src/ABConverter/ABConvertManager"
 import { abConvertEvent } from "src/ABConverter/ABConvertEvent";
 import { ABCSetting } from 'src/ABConverter/ABReg'

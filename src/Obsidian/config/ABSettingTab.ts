@@ -12,8 +12,8 @@ import { ABAlias_json, ABAlias_json_default } from "src/ABConverter/ABAlias"
 import { ABCSetting, ABReg } from "src/ABConverter/ABReg"
 
 // 加载所有选择器
-import {} from "src/ab_manager/abm_cm/ABSelector_MdBase"
-import {generateSelectorInfoTable} from "src/ab_manager/abm_cm/ABSelector_Md"
+import {} from "../ab_manager/abm_cm/ABSelector_MdBase"
+import {generateSelectorInfoTable} from "../ab_manager/abm_cm/ABSelector_Md"
 
 /** 设置值接口 */
 export interface ABSettingInterface {
