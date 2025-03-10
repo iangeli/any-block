@@ -273,7 +273,22 @@ export class C2ListProcess{
     
     // 循环填充
     let current_content:string = ""
+    let codeBlockFlag = ''
     for (const line of list_text) {
+      // heading和mdit类型 需要跳过代码块内的结束标志
+      if (codeBlockFlag == '') {
+        const match = line.match(/^((\s|>\s|-\s|\*\s|\+\s)*)(````*|~~~~*)(.*)/)
+        if (match && match[3]) {
+          codeBlockFlag = match[1]+match[3]
+          current_content += line+"\n"; continue
+        }
+      }
+      else {
+        if (line.indexOf(codeBlockFlag) == 0) codeBlockFlag = ''
+        current_content += line+"\n"; continue
+      
+      }
+      // 
       const match_heading = line.match(ABReg.reg_heading_noprefix)
       if (match_heading && !match_heading[1] && (match_heading[3].length-1)<=root_title_level){ // 遇到同等标题
         add_current_content()
