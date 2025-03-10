@@ -103,6 +103,7 @@ function abSelector_squareInline(md: MarkdownIt, options?: Partial<Options>): vo
     state.line += 1
 
     let ab_blockType: string = ""           // ab块 - 块类型
+    let codeBlockFlag: string = ""          // ab块 - 跳过代码块，对应标志
     let reg;
     let heading_number: number = 0;
     let code_str: string;
@@ -142,9 +143,7 @@ function abSelector_squareInline(md: MarkdownIt, options?: Partial<Options>): vo
       if (text.trim() == "") {
         if (ab_blankLine_counter < 1) {
           ab_blankLine_counter++;
-          ab_content += "\n"
-          state.line += 1
-          return findAbEnd()
+          ab_content += "\n"; state.line += 1; return findAbEnd()
         }
         else {
           return
@@ -189,9 +188,21 @@ function abSelector_squareInline(md: MarkdownIt, options?: Partial<Options>): vo
         if (reg.test(text)) {
           ab_content += "\n" + text
           state.line += 1
-          return findAbEnd()
+          ab_content += "\n" + text; state.line += 1; return findAbEnd()
         }
-      } else if (ab_blockType == "heading") {
+      } else if (ab_blockType == "heading") { // TODO 这里需要跳过标题内的代码块 (python代码块的 `#` 会误截断)
+        // heading和mdit类型 需要跳过代码块内的结束标志
+        if (codeBlockFlag == '') {
+          const match = text.match(/^((\s|>\s|-\s|\*\s|\+\s)*)(````*|~~~~*)(.*)/)
+          if (match && match[3]) {
+            codeBlockFlag = match[1]+match[3]
+            ab_content += "\n" + text; state.line += 1; return findAbEnd()
+          }
+        } else {
+          if (text.indexOf(codeBlockFlag) == 0) codeBlockFlag = ''
+          ab_content += "\n" + text; state.line += 1; return findAbEnd()
+        }
+        // 是标题行
         if (reg.test(text)) {
           const match = text.match(reg)
           if (match && match[3] && (match[3].length-1) < heading_number) return
@@ -203,14 +214,10 @@ function abSelector_squareInline(md: MarkdownIt, options?: Partial<Options>): vo
         if (reg.test(text)) {
           const match = text.match(reg)
           if (match && match[3] && match[3] == code_str) {
-            ab_content += "\n" + text
-            state.line += 1
-            return
+            ab_content += "\n" + text; state.line += 1; return
           }
         }
-        ab_content += "\n" + text
-        state.line += 1
-        return findAbEnd()
+        ab_content += "\n" + text; state.line += 1; return findAbEnd()
       }
       return
     }

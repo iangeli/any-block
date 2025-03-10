@@ -71,7 +71,7 @@ export function autoMdSelector(
         // TODO V3.0.7beta 发现一个选择器优化方案。未应用。暂时应急修复：这里不再执行 continue，当行可以触发，再往下一行不让触发
       }
     }
-    else if (codeBlockFlag != "") {
+    else {
       if (line.indexOf(codeBlockFlag) == 0) {
         codeBlockFlag = ""
       }

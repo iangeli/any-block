@@ -4,10 +4,10 @@
 
 该文件夹下的文件夹说明：
 
-- ABConverter (Core) | 共用部分
-- Obsidian/          | Obsidian专用部分
-- App/               | App 版本专用部分
-- MarkdownIt/        | MarkdownIt 专用部分 (主要是vuepress/vitepress用)
+- ABConverter/  | 共用部分 (核心) (Core)
+- Obsidian/     | Obsidian专用部分
+- App/          | App 版本专用部分
+- MarkdownIt/   | MarkdownIt 专用部分 (主要是vuepress/vitepress用)
 
 具体查看各个文件夹下的 README 文件
 
