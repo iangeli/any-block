@@ -570,6 +570,9 @@ html[data-theme=dark] #app {
   margin: 0;
   margin-bottom: 10px;
 }
+.ab-note .ab-deco-title pre {
+  margin: 0;
+}
 .ab-note .ab-deco-title .ab-deco-title-title {
   height: auto;
 }
