@@ -609,12 +609,15 @@ html[data-theme="dark"] #app {
   }
 
   // 滚动
-  .ab-deco-scroll.ab-deco-scroll-y{
+  .ab-deco-scroll.ab-deco-scroll-y {
     overflow-y:auto;
   }
-  .ab-deco-scroll.ab-deco-scroll-x{
+  .ab-deco-scroll.ab-deco-scroll-x {
     overflow-x:auto;
-    white-space: pre;
+    white-space: pre !important;
+    th, td {
+      white-space: pre !important;
+    }
   }
 
   // 超出折叠
