@@ -98,7 +98,7 @@ interface ABAlias_json_item {
 
 // 允许带参数的部分 (这部分的遍历会更耗时间。为了性能考虑，单独拿出来)
 const ABAlias_json_withSub: ABAlias_json_item[] = [
-  { regex: /\|::: 140lne\|(info|note|warning|warn|error|tips|tip|quote)\s?(.*?)\|/, replacement: "|add([!$1] $2)|quote|" },
+  { regex: /\|::: 140lne\|(info|note|warning|caution|attention|error|danger|tips|tip|hint|example|abstract|summary|tldr|quote|cite|todo|success|check|done)\s?(.*?)\|/, replacement: "|add([!$1] $2)|quote|" },
 ]
 
 // mdit块
