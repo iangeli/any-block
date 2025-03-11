@@ -103,8 +103,21 @@ const mdSelector_headtail:MdSelectorSpecSimp = {
     const mdRange = mdRangeTmp
     // 开头找到了，现在开始找结束。不需要循环尾处理器
     let last_nonempty:number = from_line
+    let codeBlockFlag = ''
     for (let i=from_line+1; i<list_text.length; i++){
       const line = list_text[i]
+      // heading和mdit类型 需要跳过代码块内的结束标志
+      if (codeBlockFlag == '') {
+        const match = line.match(/^((\s|>\s|-\s|\*\s|\+\s)*)(````*|~~~~*)(.*)/)
+        if (match && match[3]) {
+          codeBlockFlag = match[1]+match[3]
+          continue
+        }
+      }
+      else {
+        if (line.indexOf(codeBlockFlag) == 0) codeBlockFlag = ''
+        continue
+      }
       // 前缀不符合
       if (line.indexOf(mdRange.prefix)!=0) break
       const line2 = line.replace(mdRange.prefix, "")    // 删掉无用前缀
@@ -175,21 +188,8 @@ const mdSelector_code:MdSelectorSpecSimp = {
     const mdRange = mdRangeTmp
     // 开头找到了，现在开始找结束。不需要循环尾处理器
     let last_nonempty:number = from_line
-    let codeBlockFlag = ''
     for (let i=from_line+1; i<list_text.length; i++){
       const line = list_text[i]
-      // heading和mdit类型 需要跳过代码块内的结束标志
-      if (codeBlockFlag == '') {
-        const match = line.match(/^((\s|>\s|-\s|\*\s|\+\s)*)(````*|~~~~*)(.*)/)
-        if (match && match[3]) {
-          codeBlockFlag = match[1]+match[3]
-          continue
-        }
-      }
-      else {
-        if (line.indexOf(codeBlockFlag) == 0) codeBlockFlag = ''
-        continue
-      }
       // 前缀不符合
       if (line.indexOf(mdRange.prefix)!=0) break
       const line2 = line.replace(mdRange.prefix, "")    // 删掉无用前缀
