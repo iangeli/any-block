@@ -850,7 +850,6 @@ html[data-theme="dark"] #app {
         }
         >.ab-items-item {
           position: relative;
-          overflow: hidden;
           margin: 5px;
           display: flex;
           flex-direction: column;
@@ -884,6 +883,8 @@ html[data-theme="dark"] #app {
       }
     }
 
+    > .ab-items-item { overflow-x: auto; }
+
     // 补充结合样式
     // 默认 & { column-count: 4 !important; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr) !important; }
     &.ab-col1 { column-count: 1 !important; grid-template-columns: repeat(1, 1fr) !important; }
@@ -894,9 +895,6 @@ html[data-theme="dark"] #app {
     &.ab-col6 { column-count: 6 !important; grid-template-columns: repeat(6, 1fr) !important; }
     &.ab-col7 { column-count: 7 !important; grid-template-columns: repeat(7, 1fr) !important; }
     &.ab-col8 { column-count: 8 !important; grid-template-columns: repeat(8, 1fr) !important; }
-    &.ab-col1, &.ab-col2, &.ab-col3, &.ab-col4, &.ab-col5, &.ab-col6, &.ab-col7, &.ab-col8 {
-      >.ab-items-item { overflow-x: auto !important; }
-    }
   }
 
   // 节点图、括弧图、ab思维导图
