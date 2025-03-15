@@ -787,6 +787,9 @@ html[data-theme=dark] #app {
        column-count: 8 !important;
   grid-template-columns: repeat(8, 1fr) !important;
 }
+.ab-note .ab-items.ab-col1 > .ab-items-item, .ab-note .ab-items.ab-col2 > .ab-items-item, .ab-note .ab-items.ab-col3 > .ab-items-item, .ab-note .ab-items.ab-col4 > .ab-items-item, .ab-note .ab-items.ab-col5 > .ab-items-item, .ab-note .ab-items.ab-col6 > .ab-items-item, .ab-note .ab-items.ab-col7 > .ab-items-item, .ab-note .ab-items.ab-col8 > .ab-items-item {
+  overflow-x: auto !important;
+}
 .ab-note .ab-nodes {
   white-space: normal;
   overflow-wrap: break-word;
