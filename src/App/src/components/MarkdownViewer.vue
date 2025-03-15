@@ -74,6 +74,15 @@ onMounted(()=>{
     border: solid 1px currentColor;
     padding: 0 4px;
   }
+  pre {
+    background-color: #0D1117;
+    padding: 1em;
+  }
+  blockquote {
+    background-color: #204E8A;
+    margin: 16px 0;
+    padding: 1em;
+  }
   h2 {
     color: #ffc078;
   }
