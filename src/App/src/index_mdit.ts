@@ -60,9 +60,9 @@ import "../../ABConverter/converter/abc_dir_tree"
 import "../../ABConverter/converter/abc_deco"
 import "../../ABConverter/converter/abc_ex"
 import "../../ABConverter/converter/abc_mdit_container"
-import "../../ABConverter/converter/abc_plantuml" // 可选建议：
-import "../../ABConverter/converter/abc_mermaid"  // 可选建议：7.1MB
-import "../../ABConverter/converter/abc_markmap"  // 可选建议：1.3MB
+// import "../../ABConverter/converter/abc_plantuml" // 可选建议：
+// import "../../ABConverter/converter/abc_mermaid"  // 可选建议：7.1MB
+// import "../../ABConverter/converter/abc_markmap"  // 可选建议：1.3MB
 
 interface Options {
   multiline: boolean;
@@ -113,15 +113,17 @@ function abSelector_squareInline(md: MarkdownIt, options?: Partial<Options>): vo
       state.line = ab_startLine
       return false
     }
-    const ab_header: string = text          // ab块 - 头部 (包含)
+
     const ab_endLine: number = state.line   // ab块 - 结束行 (不包含)
 
     // (3) 插入ab块token
-    let token = state.push('fence', 'code', 0)
-    token.info = "AnyBlock"
-    token.content = `${ab_header}${ab_content}`
+    const token = state.push('anyBlock', 'code', 0) // 直接使用anyBlock作为token的type，避免了重写fence类的渲染规则，不再需要info字段
+    token.content = `${text}${ab_content}`
+    token.meta = {
+      ab_header: text.match(/\[(.*)\]/)?.[1],
+      ab_content: ab_content,
+    } // 改用meta字段来存储ab块的头部信息和内容，markup字段被废弃
     token.map = [ab_startLine, ab_endLine]
-    token.markup = '~~~';
     token.nesting = 0;
     return true
 
@@ -188,7 +190,7 @@ function abSelector_squareInline(md: MarkdownIt, options?: Partial<Options>): vo
         if (reg.test(text)) {
           ab_content += "\n" + text
           state.line += 1
-          ab_content += "\n" + text; state.line += 1; return findAbEnd()
+          return findAbEnd()
         }
       } else if (ab_blockType == "heading") { // TODO 这里需要跳过标题内的代码块 (python代码块的 `#` 会误截断)
         // heading和mdit类型 需要跳过代码块内的结束标志
@@ -238,7 +240,7 @@ function abSelector_container(md: MarkdownIt, options?: Partial<Options>): void 
   
     render: function (tokens, idx) {
       // 通过 tokens[idx].info.trim() 取出 'click me' 字符串
-      var m = tokens[idx].info.trim().match(/^anyBlock(.*)$/);
+      const m = tokens[idx].info.trim().match(/^anyBlock(.*)$/);
   
       // 开始标签的 nesting 为 1，结束标签的 nesting 为 -1
       if (tokens[idx].nesting === 1) {
@@ -260,20 +262,13 @@ function abRender_fence(md: MarkdownIt, options?: Partial<Options>): void {
     return self.renderToken(tokens, idx, options);
   };
 
-  md.renderer.rules.fence = (tokens, idx, options, env, self) => {
+  md.renderer.rules.anyBlock = (tokens, idx, options, env, self) => {
     // 查看是否匹配
-    let token = tokens[idx]
-    let lines = token.content.split('\n')
-    if (token.info.toLowerCase() != "anyblock") { return oldFence(tokens, idx, options, env, self) }
+    const token = tokens[idx]
+    const ab_header: string|undefined = token.meta?.ab_header
+    const ab_content: string = token.meta?.ab_content.trimStart() // TODO 这里去除了空行以外的前面空格，是否存在问题
 
-    // 抽离指令头和内容
-    let ab_header: string|undefined = lines.shift()
-    if (typeof ab_header === 'undefined') { return oldFence(tokens, idx, options, env, self) }
-    const match = ab_header.match(/\[(.*)\]/)
-    if (!match || match?.length < 1) { return oldFence(tokens, idx, options, env, self) }
-    ab_header = match[1]
-    let ab_content: string = lines.join('\n')
-    ab_content = ab_content.trimStart() // TODO 这里去除了空行以外的前面空格，是否存在问题
+    if (typeof ab_header === 'undefined' || ab_header.trim() == "") { return oldFence(tokens, idx, options, env, self) }// TODO 头部没有匹配的处理器时，渲染原始内容
 
     // anyBlock专属渲染 - 测试
     //let rawCode = oldFence(tokens, idx, options, env, self);
@@ -281,7 +276,7 @@ function abRender_fence(md: MarkdownIt, options?: Partial<Options>): void {
     //`<!--afterbegin-->${rawCode}<!--beforeend--></div><!--afterend-->`
 
     // anyBlock专属渲染
-    let el: HTMLDivElement = document.createElement("div"); el.classList.add("ab-note", "drop-shadow");
+    const el: HTMLDivElement = document.createElement("div"); el.classList.add("ab-note", "drop-shadow");
         // 临时el，未appendClild到dom中，脱离作用域会自动销毁
         // 用临时el是因为 mdit render 是 md_str 转 html_str 的，而Ob和原插件那边是使用HTML类的，要兼容
     ABConvertManager.autoABConvert(el, ab_header, ab_content)
