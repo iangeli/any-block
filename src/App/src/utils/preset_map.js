@@ -294,4 +294,40 @@ this is ~~a~~ **MarkDown** *test*
 |---|---|---|
 | 1 | 2 |^|
 `,
+'mdit (markdown-it-container形式的语法块)': `\
+
+:::col|width(25,50,25)
+
+@col
+
+text1
+
+@col
+
+text2
+
+@col
+
+text3
+
+:::
+
+
+:::tab
+
+@tab title1
+
+text1
+
+@tab title2
+
+text2
+
+@tab title3
+
+text3
+
+:::
+
+`,
 }
