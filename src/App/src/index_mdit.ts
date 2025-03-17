@@ -332,5 +332,76 @@ export default function ab_mdit(md: MarkdownIt, options?: Partial<Options>): voi
 
   md.use(abSelector_squareInline)
   md.use(abSelector_container)
+  md.use(selector_mdit_container)
   md.use(abRender_fence)
+}
+
+
+
+
+function selector_mdit_container(md: MarkdownIt, options?: Partial<Options>): void {
+  md.block.ruler.before('fence', 'AnyBlockMditContainer', (
+    state, startLine, endLine, silent
+  ): boolean => {
+    // 获取当前行的内容
+    const start = state.bMarks[startLine] + state.tShift[startLine];
+    const max = state.eMarks[startLine];
+    const marker = state.src.slice(start, max).trim();
+
+    // 检查是否为指定块的开始标记
+    if (!marker.startsWith(`:::col`)) return false;
+
+    // 提取header内容
+    const header = marker.slice(3).trim();
+
+    let nextLine = startLine + 1;
+    const content: string[] = [];
+    let nestLevel = 0;
+
+    // 逐行解析内容，直到遇到结束标记
+    while (nextLine < endLine) {
+        const lineStart = state.bMarks[nextLine] + state.tShift[nextLine];
+        const lineEnd = state.eMarks[nextLine];
+        const line = state.src.slice(lineStart, lineEnd);
+        const trimmedLine = line.trim();
+
+        // 检查是否为围栏块标记
+        if (trimmedLine.startsWith(':::')) {
+            if (trimmedLine === ':::') {
+                // 结束标记
+                if (nestLevel === 0) {
+                    break;
+                } else {
+                    // 嵌套块的结束
+                    nestLevel--;
+                    content.push(line);
+                }
+            } else {
+                // 开始标记
+                nestLevel++;
+                content.push(line);
+            }
+        } else {
+            // 收集内容
+            content.push(line);
+        }
+        nextLine++;
+    }
+
+    // 如果是验证模式，直接返回true
+    if (silent) return true;
+
+    // 更新解析器状态，移动到下一个待处理行
+    state.line = nextLine + 1;
+
+    const token = state.push('anyBlock', 'code', 0) // 直接使用anyBlock作为token的type，避免了重写fence类的渲染规则，不再需要info字段
+    token.content = content.join('\n') // TODO 应改为原文本整体
+    token.meta = {
+      ab_header: `mditCol|${header}`,
+      ab_content: content.join('\n'),
+    } // 改用meta字段来存储ab块的头部信息和内容，markup字段被废弃
+    token.map = [startLine, nextLine]
+    token.nesting = 0;
+    return true;
+  });
 }
