@@ -416,6 +416,6 @@ export default function ab_mdit(md: MarkdownIt, options?: Partial<Options>): voi
   })
 
   md.use(abSelector_squareInline)
-  md.use(abSelector_container_app) // [env] app版本
+  md.use(abSelector_container_vuepress) // [env] vuepress版本
   md.use(abRender_fence)
 }

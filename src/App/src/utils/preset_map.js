@@ -294,7 +294,43 @@ this is ~~a~~ **MarkDown** *test*
 |---|---|---|
 | 1 | 2 |^|
 `,
+//
 'mdit (markdown-it-container形式的语法块)': `\
+## 八种选择器
+
+我把 markdown 中 “选择一段范围” 的方式分为8种，其中 AnyBlock 支持七种选择器。
+
+这些选择器各有优缺点
+
+详见: 
+
+- en: [Selector](https://lincdocs.github.io/AnyBlock/docs/en/03.%20Selector.html)
+- zh: [选择器](https://lincdocs.github.io/AnyBlock/docs/zh/03.%20%E9%80%89%E6%8B%A9%E5%99%A8.html)
+
+这里介绍传统的代码块选择器、以及 markdown-it-container 选择器
+
+## 代码块选择器
+
+\`\`\`anyblock
+[蓝字]
+
+It is blue color text
+\`\`\`
+
+\`\`\`anyblock
+[table]
+
+- It is a **multicross table**
+  - fork1
+  - fokr2
+\`\`\`
+
+## markdown-it-container
+
+注意：
+
+- 该选择器在 vuepress 中由 markdown-it-container 以及基于该插件的其他插件提供功能。
+- 仅在 obsidian、该App在线版本中，才由 anyblock 插件提供功能
 
 :::col|width(25,50,25)
 
