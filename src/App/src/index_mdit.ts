@@ -44,7 +44,7 @@
 import MarkdownIt from "markdown-it"
 
 // 2. markdown-it-container
-import MarkdownItConstructor from "markdown-it-container"; // 应该可以删除这行，新实现的abSelector_container不再依赖该插件
+import MarkdownItConstructor from "markdown-it-container";
 
 // 3. markdown-it-anyblock 插件
 // import { ABConvertManager } from "./index"
@@ -60,9 +60,9 @@ import "../../ABConverter/converter/abc_dir_tree"
 import "../../ABConverter/converter/abc_deco"
 import "../../ABConverter/converter/abc_ex"
 import "../../ABConverter/converter/abc_mdit_container"
-// import "../../ABConverter/converter/abc_plantuml" // 可选建议：
-// import "../../ABConverter/converter/abc_mermaid"  // 可选建议：7.1MB
-// import "../../ABConverter/converter/abc_markmap"  // 可选建议：1.3MB
+import "../../ABConverter/converter/abc_plantuml" // 可选建议：
+import "../../ABConverter/converter/abc_mermaid"  // 可选建议：7.1MB
+import "../../ABConverter/converter/abc_markmap"  // 可选建议：1.3MB
 
 interface Options {
   multiline: boolean;
@@ -113,17 +113,15 @@ function abSelector_squareInline(md: MarkdownIt, options?: Partial<Options>): vo
       state.line = ab_startLine
       return false
     }
-
+    const ab_header: string = text          // ab块 - 头部 (包含)
     const ab_endLine: number = state.line   // ab块 - 结束行 (不包含)
 
     // (3) 插入ab块token
-    const token = state.push('anyBlock', 'code', 0) // 直接使用anyBlock作为token的type，避免了重写fence类的渲染规则，不再需要info字段
-    token.content = `${text}${ab_content}`
-    token.meta = {
-      ab_header: text.match(/\[(.*)\]/)?.[1],
-      ab_content: ab_content,
-    } // 改用meta字段来存储ab块的头部信息和内容，markup字段被废弃
+    let token = state.push('fence', 'code', 0)
+    token.info = "AnyBlock"
+    token.content = `${ab_header}${ab_content}`
     token.map = [ab_startLine, ab_endLine]
+    token.markup = '~~~';
     token.nesting = 0;
     return true
 
@@ -190,7 +188,7 @@ function abSelector_squareInline(md: MarkdownIt, options?: Partial<Options>): vo
         if (reg.test(text)) {
           ab_content += "\n" + text
           state.line += 1
-          return findAbEnd()
+          ab_content += "\n" + text; state.line += 1; return findAbEnd()
         }
       } else if (ab_blockType == "heading") { // TODO 这里需要跳过标题内的代码块 (python代码块的 `#` 会误截断)
         // heading和mdit类型 需要跳过代码块内的结束标志
@@ -229,84 +227,28 @@ function abSelector_squareInline(md: MarkdownIt, options?: Partial<Options>): vo
 /**
  * 选择 anyBlock 块 - :::规则
  * 
- * @detail 
- * 该函数负责识别和处理Markdown中的:::容器语法，ABConvert支持的container容器都能被支持
- * 例如 :::col、:::tab
- * 
- * 工作流程：
- * 1. 识别以:::开头的行
- * 2. 收集容器内的所有内容，直到遇到对应的结束标记:::
- * 3. 支持嵌套容器的处理
- * 4. 创建anyBlock类型的token，并设置相关元数据
- * 
- * @param md MarkdownIt实例
- * @param options 可选配置参数
+ * @detail 选择 `:::anyBlock` 包裹的片段
  */
 function abSelector_container(md: MarkdownIt, options?: Partial<Options>): void {
-  md.block.ruler.before('fence', 'AnyBlockMditContainer', (
-    state, startLine, endLine, silent
-  ): boolean => {
-    // 获取当前行的内容
-    const start = state.bMarks[startLine] + state.tShift[startLine];
-    const max = state.eMarks[startLine];
-    const marker = state.src.slice(start, max).trim();
+  md.use(MarkdownItConstructor, 'AnyBlockContainer', {
 
-    // 检查是否为指定块的开始标记
-    if (!(/^:::(.+)$/.test(marker))) return false;
-
-    // 提取header内容
-    const header = marker.slice(3).trim();
-
-    let nextLine = startLine + 1;
-    const content: string[] = [];
-    let nestLevel = 0;
-
-    // 逐行解析内容，直到遇到结束标记
-    while (nextLine < endLine) {
-        const lineStart = state.bMarks[nextLine] + state.tShift[nextLine];
-        const lineEnd = state.eMarks[nextLine];
-        const line = state.src.slice(lineStart, lineEnd);
-        const trimmedLine = line.trim();
-
-        // 检查是否为围栏块标记
-        if (trimmedLine.startsWith(':::')) {
-            if (trimmedLine === ':::') {
-                // 结束标记
-                if (nestLevel === 0) {
-                    break;
-                } else {
-                    // 嵌套块的结束
-                    nestLevel--;
-                    content.push(line);
-                }
-            } else {
-                // 开始标记
-                nestLevel++;
-                content.push(line);
-            }
-        } else {
-            // 收集内容
-            content.push(line);
-        }
-        nextLine++;
+    validate: function(params) {
+      return params.trim().match(/^anyBlock(.*)$/);
+    },
+  
+    render: function (tokens, idx) {
+      // 通过 tokens[idx].info.trim() 取出 'click me' 字符串
+      var m = tokens[idx].info.trim().match(/^anyBlock(.*)$/);
+  
+      // 开始标签的 nesting 为 1，结束标签的 nesting 为 -1
+      if (tokens[idx].nesting === 1) {
+        // 开始标签
+        return '<details class="any-block-debug"><summary>' + md.utils.escapeHtml(m[1]).trimStart() + '</summary>\n';
+      } else {
+        // 结束标签
+        return '</details>\n';
+      }
     }
-
-    // 如果是验证模式，直接返回true
-    if (silent) return true;
-
-    // 更新解析器状态，移动到下一个待处理行
-    state.line = nextLine + 1;
-
-    const token = state.push('anyBlock', 'code', 0) // 直接使用anyBlock作为token的type，避免了重写fence类的渲染规则，不再需要info字段
-    token.content = content.join('\n') // TODO 应改为原文本整体
-    token.meta = {
-      ab_header: `${header}`, 
-      ab_content: content.join('\n'),
-      selectorName: "mdit", // 通过meta字段来传递selectorName参数，告知转换器正在处理mdit格式的ab块
-    } // 改用meta字段来存储ab块的头部信息和内容，markup字段被废弃
-    token.map = [startLine, nextLine]
-    token.nesting = 0;
-    return true;
   });
 }
 
@@ -318,13 +260,20 @@ function abRender_fence(md: MarkdownIt, options?: Partial<Options>): void {
     return self.renderToken(tokens, idx, options);
   };
 
-  md.renderer.rules.anyBlock = (tokens, idx, options, env, self) => {
+  md.renderer.rules.fence = (tokens, idx, options, env, self) => {
     // 查看是否匹配
-    const token = tokens[idx]
-    const ab_header: string|undefined = token.meta?.ab_header
-    const ab_content: string = token.meta?.ab_content.trimStart() // TODO 这里去除了空行以外的前面空格，是否存在问题
+    let token = tokens[idx]
+    let lines = token.content.split('\n')
+    if (token.info.toLowerCase() != "anyblock") { return oldFence(tokens, idx, options, env, self) }
 
-    if (typeof ab_header === 'undefined' || ab_header.trim() == "") { return oldFence(tokens, idx, options, env, self) }// TODO 头部没有匹配的处理器时，渲染原始内容
+    // 抽离指令头和内容
+    let ab_header: string|undefined = lines.shift()
+    if (typeof ab_header === 'undefined') { return oldFence(tokens, idx, options, env, self) }
+    const match = ab_header.match(/\[(.*)\]/)
+    if (!match || match?.length < 1) { return oldFence(tokens, idx, options, env, self) }
+    ab_header = match[1]
+    let ab_content: string = lines.join('\n')
+    ab_content = ab_content.trimStart() // TODO 这里去除了空行以外的前面空格，是否存在问题
 
     // anyBlock专属渲染 - 测试
     //let rawCode = oldFence(tokens, idx, options, env, self);
@@ -332,10 +281,10 @@ function abRender_fence(md: MarkdownIt, options?: Partial<Options>): void {
     //`<!--afterbegin-->${rawCode}<!--beforeend--></div><!--afterend-->`
 
     // anyBlock专属渲染
-    const el: HTMLDivElement = document.createElement("div"); el.classList.add("ab-note", "drop-shadow");
+    let el: HTMLDivElement = document.createElement("div"); el.classList.add("ab-note", "drop-shadow");
         // 临时el，未appendClild到dom中，脱离作用域会自动销毁
         // 用临时el是因为 mdit render 是 md_str 转 html_str 的，而Ob和原插件那边是使用HTML类的，要兼容
-    ABConvertManager.autoABConvert(el, ab_header, ab_content, token.meta?.selectorName||"") // 通过meta字段来传递selectorName参数，告知转换器正在处理mdit格式的ab块
+    ABConvertManager.autoABConvert(el, ab_header, ab_content)
     
     // anyBlock特殊情况 - 需要再渲染 (ob不需要，主要是vuepress有些插件可以复用一下，并且处理mdit无客户端环境可能存在的问题)
     if (el.classList.contains("ab-raw")) {
@@ -390,4 +339,3 @@ export default function ab_mdit(md: MarkdownIt, options?: Partial<Options>): voi
   md.use(abSelector_container)
   md.use(abRender_fence)
 }
-
