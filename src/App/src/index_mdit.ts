@@ -11,8 +11,8 @@
  *       安装 + import MarkdownItConstructor from "markdown-it-container";
  * - 3. JsDom。这个是解决平台兼容问题
  *       跨平台兼容依赖问题：
- *       - 在Obsidian环境，能够使用document
- *       - 在vuepress和mdit环境，他是使用纯文本来解析渲染md而非面向对象，也不依赖document。
+ *       - 在Obsidian/App-mdit环境，都是在客户端渲染的，能够使用document
+ *       - 但在vuepress-mdit环境，他是在服务端渲染的，并且使用纯文本来解析渲染md而非使用document和Node等，不依赖document。
  *         所以为了兼顾这个，需要额外安装Node.js中能使用的[jsdom](https://github.com/jsdom/jsdom)
  *         JSDOM是一个模拟浏览器环境的库，主要用于服务器端渲染。
  *   
@@ -84,14 +84,14 @@ function abSelector_squareInline(md: MarkdownIt, options?: Partial<Options>): vo
   md.block.ruler.before('paragraph', 'AnyBlockParagraph', function (state,startLine,endLine) {
     
     // (1) 匹配ab块头部
-    let text: string
+    let ab_header: string                   // ab块 - 头部 (包含)
     {
       state.line = startLine
       const pos = state.bMarks[state.line]  // 这行字符的初始位置
       const max = state.eMarks[state.line]  // 这行字符的结束位置
-      text = state.src.substring(pos, max)  // 这一行的内容
+      ab_header = state.src.substring(pos, max)  // 这一行的内容
       // 若不匹配则退出
-      const match = text.match(ABReg.reg_header)
+      const match = ab_header.match(ABReg.reg_header)
       if (!match || !match.length) return false
     }
 
@@ -104,7 +104,7 @@ function abSelector_squareInline(md: MarkdownIt, options?: Partial<Options>): vo
 
     let ab_blockType: string = ""           // ab块 - 块类型
     let codeBlockFlag: string = ""          // ab块 - 跳过代码块，对应标志
-    let reg;
+    let reg: RegExp;
     let heading_number: number = 0;
     let code_str: string;
     findAbEnd()
@@ -113,7 +113,6 @@ function abSelector_squareInline(md: MarkdownIt, options?: Partial<Options>): vo
       state.line = ab_startLine
       return false
     }
-    const ab_header: string = text          // ab块 - 头部 (包含)
     const ab_endLine: number = state.line   // ab块 - 结束行 (不包含)
 
     // (3) 插入ab块token
@@ -179,15 +178,11 @@ function abSelector_squareInline(md: MarkdownIt, options?: Partial<Options>): vo
         } else {
           return
         }
-        ab_content += "\n" + text
-        state.line += 1
-        return findAbEnd()
+        ab_content += "\n" + text; state.line += 1; return findAbEnd()
       }
       // 3.2. 已经有匹配规则的按匹配规则的来
       if (ab_blockType == "list" || ab_blockType == "quote" || ab_blockType == "table") {
         if (reg.test(text)) {
-          ab_content += "\n" + text
-          state.line += 1
           ab_content += "\n" + text; state.line += 1; return findAbEnd()
         }
       } else if (ab_blockType == "heading") { // TODO 这里需要跳过标题内的代码块 (python代码块的 `#` 会误截断)
@@ -207,9 +202,7 @@ function abSelector_squareInline(md: MarkdownIt, options?: Partial<Options>): vo
           const match = text.match(reg)
           if (match && match[3] && (match[3].length-1) < heading_number) return
         }
-        ab_content += "\n" + text
-        state.line += 1
-        return findAbEnd()
+        ab_content += "\n" + text; state.line += 1; return findAbEnd()
       } else if (ab_blockType == "code") {
         if (reg.test(text)) {
           const match = text.match(reg)
@@ -281,7 +274,7 @@ function abRender_fence(md: MarkdownIt, options?: Partial<Options>): void {
     //`<!--afterbegin-->${rawCode}<!--beforeend--></div><!--afterend-->`
 
     // anyBlock专属渲染
-    let el: HTMLDivElement = document.createElement("div"); el.classList.add("ab-note", "drop-shadow");
+    const el: HTMLDivElement = document.createElement("div"); el.classList.add("ab-note", "drop-shadow");
         // 临时el，未appendClild到dom中，脱离作用域会自动销毁
         // 用临时el是因为 mdit render 是 md_str 转 html_str 的，而Ob和原插件那边是使用HTML类的，要兼容
     ABConvertManager.autoABConvert(el, ab_header, ab_content)
