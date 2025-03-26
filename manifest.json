@@ -7,6 +7,9 @@
 	"author": "LincZero",
 	"authorUrl": "https://github.com/LincZero",
 	"repo": "https://github.com/LincZero/obsidian-any-block",
-	"fundingUrl": "https://github.com/LincZero#thank-you-very-much-for-your-support",
+	"fundingUrl": {
+		"Support Page": "https://github.com/LincZero#thank-you-very-much-for-your-support",
+		"中国大陆备用链接": "https://linczero-github-io.pages.dev/MdNote_Other/LincZero/"
+	},
 	"isDesktopOnly": false
 }
