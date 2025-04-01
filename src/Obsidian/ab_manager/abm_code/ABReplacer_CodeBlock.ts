@@ -3,7 +3,7 @@ import{
   MarkdownRenderChild,
   MarkdownRenderer,
 } from "obsidian";
-import { ABConvertManager } from "src/ABConverter";
+import { ABConvertManager } from "src/ABConverter/ABConvertManager";
 import { abConvertEvent } from "src/ABConverter/ABConvertEvent";
 import { ABCSetting, ABReg } from "src/ABConverter/ABReg";
 import { ABReplacer_Widget } from "../abm_cm/ABReplacer_Widget";
