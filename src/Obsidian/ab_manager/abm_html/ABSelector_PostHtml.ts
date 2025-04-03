@@ -79,7 +79,7 @@ export class ABSelector_PostHtml{
         // 而这里的mdSrc对应的是对应内容的那个文件名，如果用叶子节点方式，可能产生不一致的 !!! 这里推荐只使用ctx方式 !!!
 
         // 判断是否悬浮窗口。悬浮窗口禁用强制渲染
-        const view: View|null = app.workspace.getActiveViewOfType(MarkdownView); // 未聚焦(active)会返回null，非聚焦于md区返回null (也包括canvas)
+        const view: View|null = app.workspace.getActiveViewOfType(MarkdownView); // 未聚焦(active)会返回null，非聚焦于md区返回null (也包括canvas、excalidraw)
         // 判断方式一：内容与窗口的文件名是否一致 (切换页面时 (aIncludeB -> b)，有可能检测有问题，要用另一判断方式)
         // @ts-ignore 类型“View”上不存在属性“file”
         const path = view?.file.path
@@ -93,7 +93,7 @@ export class ABSelector_PostHtml{
         }
         // 判断方式二：是否是实时模式下显示阅读模式内容
         const el = view?.containerEl // .workspace-leaf-content
-        if (!el || el.getAttribute('data-mode') != 'preview') { // 非md的preview，(不包含canvas、source)。canvas的el为空，也许是因为 `getActiveViewOfType(MarkdownView)` 的原因
+        if (!el || el.getAttribute('data-mode') != 'preview' || el.getAttribute('data-type') != 'excalidraw') { // 非md的preview，(不包含source、canvas、excalidraw)。canvas的el为空，也许是因为 `getActiveViewOfType(MarkdownView)` 的原因
           if (this.settings.is_debug) console.log(` !! Cache check: [${path}] use ![[${ctx.sourcePath}]] in source Mode`)
           cache_item = { // 注意，极难检测是否 `[[#]]`，不存cache_map，也不触发强制刷新
             name: ctx.sourcePath,
