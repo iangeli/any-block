@@ -52,7 +52,7 @@ jobs:                         # 工作流
       run: |                  # [!code] min
         npm run ob:build-min
         mv dist-min/main.js main.js
-        mv dist-main/manifest.json manifest.json
+        mv dist-min/manifest.json manifest.json
     - name: upload build artifact
       if: always()
       uses: actions/upload-artifact@v4
