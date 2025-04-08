@@ -64,11 +64,17 @@ const abc_list2mindmap = ABConvert.factory({
 const abc_list2mermaid = ABConvert.factory({
   id: "list2mermaid",
   name: "列表转mermaid流程图",
+  match: /^list2mermaid(\((.*)\))?$/,
   process_param: ABConvert_IOEnum.text,
   process_return: ABConvert_IOEnum.el,
   process: (el, header, content: string): HTMLElement=>{
+    let matchs = header.match(/^list2mermaid(\((.*)\))?$/)
+    if (!matchs) { console.error('no match', matchs); return el }
+    let mermaid_head = "graph LR"
+    if (matchs[2]) mermaid_head = matchs[2]
+
     const list_itemInfo = ListProcess.list2data(content)
-    const mermaidText = "graph LR\n" + data2mermaidText(list_itemInfo)
+    const mermaidText = mermaid_head + '\n' + data2mermaidText(list_itemInfo)
     render_mermaidText(mermaidText, el)
     return el
   }
@@ -77,12 +83,18 @@ const abc_list2mermaid = ABConvert.factory({
 const abc_list2mermaidText = ABConvert.factory({
   id: "list2mermaidText",
   name: "列表转mermaid文本",
+  match: /^list2mermaidText(\((.*)\))?$/,
   detail: "列表转mermaid文本",
   process_param: ABConvert_IOEnum.text,
   process_return: ABConvert_IOEnum.text,
   process: (el, header, content: string): string=>{
+    let matchs = header.match(/^list2mermaidText(\((.*)\))?$/)
+    if (!matchs) { console.error('no match', matchs); return 'error, no match' }
+    let mermaid_head = "graph LR"
+    if (matchs[2]) mermaid_head = matchs[2]
+
     const list_itemInfo = ListProcess.list2data(content)
-    const mermaidText = "graph LR\n" + data2mermaidText(list_itemInfo)
+    const mermaidText = mermaid_head + '\n' + data2mermaidText(list_itemInfo)
     return mermaidText
   }
 })
@@ -90,12 +102,18 @@ const abc_list2mermaidText = ABConvert.factory({
 const abc_list2mehrmaid = ABConvert.factory({
   id: "list2mehrmaidText",
   name: "列表转mehrmaid文本",
+  match: /^list2mehrmaidText(\((.*)\))?$/,
   detail: "需要配合mehrmaid插件和code(mehrmaid)使用，或使用别名简化",
   process_param: ABConvert_IOEnum.text,
   process_return: ABConvert_IOEnum.text,
   process: (el, header, content: string): string=>{
+    let matchs = header.match(/^list2mehrmaidText(\((.*)\))?$/)
+    if (!matchs) { console.error('no match', matchs); return 'error, no match' }
+    let mermaid_head = "flowchart LR"
+    if (matchs[2]) mermaid_head = matchs[2]
+
     const list_itemInfo = ListProcess.list2data(content)
-    const mermaidText = "flowchart LR\n" + data2mehrmaidText(list_itemInfo)
+    const mermaidText = mermaid_head + '\n' + data2mehrmaidText(list_itemInfo)
     return mermaidText
   }
 })
@@ -109,9 +127,9 @@ const abc_mermaid = ABConvert.factory({
   process_param: ABConvert_IOEnum.text,
   process_return: ABConvert_IOEnum.el,
   process: async (el, header, content: string): Promise<HTMLElement>=>{
-    let matchs = content.match(/^mermaid(\((.*)\))?$/)
+    let matchs = header.match(/^mermaid(\((.*)\))?$/)
     if (!matchs) return el
-    if (matchs[1]) content = matchs[2]+"\n"+content
+    if (matchs[2]) content = matchs[2] + '\n' + content
     const el2 = render_mermaidText(content, el)
     return el2
   }
