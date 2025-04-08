@@ -16,4 +16,5 @@ export {} from "./converter/abc_ex"
 export {} from "./converter/abc_mdit_container"
 // export {} from "./converter/abc_plantuml" // [!code] min 可选建议：156.3KB。由于在线渲染，相对下面两个没那么高
 // export {} from "./converter/abc_mermaid"  // [!code] min 可选建议：7.1MB
+export {} from "./converter/abc_mermaid.min"
 // export {} from "./converter/abc_markmap"  // [!code] min 可选建议：1.3MB
