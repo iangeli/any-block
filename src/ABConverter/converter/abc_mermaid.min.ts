@@ -11,7 +11,7 @@ import {ABConvertManager} from "../ABConvertManager"
 import {ListProcess, type List_ListItem} from "./abc_list"
 import {ABReg} from "../ABReg"
 
-// 二选一。这里是obsidian版本。mdit环境直接注释掉这部分
+// 二选一。这里是obsidian版本。mdit/min环境直接注释掉这部分
 // 依赖和主题明暗检测也是ob才需要的
 // mermaid相关 - 要在这里自己渲才需要
 // import mermaid from "mermaid"
@@ -67,8 +67,23 @@ const abc_list2mermaid = ABConvert.factory({
   process_param: ABConvert_IOEnum.text,
   process_return: ABConvert_IOEnum.el,
   process: (el, header, content: string): HTMLElement=>{
-    list2mermaid(content, el)
+    const list_itemInfo = ListProcess.list2data(content)
+    const mermaidText = "graph LR\n" + data2mermaidText(list_itemInfo)
+    render_mermaidText(mermaidText, el)
     return el
+  }
+})
+
+const abc_list2mermaidText = ABConvert.factory({
+  id: "list2mermaidText",
+  name: "列表转mermaid文本",
+  detail: "列表转mermaid文本",
+  process_param: ABConvert_IOEnum.text,
+  process_return: ABConvert_IOEnum.text,
+  process: (el, header, content: string): string=>{
+    const list_itemInfo = ListProcess.list2data(content)
+    const mermaidText = "graph LR\n" + data2mermaidText(list_itemInfo)
+    return mermaidText
   }
 })
 
@@ -79,12 +94,14 @@ const abc_list2mehrmaid = ABConvert.factory({
   process_param: ABConvert_IOEnum.text,
   process_return: ABConvert_IOEnum.text,
   process: (el, header, content: string): string=>{
-    return list2mehrmaid(content, el)
+    const list_itemInfo = ListProcess.list2data(content)
+    const mermaidText = "flowchart LR\n" + data2mehrmaidText(list_itemInfo)
+    return mermaidText
   }
 })
 
 const abc_mermaid = ABConvert.factory({
-  id: "mermaid",
+  id: "mermaid-with",
   name: "新mermaid",
   match: /^mermaid(\((.*)\))?$/,
   default: "mermaid(graph TB)",
@@ -102,30 +119,18 @@ const abc_mermaid = ABConvert.factory({
 
 // ----------- list and mermaid ------------
 
-/** 列表转mermaid流程图 */
-function list2mermaid(text: string, div: HTMLDivElement) {
-  let list_itemInfo = ListProcess.list2data(text)
-  let mermaidText = data2mermaidText(list_itemInfo)
-  return render_mermaidText(mermaidText, div)
-}
-
-/** 列表转mehrmaid流程图 */
-function list2mehrmaid(text: string, div: HTMLDivElement) {
-  let list_itemInfo = ListProcess.list2data(text)
-  let mermaidText = data2mehrmaidText(list_itemInfo)
-  return mermaidText
-}
-
 /** 列表数据转mermaid流程图
  * ~~@bug 旧版bug（未内置mermaid）会闪一下~~ 
  * 然后注意一下mermaid的(项)不能有空格，或非法字符。空格我处理掉了，字符我先不管。算了，还是不处理空格吧
+ * 
+ * 注意：此处不添加mermaid头，要自己加
  */
 function data2mermaidText(
   list_itemInfo: List_ListItem
 ){
   const html_mode = false    // @todo 暂时没有设置来切换这个开关
 
-  let list_line_content:string[] = ["graph LR"]
+  let list_line_content:string[] = []
   // let list_line_content:string[] = html_mode?['<pre class="mermaid">', "graph LR"]:["```mermaid", "graph LR"]
   let prev_line_content = ""
   let prev_level = 999
@@ -170,7 +175,7 @@ function data2mehrmaidText(
 
   const html_mode = false    // @todo 暂时没有设置来切换这个开关
 
-  let list_line_content:string[] = ["flowchart LR"]
+  let list_line_content:string[] = []
   // let list_line_content:string[] = html_mode?['<pre class="mermaid">', "graph LR"]:["```mermaid", "graph LR"]
   let prev_line_content = ""
   let prev_level = 999

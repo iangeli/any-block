@@ -142,8 +142,8 @@ const abc_X = ABConvert.factory({
 const abc_slice = ABConvert.factory({
   id: "slice",
   name: "切片",
-  match: /^slice\((\s*\d+\s*?)(,\s*-?\d+\s*)?\)$/,
-  detail: "和js的slice方法是一样的",
+  match: /^slice\((\s*\d+\s*)(,\s*-?\d+\s*)?\)$/,
+  detail: "和js的slice方法是一样的。例如 `[slice(1, -1)]`",
   process_param: ABConvert_IOEnum.text,
   process_return: ABConvert_IOEnum.text,
   process: (el, header, content: string): string=>{
@@ -152,15 +152,13 @@ const abc_slice = ABConvert.factory({
     if (!list_match) return content
     const arg1 = Number(list_match[1].trim())
     if (isNaN(arg1)) return content
+    // 单参数
+    if (!list_match[2]) return content.split("\n").slice(arg1).join("\n")
     const arg2 = Number(list_match[2].replace(",","").trim())
     // 单参数
-    if (isNaN(arg2)) {
-      return content.split("\n").slice(arg1).join("\n")
-    }
+    if (isNaN(arg2)) return content.split("\n").slice(arg1).join("\n")
     // 双参数
-    else {
-      return content.split("\n").slice(arg1, arg2).join("\n")
-    }
+    else return content.split("\n").slice(arg1, arg2).join("\n")
   }
 })
 
