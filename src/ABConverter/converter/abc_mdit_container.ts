@@ -67,7 +67,7 @@ const abc_mditDemo = ABConvert.factory({
 
 const abc_mditABDemo = ABConvert.factory({
   id: "mditABDemo",
-  name: "AnyBlock转用展示对比",
+  name: "AnyBlock专用展示对比",
   process_param: ABConvert_IOEnum.text,
   process_return: ABConvert_IOEnum.el,
   process: (el, header, content: string): HTMLElement=>{
