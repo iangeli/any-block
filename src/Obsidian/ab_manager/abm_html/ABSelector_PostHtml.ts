@@ -93,8 +93,11 @@ export class ABSelector_PostHtml{
         }
         // 判断方式二：是否是实时模式下显示阅读模式内容
         const el = view?.containerEl // .workspace-leaf-content
-        if (!el || el.getAttribute('data-mode') != 'preview' || el.getAttribute('data-type') != 'excalidraw') { // 非md的preview，(不包含source、canvas、excalidraw)。canvas的el为空，也许是因为 `getActiveViewOfType(MarkdownView)` 的原因
-          if (this.settings.is_debug) console.log(` !! Cache check: [${path}] use ![[${ctx.sourcePath}]] in source Mode`)
+        // - el 为空时，不强制刷新。可能是其他面板或者是 canvas (`getActiveViewOfType(MarkdownView)` 获取到的canvas等页面为空)
+        // - data-mode 为 source 等时，不强制刷新。仅为 preview 时强制刷新
+        // - data-type 为 excalidraw 等时，不强制刷新。仅为 markdown 时强制刷新
+        if (!el || el.getAttribute('data-mode') != 'preview' || el.getAttribute('data-type') != 'markdown') {
+          if (this.settings.is_debug) console.log(` !! Cache check: [${path}] use ![[${ctx.sourcePath}]] in source Mode`, el)
           cache_item = { // 注意，极难检测是否 `[[#]]`，不存cache_map，也不触发强制刷新
             name: ctx.sourcePath,
             content: mdSrc.content_all
