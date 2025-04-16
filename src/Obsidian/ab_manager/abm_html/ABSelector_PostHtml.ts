@@ -97,8 +97,8 @@ export class ABSelector_PostHtml{
         // - data-mode 为 source 等时，不强制刷新。仅为 preview 时强制刷新
         // - data-type 为 excalidraw 等时，不强制刷新。仅为 markdown 时强制刷新
         if (!el || el.getAttribute('data-mode') != 'preview' || el.getAttribute('data-type') != 'markdown') {
-          if (this.settings.is_debug) console.log(` !! Cache check: [${path}] use ![[${ctx.sourcePath}]] in source Mode`, el)
-          cache_item = { // 注意，极难检测是否 `[[#]]`，不存cache_map，也不触发强制刷新
+          if (this.settings.is_debug) console.log(` !! Cache check: [${path}] use ![[${ctx.sourcePath}]] in no readmode`, el)
+          cache_item = { // 注意，极难检测是否 `[[file#title]]`，不存cache_map，也不触发强制刷新
             name: ctx.sourcePath,
             content: mdSrc.content_all
           }

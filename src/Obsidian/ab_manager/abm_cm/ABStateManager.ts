@@ -113,7 +113,7 @@ export class ABStateManager{
      *    （函数末尾再将EditorEffect派发到EditorView中）。
      * 就是说只会在第一次时执行，才会触发
      * 
-     * 后来发现不是第一次也会触发，导致被添加了很多冗余重复的css，所以加了once_flag判定。按理说应该是判断里面有没有某些css会比较稳妥
+     * TODO fix 后来发现不是第一次也会触发，导致被添加了很多冗余重复的css，所以加了once_flag判定。按理说应该是判断里面有没有某些css会比较稳妥
      */
     if (!this.editorState.field(this.decorationField, false)) {
       stateEffects.push(StateEffect.appendConfig.of(
@@ -224,8 +224,6 @@ export class ABStateManager{
    *   - 当切换编辑模式时
    */
   private refreshStrong2(decorationSet:DecorationSet, tr:Transaction, decoration_mode:ConfDecoration, editor_mode:Editor_mode){
-    let is_current_cursor_in = false
-
     // b1. 装饰调整 - 不查了
     if (decoration_mode==ConfDecoration.none) {
       // 大刷新，全文刷新，全清空掉再重新赋予
@@ -236,28 +234,28 @@ export class ABStateManager{
         this.is_prev_cursor_in = true
         this.prev_decoration_mode = decoration_mode
         this.prev_editor_mode = editor_mode
-        return decorationSet
       }
       // 不刷新
-      else {
-        return decorationSet
-      }
+      else {}
+      return decorationSet
     }
 
     // b2. 装饰调整 - 查哪个局部发生了变化，并进行局部刷新
-    //     f1. 全查
-    const list_rangeSpec:MdSelectorRangeSpec[] = autoMdSelector(this.mdText)
-    //     f2. 筛选
-    let list_add_decoration:Range<Decoration>[] = []
+    const list_rangeSpec:MdSelectorRangeSpec[] = autoMdSelector(this.mdText) // 所有ab块区域的范围
+    let list_add_decoration:Range<Decoration>[] = [] // 规则表
+    const cursorSpec = this.getCursorCh() // 当前光标的位置
+    let is_current_cursor_in = false // 当前光标是否在ab块区域内
     for (let rangeSpec of list_rangeSpec){
       let decoration: Decoration
-      // 判断光标位置
-      const cursorSpec = this.getCursorCh()
-      if (cursorSpec.from>=rangeSpec.from_ch && cursorSpec.from<=rangeSpec.to_ch 
-          || cursorSpec.to>=rangeSpec.from_ch && cursorSpec.to<=rangeSpec.to_ch) {
+      // 当前光标位于ab块内
+      if (cursorSpec.from>=rangeSpec.from_ch && cursorSpec.from<=rangeSpec.to_ch
+          || cursorSpec.to>=rangeSpec.from_ch && cursorSpec.to<=rangeSpec.to_ch
+      ) {
+        // console.log('cursorSpec改变且光标在内, 新位置', cursorSpec, '旧位置', rangeSpec, '位置集', list_rangeSpec, '样式集', list_add_decoration.length, list_add_decoration)
         decoration = Decoration.mark({class: "ab-line-yellow"}) // TODO fix bug：当光标在局部频繁移动时或其他情况? 这里会被重复添加很多层带这个class的span嵌套
         is_current_cursor_in = true
       }
+      // 当前光标不一定位于ab块内
       else{
         decoration = Decoration.replace({widget: new ABReplacer_Widget(
           rangeSpec, this.editor

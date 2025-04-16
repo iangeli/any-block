@@ -67,6 +67,7 @@ export class ABDecorationManager{
       }),
       EditorView.baseTheme({
         ".ab-line-yellow": { textDecoration: "solid underline 1px rgba(0, 255, 0, 0.2)" }
+        // ".ab-line-yellow": { borderLeft: "solid 1px rgba(0, 255, 0, 0.4)" } // 这种方式对于 `:::` 是对的，但对其他来说，段落不一定是行开头。可能导致一行有多个左边框
       }),
       EditorView.baseTheme({
         ".ab-line-blue": { textDecoration: "underline 1px blue" }
