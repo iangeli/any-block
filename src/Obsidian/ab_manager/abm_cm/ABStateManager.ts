@@ -58,9 +58,9 @@ export class ABStateManager{
   prev_decoration_mode:ConfDecoration
   prev_editor_mode:Editor_mode
 
-  get cursor(): EditorPosition {return this.editor.getCursor();}
-  get state(): any {return this.view.getState()}
-  get mdText(): string {return this.editor.getValue()}
+  // get cursor(): EditorPosition {return this.editor.getCursor();}
+  // get state(): any {return this.view.getState()}
+  // get mdText(): string {return this.editor.getValue()}
 
   /** --------------------------------- 特殊函数 -------------------------- */
 
@@ -226,6 +226,20 @@ export class ABStateManager{
   }
 
   /**
+   * 获取当前文本
+   * 
+   * @param tr 如果有tr参数，则获取修改后的md文本
+   */
+  private getMdText(tr?: Transaction): string {
+    const mdText = tr?.state?.doc?.toString()
+    if (mdText) {
+      return mdText
+    }
+
+    return this.editor.getValue()
+  }
+
+  /**
    * 装饰调整（删增改），包起来准备防抖 
    * 小刷新：位置映射（每次都会刷新）
    * 大刷新：全部元素删掉再重新创建（避免频繁大刷新）
@@ -259,27 +273,21 @@ export class ABStateManager{
     // #endregion
 
     // #region 查哪个局部发生了变化，并进行局部刷新
-    const list_rangeSpec:MdSelectorRangeSpec[] = autoMdSelector(this.mdText) // 所有ab块区域的范围
+    const list_rangeSpec:MdSelectorRangeSpec[] = autoMdSelector(this.getMdText(tr)) // 所有ab块区域的范围 (TODO @bug 由于this.mdText有延迟，导致选择后的区域集也有延迟)
     let list_add_decoration:Range<Decoration>[] = [] // 规则表
     const cursorSpec = this.getCursorCh(tr) // 当前光标的位置 (光标移动后的位置)
     let is_current_cursor_in = false // 当前光标是否在ab块区域内
     for (let rangeSpec of list_rangeSpec){
       let decoration: Decoration
-      // 当前光标位于ab块内
+      // 当前光标位于该ab区域内，则该ab区域显示为下划线装饰
       if (cursorSpec.from>=rangeSpec.from_ch && cursorSpec.from<=rangeSpec.to_ch
           || cursorSpec.to>=rangeSpec.from_ch && cursorSpec.to<=rangeSpec.to_ch
       ) {
-        // console.log(`光标位置改变且光标在ab位置集内-----`,
-        //   '    新位置', cursorSpec,
-        //   '    位置项', rangeSpec,
-        //   '    位置集', list_rangeSpec,
-        //   '    样式集', list_add_decoration.length, list_add_decoration,
-        //   '    修改内容tr', tr.changes, tr
-        // )
         decoration = Decoration.mark({class: "ab-line-yellow"}) // TODO fix bug：当光标在局部频繁移动时或其他情况? 这里会被重复添加很多层带这个class的span嵌套
         is_current_cursor_in = true
+        break
       }
-      // 当前光标不一定位于ab块内
+      // 当前光标不位于该ab区域内，则该ab区域显示为渲染的ab块
       else{
         decoration = Decoration.replace({widget: new ABReplacer_Widget(
           rangeSpec, this.editor
@@ -287,6 +295,13 @@ export class ABStateManager{
       }
       list_add_decoration.push(decoration.range(rangeSpec.from_ch, rangeSpec.to_ch))
     }
+    // console.log(`光标位置改变-----`,
+    //   '    光标是否在位置集中: ', is_current_cursor_in,
+    //   '    新位置', cursorSpec,
+    //   '    位置集', list_rangeSpec,
+    //   '    样式集', list_add_decoration.length, list_add_decoration,
+    //   '    修改内容tr', tr.changes, tr
+    // )
     // #endregion
     
     // #region 删增改
@@ -344,7 +359,6 @@ export class ABStateManager{
       this.prev_editor_mode = editor_mode
 
       // 装饰调整 - 删
-      /** @bug 这里的mdText是未修改前的mdText。光标的位置倒是修复了延迟慢一拍的问题 */
       decorationSet = decorationSet.update({            // 减少，全部删掉
         filter: (from, to, value)=>{return false}
       })
