@@ -143,7 +143,7 @@ export class ABStateManager{
     provide: f => EditorView.decorations.from(f)
   })
 
-  // private
+  // onUpdate, toUpdateStateField
   private updateStateField (decorationSet:DecorationSet, tr:Transaction){    
     // 如果没有修改就不管了（点击编辑块的按钮除外）
     // if(tr.changes.empty) return decorationSet
@@ -197,8 +197,20 @@ export class ABStateManager{
     } // 点一下编辑器再点其他布局位置，就会发生
   }
 
-  /** 获取光标位于全文第几个字符 */
-  private getCursorCh() {
+  /**
+   * 获取光标位于全文第几个字符
+   * 
+   * @param tr 如果有tr参数，则计算通过修改后光标将会在什么位置
+   */
+  private getCursorCh(tr?: Transaction) {
+    const ranges = tr?.state?.selection?.ranges
+    if (ranges && ranges.length==1) { // 有tr，且单光标
+      return {
+        from: ranges[0].from,
+        to: ranges[0].to
+      }
+    }
+
     let cursor_from_ch = 0
     let cursor_to_ch = 0
     let list_text: string[] = this.editor.getValue().split("\n")
@@ -222,9 +234,14 @@ export class ABStateManager{
    *   - 当鼠标进出范围时
    *   - 当装饰类型改变时
    *   - 当切换编辑模式时
+   * 
+   * @param decorationSet 装饰集
+   * @param tr 此次更新的修改内容
+   * @param decoration_mode 如何装饰 (源md or 下划线 or 渲染成ab块)
+   * @param editor_mode 编辑器模式 (源码/实时/阅读)
    */
   private refreshStrong2(decorationSet:DecorationSet, tr:Transaction, decoration_mode:ConfDecoration, editor_mode:Editor_mode){
-    // b1. 装饰调整 - 不查了
+    // #region 不查了
     if (decoration_mode==ConfDecoration.none) {
       // 大刷新，全文刷新，全清空掉再重新赋予
       if (decoration_mode!=this.prev_decoration_mode){
@@ -239,11 +256,12 @@ export class ABStateManager{
       else {}
       return decorationSet
     }
+    // #endregion
 
-    // b2. 装饰调整 - 查哪个局部发生了变化，并进行局部刷新
+    // #region 查哪个局部发生了变化，并进行局部刷新
     const list_rangeSpec:MdSelectorRangeSpec[] = autoMdSelector(this.mdText) // 所有ab块区域的范围
     let list_add_decoration:Range<Decoration>[] = [] // 规则表
-    const cursorSpec = this.getCursorCh() // 当前光标的位置
+    const cursorSpec = this.getCursorCh(tr) // 当前光标的位置 (光标移动后的位置)
     let is_current_cursor_in = false // 当前光标是否在ab块区域内
     for (let rangeSpec of list_rangeSpec){
       let decoration: Decoration
@@ -251,7 +269,13 @@ export class ABStateManager{
       if (cursorSpec.from>=rangeSpec.from_ch && cursorSpec.from<=rangeSpec.to_ch
           || cursorSpec.to>=rangeSpec.from_ch && cursorSpec.to<=rangeSpec.to_ch
       ) {
-        // console.log('cursorSpec改变且光标在内, 新位置', cursorSpec, '旧位置', rangeSpec, '位置集', list_rangeSpec, '样式集', list_add_decoration.length, list_add_decoration)
+        // console.log(`光标位置改变且光标在ab位置集内-----`,
+        //   '    新位置', cursorSpec,
+        //   '    位置项', rangeSpec,
+        //   '    位置集', list_rangeSpec,
+        //   '    样式集', list_add_decoration.length, list_add_decoration,
+        //   '    修改内容tr', tr.changes, tr
+        // )
         decoration = Decoration.mark({class: "ab-line-yellow"}) // TODO fix bug：当光标在局部频繁移动时或其他情况? 这里会被重复添加很多层带这个class的span嵌套
         is_current_cursor_in = true
       }
@@ -263,8 +287,9 @@ export class ABStateManager{
       }
       list_add_decoration.push(decoration.range(rangeSpec.from_ch, rangeSpec.to_ch))
     }
+    // #endregion
     
-    //     f3. 删增改
+    // #region 删增改
     /*const list_abRangeManager:ABMdSelector[] = get_selectors(this.plugin_this.settings).map(c => {
       return new c(this.mdText, this.plugin_this.settings)
     })
@@ -278,7 +303,7 @@ export class ABStateManager{
       }
     }
     else{                                             // 块装饰
-      const cursorSpec = this.getCursorCh()
+      const cursorSpec = this.getCursorCh(tr)
       for (let abManager of list_abRangeManager){     // 遍历多个范围管理器
         let listRangeSpec: MdSelectorRangeSpec[] = abManager.specKeywords
         for(let rangeSpec of listRangeSpec){          // 遍历每个范围管理器里的多个范围集
@@ -308,6 +333,8 @@ export class ABStateManager{
       ,decoration_mode,this.prev_decoration_mode
       ,editor_mode,this.prev_editor_mode
     )*/
+    // #endregion
+
     if (is_current_cursor_in!=this.is_prev_cursor_in
       ||decoration_mode!=this.prev_decoration_mode
       ||editor_mode!=this.prev_editor_mode
@@ -317,7 +344,7 @@ export class ABStateManager{
       this.prev_editor_mode = editor_mode
 
       // 装饰调整 - 删
-      /** @bug 这里的mdText是未修改前的mdText，光标的位置也是 会延迟一拍 */
+      /** @bug 这里的mdText是未修改前的mdText。光标的位置倒是修复了延迟慢一拍的问题 */
       decorationSet = decorationSet.update({            // 减少，全部删掉
         filter: (from, to, value)=>{return false}
       })
