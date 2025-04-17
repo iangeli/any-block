@@ -12,7 +12,7 @@
  */
 
 import {EditorView, Decoration, type DecorationSet} from "@codemirror/view"
-import {StateField, StateEffect, EditorState, Transaction, Range} from "@codemirror/state"
+import {StateField, StateEffect, EditorState, EditorSelection, Transaction, Range} from "@codemirror/state"
 import  {MarkdownView, type View, type Editor, type EditorPosition} from 'obsidian';
 
 import type AnyBlockPlugin from '../../main'
