@@ -67,23 +67,17 @@ export class ABStateManager{
   constructor(plugin_this: AnyBlockPlugin){
     this.plugin_this=plugin_this
     // 因为打开文档会触发，所以后台打开的文档会return false，聚焦到一个非文件的新标签页也会return false
-    let ret = this.init()
+    let ret = this.constructor_init()
 
     if (this.plugin_this.settings.is_debug) console.log(">>> ABStateManager, initialFileName:", this.initialFileName, "initRet:", ret)
 
     if (ret) this.setStateEffects()
 
-    // ---------------------------- 后处理钩子 (在页面加载后被触发) ----------------------------
-
-    abConvertEvent(document)
-  }
-
-  destructor() {
-    if (this.plugin_this.settings.is_debug) console.log("<<< ABStateManager, initialFileName:", this.initialFileName)
+    abConvertEvent(document) // 后处理钩子 (在页面加载后被触发)
   }
 
   // 设置常用变量
-  private init() {
+  private constructor_init() {
     const view: View|null = this.plugin_this.app.workspace.getActiveViewOfType(MarkdownView); // 未聚焦(active)会返回null
     if (!view) return false
     this.view = view
@@ -101,7 +95,11 @@ export class ABStateManager{
     return true
   }
 
-  /** --------------------------------- 其他函数 -------------------------- */
+  destructor() {
+    if (this.plugin_this.settings.is_debug) console.log("<<< ABStateManager, initialFileName:", this.initialFileName)
+  }
+
+  /** --------------------------------- CM 函数 -------------------------- */
 
   // 设置初始状态字段并派发
   private setStateEffects() {
@@ -138,13 +136,15 @@ export class ABStateManager{
     // create好像不用管，update无论如何都能触发的
     // 函数的根本作用，是为了修改decorationSet的范围，间接修改StateField的管理范围
     update: (decorationSet, tr)=>{
-      return this.updateStateField(decorationSet, tr)
+      return this.onUpdate(decorationSet, tr)
     },
     provide: f => EditorView.decorations.from(f)
   })
 
-  // onUpdate, toUpdateStateField
-  private updateStateField (decorationSet:DecorationSet, tr:Transaction){    
+  /** --------------------------------- on更新事件 ------------------------- */
+
+  // on update, to updateStateField
+  private onUpdate (decorationSet:DecorationSet, tr:Transaction){    
     // 如果没有修改就不管了（点击编辑块的按钮除外）
     // if(tr.changes.empty) return decorationSet
 
@@ -162,11 +162,111 @@ export class ABStateManager{
     }
 
     // 2. 解析、并装饰调整匹配项（删增改），包起来准备防抖（未防抖）
-    // let refreshStrong = this.refreshStrong2.bind(this)
-    return this.refreshStrong2(decorationSet, tr, decoration_mode, editor_mode)
+    // let refreshStrong = this.onUpdate_refresh.bind(this)
+    return this.onUpdate_refresh(decorationSet, tr, decoration_mode, editor_mode)
   }
 
-  /// 获取编辑器模式
+  /**
+   * 装饰调整（删增改），包起来准备防抖 
+   * 小刷新：位置映射（每次都会刷新）
+   * 大刷新：全部元素删掉再重新创建（避免频繁大刷新）
+   * _
+   * 大刷新的条件：
+   *   - 当鼠标进出范围时
+   *   - 当装饰类型改变时
+   *   - 当切换编辑模式时
+   * 
+   * @param decorationSet 装饰集
+   * @param tr 此次更新的修改内容
+   * @param decoration_mode 如何装饰 (源md or 下划线 or 渲染成ab块)
+   * @param editor_mode 编辑器模式 (源码/实时/阅读)
+   */
+  private onUpdate_refresh(decorationSet:DecorationSet, tr:Transaction, decoration_mode:ConfDecoration, editor_mode:Editor_mode){
+    // #region 不查了
+    if (decoration_mode==ConfDecoration.none) {
+      // 大刷新，全文刷新，全清空掉再重新赋予
+      if (decoration_mode!=this.prev_decoration_mode){
+        decorationSet = decorationSet.update({
+          filter: (from, to, value)=>{return false}
+        })
+        this.is_prev_cursor_in = true
+        this.prev_decoration_mode = decoration_mode
+        this.prev_editor_mode = editor_mode
+      }
+      // 不刷新
+      else {}
+      return decorationSet
+    }
+    // #endregion
+
+    // 重新检测范围集
+    const list_rangeSpec:MdSelectorRangeSpec[] = autoMdSelector(this.getMdText(tr))
+
+    // #region 根据范围集，进行局部刷新
+    let list_add_decoration:Range<Decoration>[] = [] // 规则表
+    const cursorSpec = this.getCursorCh(tr) // 当前光标的位置 (光标移动后的位置)
+    let is_current_cursor_in = false // 当前光标是否在ab块区域内
+    for (let rangeSpec of list_rangeSpec){
+      let decoration: Decoration
+      // 当前光标位于该ab区域内，则该ab区域显示为下划线装饰
+      if (cursorSpec.from>=rangeSpec.from_ch && cursorSpec.from<=rangeSpec.to_ch
+          || cursorSpec.to>=rangeSpec.from_ch && cursorSpec.to<=rangeSpec.to_ch
+      ) {
+        decoration = Decoration.mark({class: "ab-line-yellow"}) // TODO fix bug：当光标在局部频繁移动时或其他情况? 这里会被重复添加很多层带这个class的span嵌套
+        is_current_cursor_in = true
+        break
+      }
+      // 当前光标不位于该ab区域内，则该ab区域显示为渲染的ab块
+      else{
+        decoration = Decoration.replace({widget: new ABReplacer_Widget(
+          rangeSpec, this.editor
+        )})
+      }
+      list_add_decoration.push(decoration.range(rangeSpec.from_ch, rangeSpec.to_ch))
+    }
+    // console.log(`光标位置改变-----`,
+    //   '    光标是否在位置集中: ', is_current_cursor_in,
+    //   '    新位置', cursorSpec,
+    //   '    位置集', list_rangeSpec,
+    //   '    样式集', list_add_decoration.length, list_add_decoration,
+    //   '    修改内容tr', tr.changes, tr
+    // )
+    // #endregion
+
+    // #region 光标进出范围集事件检测
+    if (is_current_cursor_in!=this.is_prev_cursor_in
+      ||decoration_mode!=this.prev_decoration_mode
+      ||editor_mode!=this.prev_editor_mode
+    ){
+      this.is_prev_cursor_in = is_current_cursor_in
+      this.prev_decoration_mode = decoration_mode
+      this.prev_editor_mode = editor_mode
+
+      // 装饰调整 - 删
+      decorationSet = decorationSet.update({            // 减少，全部删掉
+        filter: (from, to, value)=>{return false}
+      })
+      // 装饰调整 - 增
+      // 这里有点脱屁股放屁，但好像因为范围重叠的原因，直接传列表会报错：
+      // Ranges must be added sorted by `from` position and `startSide`
+      for(let item of list_add_decoration){
+        decorationSet = decorationSet.update({
+          add: [item]
+        })
+      }
+      // #endregion
+    }
+
+    // 装饰调整 - 改 (映射)
+    decorationSet = decorationSet.map(tr.changes)
+    return decorationSet
+  }
+
+  /** --------------------------------- 一些小工具 ------------------------- */
+
+  /**
+   * 获取编辑器模式
+   */ 
   private getEditorMode(): Editor_mode {
     let editor_dom: Element | null
     /** @warning 不能用 editor_dom = document
@@ -239,146 +339,8 @@ export class ABStateManager{
     return this.editor.getValue()
   }
 
-  /**
-   * 装饰调整（删增改），包起来准备防抖 
-   * 小刷新：位置映射（每次都会刷新）
-   * 大刷新：全部元素删掉再重新创建（避免频繁大刷新）
-   * _
-   * 大刷新的条件：
-   *   - 当鼠标进出范围时
-   *   - 当装饰类型改变时
-   *   - 当切换编辑模式时
-   * 
-   * @param decorationSet 装饰集
-   * @param tr 此次更新的修改内容
-   * @param decoration_mode 如何装饰 (源md or 下划线 or 渲染成ab块)
-   * @param editor_mode 编辑器模式 (源码/实时/阅读)
-   */
-  private refreshStrong2(decorationSet:DecorationSet, tr:Transaction, decoration_mode:ConfDecoration, editor_mode:Editor_mode){
-    // #region 不查了
-    if (decoration_mode==ConfDecoration.none) {
-      // 大刷新，全文刷新，全清空掉再重新赋予
-      if (decoration_mode!=this.prev_decoration_mode){
-        decorationSet = decorationSet.update({
-          filter: (from, to, value)=>{return false}
-        })
-        this.is_prev_cursor_in = true
-        this.prev_decoration_mode = decoration_mode
-        this.prev_editor_mode = editor_mode
-      }
-      // 不刷新
-      else {}
-      return decorationSet
-    }
-    // #endregion
-
-    // #region 查哪个局部发生了变化，并进行局部刷新
-    const list_rangeSpec:MdSelectorRangeSpec[] = autoMdSelector(this.getMdText(tr)) // 所有ab块区域的范围 (TODO @bug 由于this.mdText有延迟，导致选择后的区域集也有延迟)
-    let list_add_decoration:Range<Decoration>[] = [] // 规则表
-    const cursorSpec = this.getCursorCh(tr) // 当前光标的位置 (光标移动后的位置)
-    let is_current_cursor_in = false // 当前光标是否在ab块区域内
-    for (let rangeSpec of list_rangeSpec){
-      let decoration: Decoration
-      // 当前光标位于该ab区域内，则该ab区域显示为下划线装饰
-      if (cursorSpec.from>=rangeSpec.from_ch && cursorSpec.from<=rangeSpec.to_ch
-          || cursorSpec.to>=rangeSpec.from_ch && cursorSpec.to<=rangeSpec.to_ch
-      ) {
-        decoration = Decoration.mark({class: "ab-line-yellow"}) // TODO fix bug：当光标在局部频繁移动时或其他情况? 这里会被重复添加很多层带这个class的span嵌套
-        is_current_cursor_in = true
-        break
-      }
-      // 当前光标不位于该ab区域内，则该ab区域显示为渲染的ab块
-      else{
-        decoration = Decoration.replace({widget: new ABReplacer_Widget(
-          rangeSpec, this.editor
-        )})
-      }
-      list_add_decoration.push(decoration.range(rangeSpec.from_ch, rangeSpec.to_ch))
-    }
-    // console.log(`光标位置改变-----`,
-    //   '    光标是否在位置集中: ', is_current_cursor_in,
-    //   '    新位置', cursorSpec,
-    //   '    位置集', list_rangeSpec,
-    //   '    样式集', list_add_decoration.length, list_add_decoration,
-    //   '    修改内容tr', tr.changes, tr
-    // )
-    // #endregion
-    
-    // #region 删增改
-    /*const list_abRangeManager:ABMdSelector[] = get_selectors(this.plugin_this.settings).map(c => {
-      return new c(this.mdText, this.plugin_this.settings)
-    })
-    if(decoration_mode==ConfDecoration.inline){       // 线装饰
-      for (let abManager of list_abRangeManager){     // 遍历多个范围管理器
-        let listRangeSpec: MdSelectorRangeSpec[] = abManager.specKeywords
-        for(let rangeSpec of listRangeSpec){          // 遍历每个范围管理器里的多个范围集
-          const decoration: Decoration = Decoration.mark({class: "ab-line-brace"})
-          list_add_decoration.push(decoration.range(rangeSpec.from_ch, rangeSpec.to_ch))
-        }
-      }
-    }
-    else{                                             // 块装饰
-      const cursorSpec = this.getCursorCh(tr)
-      for (let abManager of list_abRangeManager){     // 遍历多个范围管理器
-        let listRangeSpec: MdSelectorRangeSpec[] = abManager.specKeywords
-        for(let rangeSpec of listRangeSpec){          // 遍历每个范围管理器里的多个范围集
-          let decoration: Decoration
-          // 判断光标位置
-          if (cursorSpec.from>=rangeSpec.from_ch && cursorSpec.from<=rangeSpec.to_ch 
-              || cursorSpec.to>=rangeSpec.from_ch && cursorSpec.to<=rangeSpec.to_ch) {
-            decoration = Decoration.mark({class: "ab-line-yellow"})
-            is_current_cursor_in = true
-          }
-          else{
-            decoration = Decoration.replace({widget: new ABReplaceWidget(
-              rangeSpec, this.editor
-            )})
-          }
-          list_add_decoration.push(decoration.range(rangeSpec.from_ch, rangeSpec.to_ch))
-        }
-      }
-    }*/
-
-    /*console.log("状态比较", 
-      (is_current_cursor_in!=this.is_prev_cursor_in
-        ||decoration_mode!=this.prev_decoration_mode
-        ||editor_mode!=this.prev_editor_mode
-      )?"大刷新":"不刷新"
-      ,is_current_cursor_in,this.is_prev_cursor_in
-      ,decoration_mode,this.prev_decoration_mode
-      ,editor_mode,this.prev_editor_mode
-    )*/
-    // #endregion
-
-    if (is_current_cursor_in!=this.is_prev_cursor_in
-      ||decoration_mode!=this.prev_decoration_mode
-      ||editor_mode!=this.prev_editor_mode
-    ){
-      this.is_prev_cursor_in = is_current_cursor_in
-      this.prev_decoration_mode = decoration_mode
-      this.prev_editor_mode = editor_mode
-
-      // 装饰调整 - 删
-      decorationSet = decorationSet.update({            // 减少，全部删掉
-        filter: (from, to, value)=>{return false}
-      })
-      // 装饰调整 - 增
-      // 这里有点脱屁股放屁，但好像因为范围重叠的原因，直接传列表会报错：
-      // Ranges must be added sorted by `from` position and `startSide`
-      for(let item of list_add_decoration){
-        decorationSet = decorationSet.update({
-          add: [item]
-        })
-      }
-    }
-
-    // 装饰调整 - 改 (映射)
-    decorationSet = decorationSet.map(tr.changes)
-    return decorationSet
-  }
-
   /** 防抖器（可复用） */
-  /*debouncedFn = this.debounce(this.refreshStrong2, 1000, false)
+  /*debouncedFn = this.debounce(this.onUpdate_refresh, 1000, false)
   private debounce(
     method:any,       // 防抖方法
     wait:number,      // 等待
