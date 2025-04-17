@@ -13,7 +13,12 @@
 
 ## 编译
 
+可以参考github工作流文件: `/.github/workflows/nodejs-build.yml`
+
 ```bash
+npm install
+cd ./src/ABConverter && npm install && cd ../../
+
 npm run build # 编译ob版本，或 npm run ob:build
 npm run ob:build-min # v3.2.1 新增min版本的工作流
 
