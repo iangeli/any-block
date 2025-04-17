@@ -97,8 +97,9 @@ html[data-theme="dark"] #app {
   // 源码/实时模式
   .markdown-source-view {
     .ab-replace{
-      margin-top: -18px; // 消除CM自带的间隙
-      margin-bottom: -18px;
+      // 消除cm-widgetBuffer自带的间隙。注意：不能完全消除，否则光标上下移动时会跳过块区域到达另一端
+      margin-top: -0.5em; // -12px;
+      margin-bottom: -0.5em; // -12px;
     }
     .block-language-anyblock>.ab-replace {
       margin-top: 0;

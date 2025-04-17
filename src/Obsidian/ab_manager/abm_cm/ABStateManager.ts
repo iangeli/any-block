@@ -203,8 +203,9 @@ export class ABStateManager{
     const list_rangeSpec:MdSelectorRangeSpec[] = autoMdSelector(this.getMdText(tr))
 
     // #region 根据范围集，进行局部刷新
+    const cursorSpec = this.getCursorCh(tr) // 将来光标的位置 (光标移动后的位置)
+    let cursorSepc_correct:number|null = null // 需要纠正的光标位置 (必须在应用完tr后再纠正，避免被覆盖)
     let list_add_decoration:Range<Decoration>[] = [] // 规则表
-    const cursorSpec = this.getCursorCh(tr) // 当前光标的位置 (光标移动后的位置)
     let is_current_cursor_in = false // 当前光标是否在ab块区域内
     for (let rangeSpec of list_rangeSpec){
       let decoration: Decoration
@@ -214,12 +215,18 @@ export class ABStateManager{
       ) {
         decoration = Decoration.mark({class: "ab-line-yellow"}) // TODO fix bug：当光标在局部频繁移动时或其他情况? 这里会被重复添加很多层带这个class的span嵌套
         is_current_cursor_in = true
+        // 纠正光标位置
+        // const cursorSpec_last = this.getCursorCh() // 过去光标的位置 (光标移动前的位置)
+        // if (cursorSpec.from==rangeSpec.from_ch && cursorSpec_last.from>rangeSpec.to_ch) {
+        //   cursorSepc_correct = rangeSpec.to_ch
+        // }
       }
       // 当前光标不位于该ab区域内，则该ab区域显示为渲染的ab块
       else{
-        decoration = Decoration.replace({widget: new ABReplacer_Widget(
-          rangeSpec, this.editor
-        )})
+        decoration = Decoration.replace({
+          widget: new ABReplacer_Widget(rangeSpec, this.editor),
+          // inclusive: true, block: false,
+        })
       }
       list_add_decoration.push(decoration.range(rangeSpec.from_ch, rangeSpec.to_ch))
     }
@@ -336,6 +343,62 @@ export class ABStateManager{
     }
 
     return this.editor.getValue()
+  }
+
+  /**
+   * 光标位置纠正
+   * 
+   * 问题导致的原理：
+   * 替换后的区间被识别为原子区间（atomic range），CodeMirror 默认会将光标定位到原子区间的开始位置
+   * 当使用方向键移动时，光标会跳过整个原子区间
+   * 
+   * 光标位置修复方案：
+   * (使其行为与callout一致，避免光标向上/向下移动时，跨越整个ab块。不过光标向下是正常的)
+   * 检测逻辑：向上移动时，从范围外向上移动到范围内且第一格处
+   * 缺点1：必须借助setTimeout，否则事件还是会被覆盖
+   * 缺点2：光标会连同滚动条一起到达顶端，然后再往段末尾移动，会有问题
+   * 
+   * 最后解决方法：
+   * 最后居然是靠css解决的……以前ab-replace消除cm-widgetBuffer自带的间隙，居然会导致光标移动时跳过cm-widgetBuffer，非常奇怪
+   * 把ab-replace的负margin再调整一下，就正常了
+   */
+  private setPos(cursorSepc: number) {
+    setTimeout(() => { // 使用微任务确保在当前事务完成后执行
+      // 方式一：EditorSelection
+      const newSelection = EditorSelection.create([
+        EditorSelection.range(cursorSepc, cursorSepc)
+      ])
+      this.editorView.dispatch({
+        selection: newSelection
+      })
+
+      // 方式二：EditorState
+      // const newSelection = EditorState.create({}).selection;
+      // const tr2 = this.editorState.update({
+      //   selection: newSelection,
+      //   changes: tr.changes
+      // })
+      // this.editorView.dispatch(tr2)
+
+      // 方式三
+      // 设置光标到第3行第5列（行号从0开始）。打印顺序对，实际光标位置没改变
+      // const targetLine = 6;
+      // const targetColumn = 2;
+      // // 创建新选区
+      // const newSelection = EditorState.create({
+      //   doc: this.editorView.state.doc,
+      //   selection: { anchor: this.editorView.state.doc.line(targetLine + 1).from + targetColumn }
+      // });
+      // // 通过事务更新视图
+      // this.editorView.dispatch({
+      //   selection: newSelection.selection,
+      //   effects: EditorView.scrollIntoView(newSelection.selection.main.from) // 滚动到光标
+      // });
+
+      // 方式四：obsidian editor。打印顺序对，实际光标位置没改变
+      // this.editor.setCursor(correct)
+      // this.editor.setCursor({ch: 1, line: 6})
+    }, 50)
   }
 
   /** 防抖器（可复用） */
