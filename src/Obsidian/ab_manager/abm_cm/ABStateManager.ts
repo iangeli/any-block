@@ -214,7 +214,6 @@ export class ABStateManager{
       ) {
         decoration = Decoration.mark({class: "ab-line-yellow"}) // TODO fix bug：当光标在局部频繁移动时或其他情况? 这里会被重复添加很多层带这个class的span嵌套
         is_current_cursor_in = true
-        break
       }
       // 当前光标不位于该ab区域内，则该ab区域显示为渲染的ab块
       else{
@@ -225,11 +224,11 @@ export class ABStateManager{
       list_add_decoration.push(decoration.range(rangeSpec.from_ch, rangeSpec.to_ch))
     }
     // console.log(`光标位置改变-----`,
-    //   '    光标是否在位置集中: ', is_current_cursor_in,
-    //   '    新位置', cursorSpec,
-    //   '    位置集', list_rangeSpec,
-    //   '    样式集', list_add_decoration.length, list_add_decoration,
-    //   '    修改内容tr', tr.changes, tr
+    //   '\n    光标是否在位置集中: ', is_current_cursor_in,
+    //   '\n    新位置', cursorSpec,
+    //   '\n    位置集', list_rangeSpec,
+    //   '\n    样式集', list_add_decoration.length, list_add_decoration,
+    //   '\n    修改内容tr', tr.changes, tr
     // )
     // #endregion
 
