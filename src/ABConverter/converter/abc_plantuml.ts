@@ -122,18 +122,29 @@ function list2ActivityDiagramText(listdata: List_ListItem): string {
   return result;
 }
 
+const KEYWORD_IF = "if "
+const KEYWORD_SWITCH = "switch "
+const KEYWORD_WHILE = "while "
+const KEYWORD_GROUP = "group "
+const KEYWORD_PARTITION = "partition "
+const KEYWORD_LANE = "lane "
+const KEYWORD_ELSE = "else"
+const KEYWORD_ELIF = "elif "
+const KEYWORD_CASE = "case "
+const BLOCK_END = ":"
+
 // Process main content, recursively process all items
 function processBody(listdata: List_ListItem, startIndex: number, parentLevel: number): { result: string, nextIndex: number } {
 	let result = "";
 	let i = startIndex;
 
 	const statementTypes = {
-		"if:": processIfStatement,
-		"switch:": processSwitchStatement,
-		"while:": processWhileStatement,
-		"group:": processGroupStatement,
-		"partition:": processPartitionStatement,
-		"lane:": processSwimLane
+		[KEYWORD_IF]: processIfStatement,
+		[KEYWORD_SWITCH]: processSwitchStatement,
+		[KEYWORD_WHILE]: processWhileStatement,
+		[KEYWORD_GROUP]: processGroupStatement,
+		[KEYWORD_PARTITION]: processPartitionStatement,
+		[KEYWORD_LANE]: processSwimLane
 	};
 
 	while (i < listdata.length && (parentLevel === -1 || listdata[i].level > parentLevel)) {
@@ -149,7 +160,7 @@ function processBody(listdata: List_ListItem, startIndex: number, parentLevel: n
 
 		let processed = false;
 		for (const [prefix, processor] of Object.entries(statementTypes)) {
-			if (content.startsWith(prefix)) {
+			if (content.startsWith(prefix) && content.endsWith(BLOCK_END)) {
 				const { result: processedResult, nextIndex } = processor(listdata, i, level);
 				result += processedResult;
 				i = nextIndex;
@@ -177,34 +188,39 @@ function isReservedWord(content: string): boolean {
 		content === "end merge";
 }
 
+function isBlockOfType(content: string, type: string): boolean {
+	return content.startsWith(type) && content.endsWith(BLOCK_END);
+}
+
+function takeTagOfBlock(content: string, type: string): string {
+	const condition = content.substring(type.length, content.length - BLOCK_END.length).trim();
+	return condition;
+}
+
 // 处理if语句
 function processIfStatement(listdata: List_ListItem, index: number, level: number): { result: string, nextIndex: number } {
-	const prefix = "if:";
-	let result = "if";
-	const condition = listdata[index].content.trim().substring(prefix.length).trim();
+	let result = KEYWORD_IF + " ";
+	const content = listdata[index].content.trim();
+	const condition = takeTagOfBlock(content, KEYWORD_IF);
 	let nextIndex = index + 1;
 
 	if (nextIndex < listdata.length && listdata[nextIndex].level === level + 1) {
-		let branch1Tag = listdata[nextIndex].content.trim();
-		if (branch1Tag.length === 0) {
-			branch1Tag = "yes";
-		}
-		result += `(${condition}) then (${branch1Tag})\n`;
-		nextIndex++;
-		const { result: result2, nextIndex: nextIndex2 } = processBody(listdata, nextIndex, level + 1);
+		result += `(${condition}) then (yes)\n`;
+		const { result: result2, nextIndex: nextIndex2 } = processBody(listdata, nextIndex, level);
 		result += result2;
 		nextIndex = nextIndex2;
 	}
 
 	// Process else and else if branches
-	while (nextIndex < listdata.length && listdata[nextIndex].level === level + 1 && listdata[nextIndex].content.trim() !== "") {
-		const branch1Tag = listdata[nextIndex].content.trim();
-		if (branch1Tag.length !== 0) {
-			result += `else if(${branch1Tag}) then (yes)\n`;
-		} else {
+	while (nextIndex < listdata.length && listdata[nextIndex].level === level && (isBlockOfType(listdata[nextIndex].content.trim(), KEYWORD_ELIF) || isBlockOfType(listdata[nextIndex].content.trim(), KEYWORD_ELSE))) {
+		const branch = listdata[nextIndex].content.trim();
+		if (isBlockOfType(branch, KEYWORD_ELIF)) {
+			const condition = takeTagOfBlock(branch, KEYWORD_ELIF);
+			result += `else if(${condition}) then (yes)\n`;
+		} else if (isBlockOfType(branch, KEYWORD_ELSE)) {
 			result += `else\n`;
 		}
-		const { result: result2, nextIndex: nextIndex2 } = processBody(listdata, nextIndex + 1, level + 1);
+		const { result: result2, nextIndex: nextIndex2 } = processBody(listdata, nextIndex + 1, level);
 		result += result2;
 		nextIndex = nextIndex2;
 	}
@@ -215,18 +231,18 @@ function processIfStatement(listdata: List_ListItem, index: number, level: numbe
 
 // 处理switch语句
 function processSwitchStatement(listdata: List_ListItem, index: number, level: number): { result: string, nextIndex: number } {
-	const prefix = "switch:";
-	let result = "switch";
-	const condition = listdata[index].content.trim().substring(prefix.length).trim();
+	let result = KEYWORD_SWITCH + " ";
+	const content = listdata[index].content.trim();
+	const condition = takeTagOfBlock(content, KEYWORD_SWITCH);
 	let nextIndex = index + 1;
 
 	result += `(${condition})\n`;
 
 	// Process case statements
 	while (nextIndex < listdata.length && listdata[nextIndex].level > level) {
-		if (listdata[nextIndex].level === level + 1) {
-			const caseContent = listdata[nextIndex].content.trim();
-			result += `case (${caseContent})\n`;
+		if (isBlockOfType(listdata[nextIndex].content.trim(), KEYWORD_CASE)) {
+			const caseTag = takeTagOfBlock(listdata[nextIndex].content, KEYWORD_CASE);
+			result += `case (${caseTag})\n`;
 			nextIndex++;
 			const { result: caseResult, nextIndex: caseNextIndex } = processBody(listdata, nextIndex, level + 1);
 			result += indentContent(caseResult);
@@ -242,10 +258,9 @@ function processSwitchStatement(listdata: List_ListItem, index: number, level: n
 
 // 处理while语句
 function processWhileStatement(listdata: List_ListItem, index: number, level: number): { result: string, nextIndex: number } {
-	const prefix = "while:";
 	const content = listdata[index].content.trim();
-	const condition = content.substring(prefix.length).trim();
-	let result = `while (${condition}) is (true)\n`;
+	const condition = takeTagOfBlock(content, KEYWORD_WHILE);
+	let result = `${KEYWORD_WHILE} (${condition}) is (true)\n`;
 	let nextIndex = index + 1;
 
 	// Process while body
@@ -259,10 +274,9 @@ function processWhileStatement(listdata: List_ListItem, index: number, level: nu
 
 // 处理group语句
 function processGroupStatement(listdata: List_ListItem, index: number, level: number): { result: string, nextIndex: number } {
-	const prefix = "group:";
 	const content = listdata[index].content.trim();
-	const groupName = content.substring(prefix.length).trim();
-	let result = `group ${groupName}\n`;
+	const groupName = takeTagOfBlock(content, KEYWORD_GROUP);
+	let result = `${KEYWORD_GROUP} ${groupName}\n`;
 	let nextIndex = index + 1;
 
 	// Process group body
@@ -276,10 +290,9 @@ function processGroupStatement(listdata: List_ListItem, index: number, level: nu
 
 // 处理partition语句
 function processPartitionStatement(listdata: List_ListItem, index: number, level: number): { result: string, nextIndex: number } {
-	const prefix = "partition:";
 	const content = listdata[index].content.trim();
-	const partitionName = content.substring(prefix.length).trim();
-	let result = `partition ${partitionName} {\n`;
+	const partitionName = takeTagOfBlock(content, KEYWORD_PARTITION);
+	let result = `${KEYWORD_PARTITION} ${partitionName} {\n`;
 	let nextIndex = index + 1;
 
 	// Process partition body
@@ -293,8 +306,8 @@ function processPartitionStatement(listdata: List_ListItem, index: number, level
 
 // 处理swim lane
 function processSwimLane(listdata: List_ListItem, index: number, level: number): { result: string, nextIndex: number } {
-	const prefix = "lane:";
-	const laneName = listdata[index].content.trim().substring(prefix.length).trim();
+	const content = listdata[index].content.trim();
+	const laneName = takeTagOfBlock(content, KEYWORD_LANE);
 	return { result: "|" + laneName + "|\n", nextIndex: index + 1 };
 }
 
