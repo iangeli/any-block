@@ -218,7 +218,8 @@ function abSelector_squareInline(md: MarkdownIt, options?: Partial<Options>): vo
 }
 
 /**
- * 选择 anyBlock 块 - :::规则 (vuepress-mdit 版本)
+ * 选择 anyBlock 块 - :::规则 (vuepress-mdit 版本), 
+ * TODO: 该函数应该可以被abSelector_container替代，测试后删除
  * 
  * @detail 选择 `:::anyBlock` 包裹的片段
  */
@@ -245,13 +246,31 @@ function abSelector_container_vuepress(md: MarkdownIt, options?: Partial<Options
   });
 }
 
-// const getTabsRule =
-//   (name: string, store: { state: string | null }): RuleBlock =>
-function abSelector_container_mdit(md: MarkdownIt, options?: Partial<Options>): void {
+/**
+ * 选择 anyBlock 块 - :::规则 (通用版本)
+ * 
+ * @detail 
+ * 注意:
+ * - 基于 https://github.com/mdit-plugins/mdit-plugins 下的 mdit-tab 重写了 mdit 选择器解析规则
+ * - 应该不会与 markdown-it-container 的mdit插件冲突，（待测试）
+ * 
+ * 该函数负责识别和处理Markdown中的:::容器语法，ABConvert支持的container容器都能被支持
+ * 例如 :::col、:::tab、:::card
+ * 
+ * 工作流程：
+ * 1. 识别以:::开头的行
+ * 2. 收集容器内的所有内容，直到遇到对应的结束标记:::
+ * 3. 支持嵌套容器的处理
+ * 4. 创建anyBlock类型的token，并设置相关元数据
+ * 
+ * @param md MarkdownIt实例
+ * @param options 可选配置参数
+ */
+function abSelector_container(md: MarkdownIt, options?: Partial<Options>): void {
   md.block.ruler.before('fence', 'AnyBlockMditContainer', (
     state, startLine, endLine, silent
   ): boolean => {
-    const typeNames = ["col", "alert", "card", "tab", "alert"]
+    const typeNames = ["col", "card", "tab"] // 在这里设置支持的ab块类型
     let start = state.bMarks[startLine] + state.tShift[startLine];
     let max = state.eMarks[startLine];
 
@@ -341,93 +360,6 @@ function abSelector_container_mdit(md: MarkdownIt, options?: Partial<Options>): 
 }
 
 /**
- * 选择 anyBlock 块 - :::规则 (app-mdit 版本)
- * 
- * @detail 
- * 注意:
- * - 如果有其他基于 markdown-it-container 的mdit插件，会产生冲突。这里的行为会覆盖/被覆盖其他插件
- * - 所以这部分的代码仅能在没有其他 md-it-container 类别插件 (tab/demo/codetab等) 时使用
- * 
- * 该函数负责识别和处理Markdown中的:::容器语法，ABConvert支持的container容器都能被支持
- * 例如 :::col、:::tab
- * 
- * 工作流程：
- * 1. 识别以:::开头的行
- * 2. 收集容器内的所有内容，直到遇到对应的结束标记:::
- * 3. 支持嵌套容器的处理
- * 4. 创建anyBlock类型的token，并设置相关元数据
- * 
- * @param md MarkdownIt实例
- * @param options 可选配置参数
- */
-function abSelector_container_app(md: MarkdownIt, options?: Partial<Options>): void {
-  md.block.ruler.before('fence', 'AnyBlockMditContainer', (
-    state, startLine, endLine, silent
-  ): boolean => {
-    // 获取当前行的内容
-    const start = state.bMarks[startLine] + state.tShift[startLine];
-    const max = state.eMarks[startLine];
-    const marker = state.src.slice(start, max).trim();
-
-    // 检查是否为指定块的开始标记
-    if (!(/^:::(.+)$/.test(marker))) return false;
-
-    // 提取header内容
-    const header = marker.slice(3).trim();
-
-    let nextLine = startLine + 1;
-    const content: string[] = [];
-    let nestLevel = 0;
-
-    // 逐行解析内容，直到遇到结束标记
-    while (nextLine < endLine) {
-        const lineStart = state.bMarks[nextLine] + state.tShift[nextLine];
-        const lineEnd = state.eMarks[nextLine];
-        const line = state.src.slice(lineStart, lineEnd);
-        const trimmedLine = line.trim();
-
-        // 检查是否为围栏块标记
-        if (trimmedLine.startsWith(':::')) {
-            if (trimmedLine === ':::') {
-                // 结束标记
-                if (nestLevel === 0) {
-                    break;
-                } else {
-                    // 嵌套块的结束
-                    nestLevel--;
-                    content.push(line);
-                }
-            } else {
-                // 开始标记
-                nestLevel++;
-                content.push(line);
-            }
-        } else {
-            // 收集内容
-            content.push(line);
-        }
-        nextLine++;
-    }
-
-    // 如果是验证模式，直接返回true
-    if (silent) return true;
-
-    // 更新解析器状态，移动到下一个待处理行
-    state.line = nextLine + 1;
-
-    // (3) 插入ab块token
-    let token = state.push('fence', 'code', 0)
-    token.info = "AnyBlock"
-    token.content = `[${header}]\n${content.join('\n')}` // TODO 应改为原文本整体
-    console.log('token.content', token.content)
-    token.map = [startLine, nextLine]
-    token.markup = ':::::';
-    token.nesting = 0;
-    return true
-  });
-}
-
-/**
  * 渲染 anyBlock 块 - codeBlock/fence 规则
  */
 function abRender_fence(md: MarkdownIt, options?: Partial<Options>): void {
@@ -511,6 +443,6 @@ export default function ab_mdit(md: MarkdownIt, options?: Partial<Options>): voi
   })
 
   md.use(abSelector_squareInline)
-  md.use(abSelector_container_mdit) // [env] app版本
+  md.use(abSelector_container)
   md.use(abRender_fence)
 }
