@@ -60,9 +60,9 @@ import "../../ABConverter/converter/abc_dir_tree"
 import "../../ABConverter/converter/abc_deco"
 import "../../ABConverter/converter/abc_ex"
 import "../../ABConverter/converter/abc_mdit_container"
-import "../../ABConverter/converter/abc_plantuml" // 可选建议：
-import "../../ABConverter/converter/abc_mermaid"  // 可选建议：7.1MB
-import "../../ABConverter/converter/abc_markmap"  // 可选建议：1.3MB
+// import "../../ABConverter/converter/abc_plantuml" // 可选建议：
+// import "../../ABConverter/converter/abc_mermaid"  // 可选建议：7.1MB
+// import "../../ABConverter/converter/abc_markmap"  // 可选建议：1.3MB
 
 interface Options {
   multiline: boolean;
@@ -245,6 +245,101 @@ function abSelector_container_vuepress(md: MarkdownIt, options?: Partial<Options
   });
 }
 
+// const getTabsRule =
+//   (name: string, store: { state: string | null }): RuleBlock =>
+function abSelector_container_mdit(md: MarkdownIt, options?: Partial<Options>): void {
+  md.block.ruler.before('fence', 'AnyBlockMditContainer', (
+    state, startLine, endLine, silent
+  ): boolean => {
+    const typeNames = ["col", "alert", "card", "tab", "alert"]
+    let start = state.bMarks[startLine] + state.tShift[startLine];
+    let max = state.eMarks[startLine];
+
+    // Check out the first character quickly,
+    // this should filter out most of non-containers
+    if (state.src[start] !== ":") return false;
+
+    let pos = start + 1;
+
+    // Check out the rest of the marker string
+    while (pos <= max) {
+      if (state.src[pos] !== ":") break;
+      pos++;
+    }
+
+    const markerCount = pos - start;
+
+    if (markerCount < 3) return false;
+
+    const markup = state.src.slice(start, pos);
+    const ab_mdit_header = state.src.slice(pos, max);
+
+
+    if (!typeNames.includes(ab_mdit_header.split("|")[0].trim())) return false;
+
+    // Since start is found, we can report success here in validation mode
+    if (silent) return true;
+
+    const ab_startLine = startLine;
+    let nextLine = startLine;
+    let autoClosed = false;
+
+    let ab_content = "";
+
+    // Search for the end of the block
+    while (
+      // unclosed block should be auto closed by end of document.
+      // also block seems to be auto closed by end of parent
+      nextLine < endLine
+    ) {
+      nextLine++;
+      start = state.bMarks[nextLine] + state.tShift[nextLine];
+      max = state.eMarks[nextLine];
+      
+      if (start < max && state.sCount[nextLine] < state.blkIndent)
+        // non-empty line with negative indent should stop the list:
+        // - ```
+        //  test
+        break;
+      if (
+        // match start
+        state.src[start] === ":" &&
+        // closing fence should be indented less than 4 spaces
+        state.sCount[nextLine] - state.blkIndent < 4
+      ) {
+        // check rest of marker
+        for (pos = start + 1; pos <= max; pos++)
+          if (state.src[pos] !== ":") break;
+
+        // closing code fence must be at least as long as the opening one
+        if (pos - start >= markerCount) {
+          // make sure tail has spaces only
+          pos = state.skipSpaces(pos);
+
+          if (pos >= max) {
+            // found!
+            autoClosed = true;
+            break;
+          }
+          
+        }
+      }
+      ab_content += "\n" + state.src.substring(start, max);
+    }
+
+    state.line = nextLine + (autoClosed ? 1 : 0);
+
+    const token = state.push('fence', 'code', 0)
+    token.info = "AnyBlock"
+    token.content = `[${ab_mdit_header}]\n${ab_content}`
+    token.map = [ab_startLine, nextLine]
+    token.markup = markup;
+    token.nesting = 0;
+
+    return true
+  });
+}
+
 /**
  * 选择 anyBlock 块 - :::规则 (app-mdit 版本)
  * 
@@ -416,6 +511,6 @@ export default function ab_mdit(md: MarkdownIt, options?: Partial<Options>): voi
   })
 
   md.use(abSelector_squareInline)
-  md.use(abSelector_container_app) // [env] app版本
+  md.use(abSelector_container_mdit) // [env] app版本
   md.use(abRender_fence)
 }

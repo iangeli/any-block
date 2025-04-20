@@ -365,5 +365,16 @@ text3
 
 :::
 
+:::card
+
+@card card1
+
+text1
+
+@card card2
+ 
+text2
+
+:::
 `,
 }
