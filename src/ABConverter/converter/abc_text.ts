@@ -17,6 +17,7 @@ import {ABReg} from "../ABReg"
 const abc_quote = ABConvert.factory({
   id: "quote",
   name: "增加引用块",
+  match: /^(quote|addQuote)$/,
   detail: "在文本的每行前面加上 `> `",
   process_param: ABConvert_IOEnum.text,
   process_return: ABConvert_IOEnum.text,
