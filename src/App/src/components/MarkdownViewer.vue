@@ -83,6 +83,9 @@ onMounted(()=>{
     margin: 16px 0;
     padding: 1em;
   }
+  img {
+    max-width: 100%;
+  }
   h2 {
     color: #ffc078;
   }
