@@ -1129,6 +1129,11 @@ table.ab-table-fc {
 .ab-custom-td-250 td, .ab-custom-td1-250 tr>td:first-child {width: 250px !important;}
 .ab-custom-td-300 td, .ab-custom-td1-300 tr>td:first-child {width: 300px !important;}
 .ab-custom-td-half td, .ab-custom-td1-half tr>td:first-child {width: 50% !important;}
+
+// js特殊class
+// .el-table { // 在阅读模式下异常
+//   overflow-x: visible;
+// }
 // .ab-super-width {
 //   width: var(--ab-width-outer);
 //   margin-left: calc((100% - var(--ab-width-outer)) / 2);
