@@ -1,4 +1,4 @@
-import { List_ListItem, ListProcess } from "./abc_list"
+import { type List_ListItem, ListProcess } from "./abc_list"
 import { ABConvert, ABConvert_IOEnum } from "./ABConvert"
 import { render_pumlText } from "./abc_plantuml"
 
