@@ -10,6 +10,8 @@ import {ListProcess, type List_ListItem} from "./abc_list"
 
 import plantumlEncoder from "plantuml-encoder"
 
+import { list2ActivityDiagramText } from "./abc_plantuml_tools"
+
 const abc_list2jsontext = ABConvert.factory({
   id: "json2pumlJson",
   name: "json到可视化",
@@ -61,6 +63,28 @@ const abc_list2pumlMindmap = ABConvert.factory({
     render_pumlText(newContent, el)
     return el
   }
+})
+
+const abc_list2ActivityDiagramText = ABConvert.factory({
+	id: "list2pumlActivityDiagramText",
+	name: "列表到puml活动图文本",
+	process_param: ABConvert_IOEnum.text,
+	process_return: ABConvert_IOEnum.text,
+	process: (el, header, content: string): string => {
+		return list2ActivityDiagramText(ListProcess.data2strict(ListProcess.list2data(content)))
+	}
+})
+
+const abc_list2ActivityDiagram = ABConvert.factory({
+	id: "list2pumlActivityDiagram",
+	name: "列表到puml活动图",
+	process_param: ABConvert_IOEnum.text,
+	process_return: ABConvert_IOEnum.el,
+	process: (el, header, content: string): HTMLElement => {
+		const puml = list2ActivityDiagramText(ListProcess.data2strict(ListProcess.list2data(content)))
+		render_pumlText(puml, el)
+		return el
+	}
 })
 
 export async function render_pumlText(text: string, div: HTMLElement) {

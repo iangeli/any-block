@@ -1,30 +1,6 @@
-import { type List_ListItem, ListProcess } from "./abc_list"
-import { ABConvert, ABConvert_IOEnum } from "./ABConvert"
-import { render_pumlText } from "./abc_plantuml"
+import type { List_ListItem } from "./abc_list"
 
-const abc_list2ActivityDiagramText = ABConvert.factory({
-	id: "list2pumlActivityDiagramText",
-	name: "列表到puml活动图文本",
-	process_param: ABConvert_IOEnum.text,
-	process_return: ABConvert_IOEnum.text,
-	process: (el, header, content: string): string => {
-		return list2ActivityDiagramText(ListProcess.data2strict(ListProcess.list2data(content)))
-	}
-})
-
-const abc_list2ActivityDiagram = ABConvert.factory({
-	id: "list2pumlActivityDiagram",
-	name: "列表到puml活动图",
-	process_param: ABConvert_IOEnum.text,
-	process_return: ABConvert_IOEnum.el,
-	process: (el, header, content: string): HTMLElement => {
-		const puml = list2ActivityDiagramText(ListProcess.data2strict(ListProcess.list2data(content)))
-		render_pumlText(puml, el)
-		return el
-	}
-})
-
-function list2ActivityDiagramText(listdata: List_ListItem): string {
+export function list2ActivityDiagramText(listdata: List_ListItem): string {
   let result = "@startuml\n";
   const {result: bodyResult} = processBody(listdata, 0, -1);
   const swimLanes = bodyResult.split("\n").filter(line => line.startsWith("|") && line.endsWith("|"));
