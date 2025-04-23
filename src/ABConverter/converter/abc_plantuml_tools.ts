@@ -17,6 +17,7 @@ export function list2ActivityDiagramText(listdata: List_ListItem): string {
 
 const KEYWORD_IF = "if "
 const KEYWORD_SWITCH = "switch "
+const KEYWORD_SWITCH2 = "match "
 const KEYWORD_WHILE = "while "
 const KEYWORD_GROUP = "group "
 const KEYWORD_PARTITION = "partition "
@@ -34,6 +35,7 @@ function processBody(listdata: List_ListItem, startIndex: number, parentLevel: n
 	const statementTypes = {
 		[KEYWORD_IF]: processIfStatement,
 		[KEYWORD_SWITCH]: processSwitchStatement,
+		[KEYWORD_SWITCH2]: processSwitchStatement,
 		[KEYWORD_WHILE]: processWhileStatement,
 		[KEYWORD_GROUP]: processGroupStatement,
 		[KEYWORD_PARTITION]: processPartitionStatement,

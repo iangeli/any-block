@@ -475,37 +475,39 @@ lane l2:
 lane l1:
 \`\`\`
 
-其中可以用region注释来表示缩进 (region注释是一种多语言通用的语法，在多种IDE上均支持)
+其中可以用region注释来表示缩进
+
+region注释是一种多语言通用的语法，在多种IDE上均支持。这样写能够让代码完全合法 (是的，下面的代码能正确在python中运行)
 
 [code2list|list2pumlActivityDiagram]
 
 \`\`\`python
 #region lane l1:
 #region group g1:
-if condition a:
-  a branch
-elif condition b:
-  b branch
+if 1==2:
+    print('1==2')
+elif 1==1:
+    print('1==1')
 else:
-  else branch
+    print('1!=1 && 1!=2')
 #endregion
 
-switch flag11:
-  case flag12:
-    flag13
-  case flag14:
-    flag15
-  default:
-    flag16
+a = 'flag3'
+match a:
+    case 'flag1':
+        print('a is flag1')
+    case 'flag2':
+        print('a is flag2')
+#endregion
 
 #region lane l2:
-  print('loop start')
-  while loop condition:
-    loop body
-  print('loop end')
+print('loop start')
+while False:
+    print('in loop body')
+print('loop end')
 #endregion
 
-lane l1:
+#region lane l1:
 \`\`\`
 
 仅生成对应文本
