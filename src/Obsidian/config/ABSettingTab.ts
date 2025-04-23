@@ -38,6 +38,7 @@ export interface ABSettingInterface {
 
   // 其他
   is_debug: boolean,                // 是否开启调试打印
+  is_enhance_refresh: boolean,      // 是否开启刷新增强
   inline_split: string,             // 正则里的内联分隔符
 }
 export enum ConfSelect{
@@ -83,6 +84,7 @@ export const AB_SETTINGS: ABSettingInterface = {
   }],
 
   is_debug: false,
+  is_enhance_refresh: false,
   inline_split: "/\\| |,  |， |\\.  |。 |:  |： /",
 }
 

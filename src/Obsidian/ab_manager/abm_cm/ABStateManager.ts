@@ -31,6 +31,7 @@ enum Editor_mode{
 }
 
 let once_flag = false // 保证css的添加只会被触发一次，避免重复添加css。ture为已经触发过了
+let global_timer: NodeJS.Timer|null = null // 定时器，单例
 
 /**
  * 状态管理器
@@ -73,7 +74,17 @@ export class ABStateManager{
 
     if (ret) this.setStateEffects()
 
-    abConvertEvent(document) // 后处理钩子 (在页面加载后被触发)
+    // 后处理钩子 (在页面加载后被触发/定时触发)
+    {
+      if (global_timer !== null) { clearInterval(global_timer); global_timer = null; }
+      if (plugin_this.settings.is_enhance_refresh) {
+        global_timer = setInterval(() => {
+          if (plugin_this.settings.is_debug) console.log("    auto refresh event:", this.initialFileName)
+          abConvertEvent(document, true)
+        }, 1000)
+      }
+    }
+    abConvertEvent(document)
   }
 
   // 设置常用变量
@@ -97,6 +108,7 @@ export class ABStateManager{
 
   destructor() {
     if (this.plugin_this.settings.is_debug) console.log("<<< ABStateManager, initialFileName:", this.initialFileName)
+    if (global_timer !== null) { clearInterval(global_timer); global_timer = null; }
   }
 
   /** --------------------------------- CM 函数 -------------------------- */
