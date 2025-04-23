@@ -84,7 +84,7 @@ export const AB_SETTINGS: ABSettingInterface = {
   }],
 
   is_debug: false,
-  is_enhance_refresh: false,
+  is_enhance_refresh: true,
   inline_split: "/\\| |,  |， |\\.  |。 |:  |： /",
 }
 
