@@ -257,3 +257,41 @@ const abc_xList = ABConvert.factory({
     return newContent.slice(1) // 去除头部 `\n`
   }
 })
+
+const abc_region2indent = ABConvert.factory({
+  id: "region2indent",
+  name: "代码注释转缩进",
+  detail: "代码块注释转缩进 (识别 `//` 和 `#` 的region注释对)，通常配合code2list使用。默认补充两缩进",
+  process_param: ABConvert_IOEnum.text,
+  process_return: ABConvert_IOEnum.text,
+  process: (el, header, content: string): string=>{
+    const lists = content.trimEnd().split("\n")
+    let newContent = ''
+    // let indent_map: {endFlag: string, indent: string}[] = [] // 缩进表。记录停止标识、区块内需要补充的缩进 (弃用，region自身无关缩进，缩进内容固定加层数*两空格)
+    // let indent_map: string[] = [] // 缩进表。下标表示在第几层嵌套，内容表示缩进内容
+    let startFlagNumber = 0    
+    const regionReg: RegExp = /^([ \t]*)(#|\/\/)\s*#?(region|endregion)(.*)/
+    for (let i=0; i < lists.length; i++) {
+      const item = lists[i]
+      const match = item.match(regionReg)
+
+      // b1. 非region项
+      if (!match) {
+        newContent += '\n' + '  '.repeat(startFlagNumber) + item
+        continue
+      }
+      // b2. region项
+      else {
+        if (match[3] == 'region') {
+          newContent += '\n' + '  '.repeat(startFlagNumber) + match[4].trimStart()
+          startFlagNumber++
+        }
+        else {
+          startFlagNumber--
+        }
+      }
+    }
+
+    return newContent.slice(1) // 去除头部 `\n`
+  }
+})

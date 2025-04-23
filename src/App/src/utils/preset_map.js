@@ -475,6 +475,39 @@ lane l2:
 lane l1:
 \`\`\`
 
+其中可以用region注释来表示缩进 (region注释是一种多语言通用的语法，在多种IDE上均支持)
+
+[code2list|list2pumlActivityDiagram]
+
+\`\`\`python
+#region lane l1:
+#region group g1:
+if condition a:
+  a branch
+elif condition b:
+  b branch
+else:
+  else branch
+#endregion
+
+switch flag11:
+  case flag12:
+    flag13
+  case flag14:
+    flag15
+  default:
+    flag16
+
+#region lane l2:
+  print('loop start')
+  while loop condition:
+    loop body
+  print('loop end')
+#endregion
+
+lane l1:
+\`\`\`
+
 仅生成对应文本
 
 [code2list|list2pumlActivityDiagramText|code(js)]
