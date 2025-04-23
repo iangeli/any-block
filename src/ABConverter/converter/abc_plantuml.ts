@@ -6,10 +6,11 @@
  */
 
 import {ABConvert_IOEnum, ABConvert, type ABConvert_SpecSimp} from "./ABConvert"
-import {ABConvertManager} from "../ABConvertManager"
 import {ListProcess, type List_ListItem} from "./abc_list"
 
 import plantumlEncoder from "plantuml-encoder"
+
+import { list2ActivityDiagramText } from "./abc_plantuml_tools"
 
 const abc_list2jsontext = ABConvert.factory({
   id: "json2pumlJson",
@@ -64,7 +65,29 @@ const abc_list2pumlMindmap = ABConvert.factory({
   }
 })
 
-async function render_pumlText(text: string, div: HTMLElement) {
+const abc_list2ActivityDiagramText = ABConvert.factory({
+	id: "list2pumlActivityDiagramText",
+	name: "列表到puml活动图文本",
+	process_param: ABConvert_IOEnum.text,
+	process_return: ABConvert_IOEnum.text,
+	process: (el, header, content: string): string => {
+		return list2ActivityDiagramText(ListProcess.data2strict(ListProcess.list2data(content)))
+	}
+})
+
+const abc_list2ActivityDiagram = ABConvert.factory({
+	id: "list2pumlActivityDiagram",
+	name: "列表到puml活动图",
+	process_param: ABConvert_IOEnum.text,
+	process_return: ABConvert_IOEnum.el,
+	process: (el, header, content: string): HTMLElement => {
+		const puml = list2ActivityDiagramText(ListProcess.data2strict(ListProcess.list2data(content)))
+		render_pumlText(puml, el)
+		return el
+	}
+})
+
+export async function render_pumlText(text: string, div: HTMLElement) {
     // 1. 四选一。自己渲 (优缺点见abc_mermaid的相似方法)
     // 当前mdit和ob使用
     var encoded = plantumlEncoder.encode(text)

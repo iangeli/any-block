@@ -377,4 +377,133 @@ text2
 
 :::
 `,
+//
+'plantuml': `
+## pumlMindmap (puml思维导图)
+
+[list2pumlMindmap]
+
+- vue-demo/
+	- build/
+	- config/
+	- node_modules/
+	- src/
+		- assets/
+			- a/
+				- b
+		- components
+		- App.vue
+		- main.js
+	- static/
+	- test/
+
+## pumlWBS (puml工作分解图)
+
+[list2pumlWBS]
+
+- vue-demo/
+  - build/
+  - config/
+  - node_modules/
+  - src/
+    - < assets/
+      - < a
+        - b
+        - < c
+      - d
+      - e
+    - components
+    - App.vue
+    - main.js
+  - static/
+  - test/
+
+## ActivityDiagram (活动图)
+
+[list2pumlActivityDiagram]
+
+- lane l1:
+  - group g1:
+    - if condition a:
+      - a branch
+    - elif condition b:
+      - b branch
+    - else:
+      - else branch
+  - switch flag11:
+      - case flag12:
+          - flag13
+      - case flag14:
+          - flag15
+      - default:
+          - flag16
+- lane l2:
+  - print('loop start')
+  - while loop condition:
+    - loop body
+  - print('loop end')
+- lane l1:
+
+语法类似python，用代码块转成列表再转换也是可以的
+
+[code2list|list2pumlActivityDiagram]
+
+\`\`\`python
+lane l1:
+  group g1:
+    if condition a:
+      a branch
+    elif condition b:
+      b branch
+    else:
+      else branch
+
+  switch flag11:
+      case flag12:
+          flag13
+      case flag14:
+          flag15
+      default:
+          flag16
+
+lane l2:
+  print('loop start')
+  while loop condition:
+    loop body
+  print('loop end')
+
+lane l1:
+\`\`\`
+
+仅生成对应文本
+
+[code2list|list2pumlActivityDiagramText|code(js)]
+
+\`\`\`python
+lane l1:
+  group g1:
+    if condition a:
+      a branch
+    elif condition b:
+      b branch
+    else:
+      else branch
+
+  switch flag11:
+      case flag12:
+          flag13
+      case flag14:
+          flag15
+      default:
+          flag16
+
+lane l2:
+  print('loop start')
+  while loop condition:
+    loop body
+  print('loop end')
+
+lane l1:
+\`\`\`
+`
 }

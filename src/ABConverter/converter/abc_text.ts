@@ -211,3 +211,49 @@ const abc_listroot = ABConvert.factory({
     return content
   }
 })
+
+const abc_addList = ABConvert.factory({
+  id: "addList",
+  name: "缩进转列表",
+  detail: "缩进转列表",
+  default: "缩进转列表。对于空行的处理有两种策略：一是空行表示下一个列表，单换行表示同一列表项。二是忽略空行。暂时仅为策略二",
+  process_param: ABConvert_IOEnum.text,
+  process_return: ABConvert_IOEnum.text,
+  process: (el, header, content: string): string=>{
+    const lists = content.trimEnd().split("\n")
+    let newContent = ''
+    for (const item of lists) {
+      if (item.trim() == '') continue // 策略二。忽略空行
+      const match = item.match(/^(\s*)(.*)/)
+      if (match) {
+        newContent += '\n' + match[1] + '- ' + match[2]
+      }
+      else {}  // 不应该存在这种情况，忽略
+    }
+    return newContent
+  }
+})
+
+const abc_xList = ABConvert.factory({
+  id: "xList",
+  name: "列表转缩进",
+  match: /^(xList|Xlist)$/,
+  detail: "列表转缩进。对于多行内容的列表项，默认换行项删除前置空格并使用 `; ` 拼接，拼接符暂不支持自定义",
+  process_param: ABConvert_IOEnum.text,
+  process_return: ABConvert_IOEnum.text,
+  process: (el, header, content: string): string=>{
+    const lists = content.trimEnd().split("\n")
+    let newContent = ''
+    for (const item of lists) {
+      const match = item.match(ABReg.reg_list_noprefix)
+      if (match) {
+        newContent += '\n' + match[1] + match[4]
+      }
+      else if (newContent != '') {
+        newContent += '; ' + item.trimStart()
+      }
+      else {} // 通常是前面的空行或非列表，忽略
+    }
+    return newContent.slice(1) // 去除头部 `\n`
+  }
+})
