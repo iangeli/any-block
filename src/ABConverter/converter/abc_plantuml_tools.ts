@@ -1,14 +1,4 @@
-import type { List_ListItem, ListItem } from "./abc_list"
-
-type Stat = {
-  content: string,
-  level: number
-};
-
-type ProcessResult = {
-  result: string,
-  nextIndex: number
-};
+import type { List_ListItem } from "./abc_list"
 
 const KEYWORD_IF = "if "
 const KEYWORD_SWITCH = "switch "
@@ -21,41 +11,68 @@ const KEYWORD_ELSE = "else"
 const KEYWORD_ELIF = "elif "
 const KEYWORD_CASE = "case "
 const KEYWORD_DEFAULT = "default"
-const BLOCK_END = ":"
+const BLOCK_START = ":"
 const INDENT = "  ";
 
+class Stat {
+  content: string;
+  level: number;
+  constructor(content: string, level: number) {
+    this.content = content.trim();
+    this.level = level;
+  }
+  // 判断是否为保留字
+  isReservedWord(): boolean {
+    return this.content === "start" || this.content === "stop" || this.content === "kill" ||
+      this.content === "detach" || this.content === "break" || this.content === "end" ||
+      this.content === "fork" || this.content === "fork again" || this.content === "end fork" ||
+      this.content === "end merge";
+  }
+
+  isStatementOfType(...stateType: string[]): boolean {
+    return stateType.some(type => this.content.startsWith(type)) && this.content.endsWith(BLOCK_START);
+  }
+
+  takeTagOfStat(type: string): string {
+    const condition = this.content.substring(type.length, this.content.length - BLOCK_START.length).trim();
+    return condition;
+  }
+}
+
+type ProcessResult = {
+  result: string,
+  nextIndex: number
+};
+
+const statementTypes = {
+  [KEYWORD_IF]: processIfStatement,
+  [KEYWORD_SWITCH]: processSwitchStatement,
+  [KEYWORD_SWITCH2]: processSwitchStatement,
+  [KEYWORD_WHILE]: processWhileStatement,
+  [KEYWORD_GROUP]: processGroupStatement,
+  [KEYWORD_PARTITION]: processPartitionStatement,
+  [KEYWORD_LANE]: processSwimLane
+};
+
 // Process main content, recursively process all items
-function processBody(stats: Stat[], startIndex: number, parentLevel: number): ProcessResult {
+function processBlock(stats: Stat[], index: number, parentLevel: number): ProcessResult {
   let result = "";
-  let i = startIndex;
+  let next = index;
+  while (next < stats.length && (parentLevel === -1 || stats[next].level > parentLevel)) {
+    const stat = stats[next];
 
-  const statementTypes = {
-    [KEYWORD_IF]: processIfStatement,
-    [KEYWORD_SWITCH]: processSwitchStatement,
-    [KEYWORD_SWITCH2]: processSwitchStatement,
-    [KEYWORD_WHILE]: processWhileStatement,
-    [KEYWORD_GROUP]: processGroupStatement,
-    [KEYWORD_PARTITION]: processPartitionStatement,
-    [KEYWORD_LANE]: processSwimLane
-  };
-
-  while (i < stats.length && (parentLevel === -1 || stats[i].level > parentLevel)) {
-    const stat = stats[i];
-    const content = stat.content.trim();
-    const level = stat.level;
-
-    if (isReservedWord(content)) {
-      result += content + "\n";
-      i++;
+    if (stat.isReservedWord()) {
+      result += stat.content + "\n";
+      next++;
       continue;
     }
 
     let processed = false;
-    for (const [prefix, processor] of Object.entries(statementTypes)) {
-      if (content.startsWith(prefix) && content.endsWith(BLOCK_END)) {
-        const { result: processedResult, nextIndex } = processor(stats, i);
+    for (const [statType, processor] of Object.entries(statementTypes)) {
+      if (stat.isStatementOfType(statType)) {
+        const { result: processedResult, nextIndex: nextNext } = processor(stats, next);
         result += processedResult;
-        i = nextIndex;
+        next = nextNext;
         processed = true;
         break;
       }
@@ -63,56 +80,40 @@ function processBody(stats: Stat[], startIndex: number, parentLevel: number): Pr
 
     if (processed) continue;
 
-    if (content.length > 0) {
-      result += `:${content};` + "\n";
+    if (stat.content.length > 0) {
+      result += `:${stat.content};` + "\n";
     }
-    i++;
+    next++;
   }
 
-  return { result, nextIndex: i }
-}
-
-// 判断是否为保留字
-function isReservedWord(content: string): boolean {
-  return content === "start" || content === "stop" || content === "kill" ||
-    content === "detach" || content === "break" || content === "end" ||
-    content === "fork" || content === "fork again" || content === "end fork" ||
-    content === "end merge";
-}
-
-function isBlockOfType(content: string, type: string): boolean {
-  return content.startsWith(type) && content.endsWith(BLOCK_END);
-}
-
-function takeTagOfBlock(content: string, type: string): string {
-  const condition = content.substring(type.length, content.length - BLOCK_END.length).trim();
-  return condition;
+  return { result, nextIndex: next }
 }
 
 // 处理if语句
 function processIfStatement(stats: Stat[], index: number): { result: string, nextIndex: number } {
   let result = KEYWORD_IF;
   const stat = stats[index];
-  const condition = takeTagOfBlock(stat.content, KEYWORD_IF);
+  const condition = stat.takeTagOfStat(KEYWORD_IF);
   let nextIndex = index + 1;
 
+  // if body
   if (nextIndex < stats.length && stats[nextIndex].level > stat.level) {
     result += `(${condition}) then (yes)\n`;
-    const { result: result2, nextIndex: nextIndex2 } = processBody(stats, nextIndex, stat.level);
+    const { result: result2, nextIndex: nextIndex2 } = processBlock(stats, nextIndex, stat.level);
     result += indentContent(result2);
     nextIndex = nextIndex2;
   }
 
   // Process else and else if branches
-  while (nextIndex < stats.length && stats[nextIndex].level === stat.level && (isBlockOfType(stats[nextIndex].content.trim(), KEYWORD_ELIF) || isBlockOfType(stats[nextIndex].content.trim(), KEYWORD_ELSE))) {
-    const branch = stats[nextIndex].content.trim();
-    if (isBlockOfType(branch, KEYWORD_ELIF)) {
-      const condition = takeTagOfBlock(branch, KEYWORD_ELIF);
+  while (nextIndex < stats.length && stats[nextIndex].level === stat.level && stats[nextIndex].isStatementOfType(KEYWORD_ELIF, KEYWORD_ELSE)) {
+    const branch = stats[nextIndex];
+    if (branch.isStatementOfType(KEYWORD_ELIF)) {
+      const condition = branch.takeTagOfStat(KEYWORD_ELIF);
       result += `else if(${condition}) then (yes)\n`;
-    } else if (isBlockOfType(branch, KEYWORD_ELSE)) {
-      result += `else\n`;
+    } else if (branch.isStatementOfType(KEYWORD_ELSE)) {
+      result += `else (else)\n`;
     }
-    const { result: result2, nextIndex: nextIndex2 } = processBody(stats, nextIndex + 1, stat.level);
+    const { result: result2, nextIndex: nextIndex2 } = processBlock(stats, nextIndex + 1, stat.level);
     result += indentContent(result2);
     nextIndex = nextIndex2;
   }
@@ -125,32 +126,32 @@ function processIfStatement(stats: Stat[], index: number): { result: string, nex
 function processSwitchStatement(stats: Stat[], index: number): { result: string, nextIndex: number } {
   let result = KEYWORD_SWITCH;
   const stat = stats[index];
-  const condition = takeTagOfBlock(stat.content, KEYWORD_SWITCH);
+  const condition = stat.takeTagOfStat(KEYWORD_SWITCH);
   let nextIndex = index + 1;
 
   result += `(${condition})\n`;
 
   let hasDefault = false;
-  // Process case statements
-  while (nextIndex < stats.length && stats[nextIndex].level > stats[index].level) {
+  // Process case/default statements
+  while (nextIndex < stats.length && stats[nextIndex].level >= stat.level && stats[nextIndex].isStatementOfType(KEYWORD_CASE, KEYWORD_DEFAULT)) {
     const nextStat = stats[nextIndex];
-    if (isBlockOfType(nextStat.content.trim(), KEYWORD_CASE)) {
-      const caseTag = takeTagOfBlock(nextStat.content, KEYWORD_CASE);
+    nextIndex++;
+    if (nextStat.isStatementOfType(KEYWORD_CASE)) {
+      const caseTag = nextStat.takeTagOfStat(KEYWORD_CASE);
       result += `case (${caseTag})\n`;
-      const { result: caseResult, nextIndex: caseNextIndex } = processBody(stats, nextIndex, stat.level + 1);
+      const { result: caseResult, nextIndex: caseNextIndex } = processBlock(stats, nextIndex, nextStat.level);
       result += indentContent(caseResult);
       nextIndex = caseNextIndex;
-    } else if (isBlockOfType(nextStat.content, KEYWORD_DEFAULT)) {
+    } else if (nextStat.isStatementOfType(KEYWORD_DEFAULT)) {
       result += `case (default)\n`;
       hasDefault = true;
-      const { result: defaultResult, nextIndex: defaultNextIndex } = processBody(stats, nextIndex, stat.level + 1);
+      const { result: defaultResult, nextIndex: defaultNextIndex } = processBlock(stats, nextIndex, nextStat.level);
       result += indentContent(defaultResult);
       nextIndex = defaultNextIndex;
     }
-    nextIndex++;
   }
   if (!hasDefault) {
-    result += "case (default)\n:has no default case;\n";
+    result += "case (default)\n:<color:red>**has no default case**;\n";
   }
 
   result += "endswitch\n";
@@ -160,12 +161,12 @@ function processSwitchStatement(stats: Stat[], index: number): { result: string,
 // 处理while语句
 function processWhileStatement(stats: Stat[], index: number): { result: string, nextIndex: number } {
   const stat = stats[index];
-  const condition = takeTagOfBlock(stat.content, KEYWORD_WHILE);
+  const condition = stat.takeTagOfStat(KEYWORD_WHILE);
   let result = `${KEYWORD_WHILE}(${condition}) is (true)\n`;
   let nextIndex = index + 1;
 
   // Process while body
-  const { result: bodyResult, nextIndex: bodyNextIndex } = processBody(stats, nextIndex, stat.level);
+  const { result: bodyResult, nextIndex: bodyNextIndex } = processBlock(stats, nextIndex, stat.level);
   result += indentContent(bodyResult);
   nextIndex = bodyNextIndex;
 
@@ -176,12 +177,12 @@ function processWhileStatement(stats: Stat[], index: number): { result: string, 
 // 处理group语句
 function processGroupStatement(stats: Stat[], index: number): { result: string, nextIndex: number } {
   const stat = stats[index];
-  const groupName = takeTagOfBlock(stat.content, KEYWORD_GROUP);
+  const groupName = stat.takeTagOfStat(KEYWORD_GROUP);
   let result = `${KEYWORD_GROUP}${groupName}\n`;
   let nextIndex = index + 1;
 
   // Process group body
-  const { result: bodyResult, nextIndex: bodyNextIndex } = processBody(stats, nextIndex, stat.level);
+  const { result: bodyResult, nextIndex: bodyNextIndex } = processBlock(stats, nextIndex, stat.level);
   result += indentContent(bodyResult);
   nextIndex = bodyNextIndex;
 
@@ -192,12 +193,12 @@ function processGroupStatement(stats: Stat[], index: number): { result: string, 
 // 处理partition语句
 function processPartitionStatement(stats: Stat[], index: number): { result: string, nextIndex: number } {
   const stat = stats[index];
-  const partitionName = takeTagOfBlock(stat.content, KEYWORD_PARTITION);
+  const partitionName = stat.takeTagOfStat(KEYWORD_PARTITION);
   let result = `${KEYWORD_PARTITION}${partitionName} {\n`;
   let nextIndex = index + 1;
 
   // Process partition body
-  const { result: bodyResult, nextIndex: bodyNextIndex } = processBody(stats, nextIndex, stat.level);
+  const { result: bodyResult, nextIndex: bodyNextIndex } = processBlock(stats, nextIndex, stat.level);
   result += indentContent(bodyResult);
   nextIndex = bodyNextIndex;
 
@@ -208,24 +209,19 @@ function processPartitionStatement(stats: Stat[], index: number): { result: stri
 // 处理swim lane
 function processSwimLane(stats: Stat[], index: number): { result: string, nextIndex: number } {
   const stat = stats[index];
-  const laneName = takeTagOfBlock(stat.content, KEYWORD_LANE);
+  const laneName = stat.takeTagOfStat(KEYWORD_LANE);
   return { result: "|" + laneName + "|\n", nextIndex: index + 1 };
 }
 
 // 为内容添加缩进
 function indentContent(content: string): string {
-  return content.split('\n').map(line => INDENT + line).join('\n');
+  return content.split('\n').filter(x => x !== '').map(line => INDENT + line).join('\n') + "\n";
 }
 
 export function list2ActivityDiagramText(listdata: List_ListItem): string {
   let result = "@startuml\n";
-  const stats = listdata.map(item => {
-    return {
-      content: item.content.trim(),
-      level: item.level,
-    }
-  });
-  const { result: bodyResult } = processBody(stats, 0, -1);
+  const stats = listdata.map(item => new Stat(item.content.trim(), item.level));
+  const { result: bodyResult } = processBlock(stats, 0, -1);
   const swimLanes = bodyResult.split("\n").filter(line => line.startsWith("|") && line.endsWith("|"));
   if (swimLanes.length > 0) {
     result += swimLanes.join("\n");
