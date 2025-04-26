@@ -8,9 +8,7 @@ export function list2ActivityDiagramText(listdata: List_ListItem): string {
     result += swimLanes.join("\n");
 	result += "\n";
   }
-  result += "start\n";
   result += bodyResult;
-  result += "end\n";
   result += "@enduml";
   return result;
 }
