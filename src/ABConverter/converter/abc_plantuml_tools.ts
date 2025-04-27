@@ -151,7 +151,7 @@ function processSwitchStatement(stats: Stat[], index: number): { result: string,
     }
   }
   if (!hasDefault) {
-    result += "case (default)\n:<color:red>**has no default case**;\n";
+    result += "case (default)\n";
   }
 
   result += "endswitch\n";
