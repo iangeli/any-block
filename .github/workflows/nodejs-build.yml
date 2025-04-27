@@ -84,6 +84,7 @@ jobs:                         # 工作流
         npm run build
         > ./dist/.nojekyll
     - name: Build - Dist to Website Branch
+      if: github.event_name != 'pull_request'
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         # 这是文档部署到的分支名称
