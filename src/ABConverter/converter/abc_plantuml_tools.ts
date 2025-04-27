@@ -2,15 +2,16 @@ import type { List_ListItem } from "./abc_list"
 
 const KEYWORD_IF = "if "
 const KEYWORD_SWITCH = "switch "
-const KEYWORD_SWITCH2 = "match "
+const KEYWORD_SWITCH2 = "match "  // python use `match, case, case _` instead of `switch, case, default`
 const KEYWORD_WHILE = "while "
 const KEYWORD_GROUP = "group "
 const KEYWORD_PARTITION = "partition "
 const KEYWORD_LANE = "lane "
 const KEYWORD_ELSE = "else"
 const KEYWORD_ELIF = "elif "
-const KEYWORD_CASE = "case "
 const KEYWORD_DEFAULT = "default"
+const KEYWORD_DEFAULT2 = "case _" // python use `match, case, case _` instead of `switch, case, default`
+const KEYWORD_CASE = "case "
 const BLOCK_START = ":"
 const INDENT = "  ";
 
@@ -136,19 +137,19 @@ function processSwitchStatement(stats: Stat[], index: number): { result: string,
   while (nextIndex < stats.length && stats[nextIndex].level >= stat.level && stats[nextIndex].isStatementOfType(KEYWORD_CASE, KEYWORD_DEFAULT)) {
     const nextStat = stats[nextIndex];
     nextIndex++;
-    if (nextStat.isStatementOfType(KEYWORD_CASE)) {
-      const caseTag = nextStat.takeTagOfStat(KEYWORD_CASE);
-      result += `case (${caseTag})\n`;
-      const { result: caseResult, nextIndex: caseNextIndex } = processBlock(stats, nextIndex, nextStat.level);
-      result += indentContent(caseResult);
-      nextIndex = caseNextIndex;
-    } else if (nextStat.isStatementOfType(KEYWORD_DEFAULT)) {
+    if (nextStat.isStatementOfType(KEYWORD_DEFAULT) || nextStat.isStatementOfType(KEYWORD_DEFAULT2)) { // KEYWORD_DEFAULT2 must be ahead of KEYWORD_CASE
       result += `case (default)\n`;
       hasDefault = true;
       const { result: defaultResult, nextIndex: defaultNextIndex } = processBlock(stats, nextIndex, nextStat.level);
       result += indentContent(defaultResult);
       nextIndex = defaultNextIndex;
-    }
+    } else if (nextStat.isStatementOfType(KEYWORD_CASE)) {
+      const caseTag = nextStat.takeTagOfStat(KEYWORD_CASE);
+      result += `case (${caseTag})\n`;
+      const { result: caseResult, nextIndex: caseNextIndex } = processBlock(stats, nextIndex, nextStat.level);
+      result += indentContent(caseResult);
+      nextIndex = caseNextIndex;
+    } 
   }
   if (!hasDefault) {
     result += "case (default)\n";

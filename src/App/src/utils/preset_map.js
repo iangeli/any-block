@@ -516,6 +516,8 @@ match a:
         print('a is flag1')
     case 'flag2':
         print('a is flag2')
+    case _:
+        print('default')
 #endregion
 
 #region lane l2:
