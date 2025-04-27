@@ -420,16 +420,24 @@ text2
 
 ## ActivityDiagram (活动图)
 
+### 列表形式
+
 [list2pumlActivityDiagram]
 
+- start
 - lane l1:
   - group g1:
     - if condition a:
       - a branch
     - elif condition b:
       - b branch
+      - stop
+    - elif condition c:
+      - c  branch
+      - detach
     - else:
       - else branch
+      - kill
   - switch flag11:
       - case flag12:
           - flag13
@@ -443,20 +451,29 @@ text2
     - loop body
   - print('loop end')
 - lane l1:
+- end
+
+### python/缩进形式
 
 语法类似python，用代码块转成列表再转换也是可以的
 
 [code2list|list2pumlActivityDiagram]
 
 \`\`\`python
+start
 lane l1:
   group g1:
     if condition a:
       a branch
     elif condition b:
       b branch
+      stop
+    elif condition c:
+      c  branch
+      detach
     else:
       else branch
+      kill
 
   switch flag11:
       case flag12:
@@ -473,6 +490,7 @@ lane l2:
   print('loop end')
 
 lane l1:
+end
 \`\`\`
 
 其中可以用region注释来表示缩进
@@ -498,6 +516,8 @@ match a:
         print('a is flag1')
     case 'flag2':
         print('a is flag2')
+    case _:
+        print('default')
 #endregion
 
 #region lane l2:
@@ -510,7 +530,7 @@ print('loop end')
 #region lane l1:
 \`\`\`
 
-仅生成对应文本
+### 仅生成对应文本
 
 [code2list|list2pumlActivityDiagramText|code(js)]
 
@@ -540,5 +560,15 @@ lane l2:
 
 lane l1:
 \`\`\`
+
+### 其他扩展
+
+关键字
+
+- 组类：\`lane group partition\`
+- 主要流程控制类：\`if elif else, switch match case default, while\`
+- 其他：\`start, stop kill detach end, break, fork, frok again, end fork, end merge\`
+
+这本质上是plantuml活动图的一种语法封装，可以见plantuml文档并配置生成文本，来调试或获取一些有用信息：https://plantuml.com/zh/activity-diagram-beta
 `
 }
