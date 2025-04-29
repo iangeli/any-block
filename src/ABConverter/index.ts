@@ -17,3 +17,7 @@ export {} from "./converter/abc_mdit_container"
 export {} from "./converter/abc_plantuml" // 可选建议：156.3KB。由于在线渲染，相对下面两个没那么高
 export {} from "./converter/abc_mermaid"  // 可选建议：7.1MB
 export {} from "./converter/abc_markmap"  // 可选建议：1.3MB
+
+// 定义环境条件
+import { ABCSetting } from "./ABReg"
+ABCSetting.env = "obsidian"

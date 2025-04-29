@@ -18,3 +18,7 @@ export {} from "./converter/abc_mdit_container"
 // export {} from "./converter/abc_mermaid"  // [!code] min 可选建议：7.1MB
 export {} from "./converter/abc_mermaid.min"
 // export {} from "./converter/abc_markmap"  // [!code] min 可选建议：1.3MB
+
+// 定义环境条件
+import { ABCSetting } from "./ABReg"
+ABCSetting.env = "obsidian"

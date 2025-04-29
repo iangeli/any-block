@@ -6,7 +6,7 @@
  * - 表格数据 -> 列表数据
  */
 
-import { ABReg } from '../ABReg'
+import { ABCSetting, ABReg } from '../ABReg'
 import {ABConvert_IOEnum, ABConvert, type ABConvert_SpecSimp} from "./ABConvert"
 import {ABConvertManager} from "../ABConvertManager"
 import type {ListItem, List_ListItem} from "./abc_list"
@@ -350,35 +350,39 @@ export class C2ListProcess{
       for (let i=0; i<lis.length; i++){
         // 1. 二选一，常规绑定
         // ob选用
-        lis[i].onclick = ()=>{
-          for (let j=0; j<contents.length; j++){
-            lis[j].setAttribute("is_activate", "false")
-            contents[j].setAttribute("is_activate", "false")
-            contents[j].setAttribute("style", "display:none")
+        if (ABCSetting.env == "obsidian") {
+          lis[i].onclick = ()=>{
+            for (let j=0; j<contents.length; j++){
+              lis[j].setAttribute("is_activate", "false")
+              contents[j].setAttribute("is_activate", "false")
+              contents[j].setAttribute("style", "display:none")
+            }
+            lis[i].setAttribute("is_activate", "true")
+            contents[i].setAttribute("is_activate", "true")
+            contents[i].setAttribute("style", "display:block")
           }
-          lis[i].setAttribute("is_activate", "true")
-          contents[i].setAttribute("is_activate", "true")
-          contents[i].setAttribute("style", "display:block")
         }
-        // 2. 二选一，
-        // mdit选用
-        // lis[i].setAttribute("onclick",`
-        //   const i = ${i}
-        //   const tab_current = this
-        //   const tab_nav = this.parentNode
-        //   const tab_root = tab_nav.parentNode
-        //   const tab_content = tab_root.querySelector(":scope>.ab-tab-content")
-        //   const tab_nav_items = tab_nav.querySelectorAll(":scope>.ab-tab-nav-item")
-        //   const tab_content_items = tab_content.querySelectorAll(":scope>.ab-tab-content-item")
-        //   for (let j=0; j<tab_content_items.length; j++){
-        //     tab_nav_items[j].setAttribute("is_activate", "false")
-        //     tab_content_items[j].setAttribute("is_activate", "false")
-        //     tab_content_items[j].setAttribute("style", "display:none")
-        //   }
-        //   tab_current.setAttribute("is_activate", "true")
-        //   tab_content_items[i].setAttribute("is_activate", "true")
-        //   tab_content_items[i].setAttribute("style", "display:block")
-        // `)
+        // 2. 二选一，嵌入内联onclick
+        // mdit (vuepress、app) 选用
+        else {
+          lis[i].setAttribute("onclick",`
+            const i = ${i}
+            const tab_current = this
+            const tab_nav = this.parentNode
+            const tab_root = tab_nav.parentNode
+            const tab_content = tab_root.querySelector(":scope>.ab-tab-content")
+            const tab_nav_items = tab_nav.querySelectorAll(":scope>.ab-tab-nav-item")
+            const tab_content_items = tab_content.querySelectorAll(":scope>.ab-tab-content-item")
+            for (let j=0; j<tab_content_items.length; j++){
+              tab_nav_items[j].setAttribute("is_activate", "false")
+              tab_content_items[j].setAttribute("is_activate", "false")
+              tab_content_items[j].setAttribute("style", "display:none")
+            }
+            tab_current.setAttribute("is_activate", "true")
+            tab_content_items[i].setAttribute("is_activate", "true")
+            tab_content_items[i].setAttribute("style", "display:block")
+          `)
+        }
       }
     }
 

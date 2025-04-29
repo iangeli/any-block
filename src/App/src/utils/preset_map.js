@@ -116,8 +116,6 @@ this is ~~a~~ **MarkDown** *test*
   - static/
   - test/
 
-(app版本暂不支持点击)
-
 [list2tab]
 
 - linux

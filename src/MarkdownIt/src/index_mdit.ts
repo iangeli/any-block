@@ -49,7 +49,7 @@ import MarkdownItConstructor from "markdown-it-container";
 // 3. markdown-it-anyblock 插件
 // import { ABConvertManager } from "./index"
 import { ABConvertManager } from "../../ABConverter/ABConvertManager"
-import { ABReg } from "../../ABConverter/ABReg"
+import { ABCSetting, ABReg } from "../../ABConverter/ABReg"
 // 加载所有转换器 (都是可选的)
 // (当然，如果A转换器依赖B转换器，那么你导入A必然导入B)
 import "../../ABConverter/converter/abc_text"
@@ -414,6 +414,9 @@ export default function ab_mdit(md: MarkdownIt, options?: Partial<Options>): voi
     const result: string = md.render(markdown)
     const el_child = document.createElement("div"); el.appendChild(el_child); el_child.innerHTML = result;
   })
+
+  // 定义环境条件
+  ABCSetting.env = "vuepress"
 
   md.use(abSelector_squareInline)
   md.use(abSelector_container_vuepress) // [env] vuepress版本
