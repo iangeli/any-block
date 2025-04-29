@@ -436,11 +436,12 @@ html[data-theme="dark"] #app {
         vertical-align: top;
       }
       // 覆盖列表格的部分样式
-      .ab-foldable-tr>td:first-child>.ab-list-table-witharrow {
+      .ab-foldable-tr>td:first-child>div.ab-list-table-witharrow {
         padding: 0 !important;
         padding-right: 8px;
         padding-left: 20px;
         position: relative;
+        display: inline-block;
         &::before {
           border: solid 1px !important;
           background: none !important;
@@ -472,7 +473,7 @@ html[data-theme="dark"] #app {
         white-space: pre;
         vertical-align: top;
       }
-      &>td>div{
+      &>td>div {
         // float: left; (这个没办法让div下的div2和div3在同一行，用inline-block代替之)
         display: inline-block;
         vertical-align: top;

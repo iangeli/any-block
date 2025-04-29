@@ -204,11 +204,12 @@ export class DirProcess{
       // 折叠列表格 事件绑定
       const l_tr:NodeListOf<HTMLElement> = tbody.querySelectorAll("tr")
       for (let i=0; i<l_tr.length; i++){
-        const tr = l_tr[i]
+        let targetEl = l_tr[i]
+        targetEl = targetEl.querySelector(':scope>td:first-child') ?? targetEl // 优先使用第一列作为可点击区域
         // 1. 二选一，二选一，正常绑定方法
         // 当前ob使用
         if (ABCSetting.env == "obsidian") {
-          tr.onclick = ()=>{
+          targetEl.onclick = ()=>{
             const tr_level = Number(tr.getAttribute("tr_level"))
             if (isNaN(tr_level)) return
             const tr_isfold = tr.getAttribute("is_fold")
@@ -228,8 +229,8 @@ export class DirProcess{
         // 2. 嵌入内联onclick
         // 当前mdit (vuepress、app) 使用
         else {
-          tr.setAttribute("onclick", `
-          const tr = this
+          targetEl.setAttribute("onclick", `
+          const tr = (this.tagName == "TD") ? this.parentNode : this
           const l_tr = tr.parentNode.querySelectorAll("tr")
           const i = ${i}
           const tr_level = Number(tr.getAttribute("tr_level"))
