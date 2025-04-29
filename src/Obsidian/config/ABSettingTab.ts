@@ -84,7 +84,7 @@ export const AB_SETTINGS: ABSettingInterface = {
   }],
 
   is_debug: false,
-  is_enhance_refresh: true,
+  is_enhance_refresh: true, // 修改成刷新时间也许更好，-1为不刷新
   inline_split: "/\\| |,  |， |\\.  |。 |:  |： /",
 }
 

@@ -478,10 +478,14 @@ lane l1:
   switch flag11:
       case flag12:
           flag13
+          stop
       case flag14:
           flag15
+          kill
+      case falg16:
+          flag17
       default:
-          flag16
+          flag18
 
 lane l2:
   print('loop start')
@@ -493,7 +497,7 @@ lane l1:
 end
 \`\`\`
 
-其中可以用region注释来表示缩进
+其中也可以用region注释在code2list的过程中表示缩进
 
 region注释是一种多语言通用的语法，在多种IDE上均支持。这样写能够让代码完全合法 (是的，下面的代码能正确在python中运行)
 
