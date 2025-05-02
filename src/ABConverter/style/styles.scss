@@ -457,7 +457,7 @@ html[data-theme="dark"] #app {
           border-radius: 50%;
         }
       }
-      .ab-foldable-tr[tr_level="0"]>td:first-child>.ab-list-table-witharrow {
+      .ab-foldable-tr[tr_level="0"]>td:first-child>div.ab-list-table-witharrow {
         &::before {
           border: 0 !important;
           background-color: currentColor !important;

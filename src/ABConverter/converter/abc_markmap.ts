@@ -20,7 +20,7 @@
 
 import {ABConvert_IOEnum, ABConvert, type ABConvert_SpecSimp} from "./ABConvert"
 import {ABConvertManager} from "../ABConvertManager"
-import {ABReg} from "../ABReg"
+import {ABCSetting, ABReg} from "../ABReg"
 import { abConvertEvent, markmap_event } from "../ABConvertEvent";
 
 /**
@@ -53,34 +53,31 @@ process: (el, header, content: string): HTMLElement=>{
 })
 
 function list2markmap(markdown: string, div: HTMLDivElement) {
-	// 1. markdown解析 (markmap-lib)
+	// markdown解析 (markmap-lib)
 	const { root, features } = transformer.transform(markdown.trim()); // 1. transform Markdown
 	const assets = transformer.getUsedAssets(features); // 2. get assets (option1)
 
-	// 2. 渲染
+	// 渲染
+	// 1. 四选一。纯动态/手动渲染 (优缺点见abc_mermaid的相似方法)
+	// ob 选用
+	if (ABCSetting.env == "obsidian" || ABCSetting.env == "obsidian-min") {
+		// 1. 新Ob使用，现在Ob的刷新按钮统一放在了外面
+		let height_adapt = 30 + markdown.split("\n").length*15; // 1. 仅大致估算px: 30 + (0~50)行 * 15 = [30~780]。2. 如果要准确估计，得自己解析一遍，麻烦。3. 并且后面会有个事件覆盖掉这个大致高度，所以这里不重要。4. 另外采用"偏小"策略，视觉效果好一些
+		if (height_adapt>1000) height_adapt = 1000;
+		const id = Math.random().toString(36).substring(2);
+		const svg_div = document.createElement("div"); div.appendChild(svg_div); svg_div.classList.add("ab-markmap-div"); svg_div.id = "ab-markmap-div-"+id
+		const html_str = `<svg class="ab-markmap-svg" id="ab-markmap-${id}" data-json='${JSON.stringify(root)}' style="height:${height_adapt}px"></svg>` // TODO 似乎是这里导致了`'`符号的异常
+		svg_div.innerHTML = html_str
+	}
+	// 2. 四选一。这里不渲，交给上一层让上一层渲 (优缺点见abc_mermaid的相似方法)
+	// 当前mdit (vuepress、app) 使用
+	else {
+		div.classList.add("ab-raw")
+		div.innerHTML = `<div class="ab-raw-data" type-data="markmap" content-data='${markdown}'></div>`
+	}
+	// 1.2. 四选一。纯动态/手动渲染 (优缺点见abc_mermaid的相似方法)
+	// 旧Ob使用
 	{
-		// 1. 四选一。自己渲 (优缺点见abc_mermaid的相似方法)
-		// npm mindmap-view 方法
-		// // if (assets.styles) loadCSS(assets.styles);
-		// // if (assets.scripts) loadJS(assets.scripts, { getMarkmap: () => {} });
-		// const mindmaps = document.querySelectorAll('.ab-markmap-svg'); // 注意一下这里的选择器
-		// for(const mindmap of mindmaps) {
-		//  mindmap.innerHTML = "";
-		// 	const datajson: string|null = mindmap.getAttribute('data-json')
-		// 	if (datajson === null) { console.error("ab-markmap-svg without data-json") }
-		// 	g_markmap = Markmap.create(mindmap as SVGElement, undefined, JSON.parse(datajson as string));
-		// };
-
-		// 2. 四选一。这里给环境渲染 (优缺点见abc_mermaid的相似方法)
-		// ...
-
-		// 3. 四选一。这里不渲，交给上一层让上一层渲 (优缺点见abc_mermaid的相似方法)
-		// 当前mdit使用
-		// div.classList.add("ab-raw")
-		// div.innerHTML = `<div class="ab-raw-data" type-data="markmap" content-data='${markdown}'></div>`
-
-		// 4. 四选一。纯动态/手动渲染 (优缺点见abc_mermaid的相似方法)。
-		// 4.1. 旧Ob使用
 		// const svg_btn = document.createElement("button"); div.appendChild(svg_btn); svg_btn.textContent = "ChickMe ReRender Markmap";
 		// svg_btn.setAttribute("style", "background-color: argb(255, 125, 125, 0.5)");
 		// svg_btn.setAttribute("onclick", `
@@ -97,13 +94,23 @@ function list2markmap(markdown: string, div: HTMLDivElement) {
 		//  mindmap.innerHTML = "";
 		// 	Markmap.create(mindmap,null,JSON.parse(mindmap.getAttribute('data-json')));
 		// }\``);
-		// 4.2. 新Ob使用，现在Ob的刷新按钮统一放在了外面
-		let height_adapt = 30 + markdown.split("\n").length*15; // 1. 仅大致估算px: 30 + (0~50)行 * 15 = [30~780]。2. 如果要准确估计，得自己解析一遍，麻烦。3. 并且后面会有个事件覆盖掉这个大致高度，所以这里不重要。4. 另外采用"偏小"策略，视觉效果好一些
-		if (height_adapt>1000) height_adapt = 1000;
-		const id = Math.random().toString(36).substring(2);
-		const svg_div = document.createElement("div"); div.appendChild(svg_div); svg_div.classList.add("ab-markmap-div"); svg_div.id = "ab-markmap-div-"+id
-		const html_str = `<svg class="ab-markmap-svg" id="ab-markmap-${id}" data-json='${JSON.stringify(root)}' style="height:${height_adapt}px"></svg>` // TODO 似乎是这里导致了`'`符号的异常
-		svg_div.innerHTML = html_str
+	}
+	// 3. 四选一。自己渲 (优缺点见abc_mermaid的相似方法)
+	// npm mindmap-view 方法
+	{
+		// // if (assets.styles) loadCSS(assets.styles);
+		// // if (assets.scripts) loadJS(assets.scripts, { getMarkmap: () => {} });
+		// const mindmaps = document.querySelectorAll('.ab-markmap-svg'); // 注意一下这里的选择器
+		// for(const mindmap of mindmaps) {
+		//  mindmap.innerHTML = "";
+		// 	const datajson: string|null = mindmap.getAttribute('data-json')
+		// 	if (datajson === null) { console.error("ab-markmap-svg without data-json") }
+		// 	g_markmap = Markmap.create(mindmap as SVGElement, undefined, JSON.parse(datajson as string));
+		// };
+	}
+	// 4. 四选一。这里给环境渲染 (优缺点见abc_mermaid的相似方法)
+	{
+		// ...
 	}
 
 	return div

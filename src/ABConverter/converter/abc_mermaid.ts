@@ -9,7 +9,7 @@
 import {ABConvert_IOEnum, ABConvert, type ABConvert_SpecSimp} from "./ABConvert"
 import {ABConvertManager} from "../ABConvertManager"
 import {ListProcess, type List_ListItem} from "./abc_list"
-import {ABReg} from "../ABReg"
+import {ABCSetting, ABReg} from "../ABReg"
 
 // 二选一。这里是obsidian版本。mdit/min环境直接注释掉这部分
 // 依赖和主题明暗检测也是ob才需要的
@@ -257,49 +257,54 @@ async function render_mermaidText(mermaidText: string, div: HTMLElement) {
   // - 缺点: abc模块要内置mermaid，旧版插件使用是因为当时的obsidian内置的mermaid版本太老了
   // - 选用：目前的ob环境中用是最好。vuepress-mdit中则有另一个bug，DOMPurify丢失：https://github.com/mermaid-js/mermaid/issues/5204
   // - 补充：废弃函数：mermaid.mermaidAPI.renderAsync("ab-mermaid-"+getID(), mermaidText, (svgCode:string)=>{ div.innerHTML = svgCode })
-  const { svg } = await mermaid.render("ab-mermaid-"+getID(), mermaidText)
-  div.innerHTML = svg
-
+  if (ABCSetting.env == "obsidian") {
+    const { svg } = await mermaid.render("ab-mermaid-"+getID(), mermaidText)
+    div.innerHTML = svg
+  }
   // 2. 四选一。在这里给环境渲
   // - 优点：abc模块无需重复内置mermaid
   // - 缺点：在ob里中，一个mermaid块的变更会导致所在页面内的所有mermaid一起变更，在mdit里似乎id会有问题
   // min-ob使用
-  // ABConvertManager.getInstance().m_renderMarkdownFn("```mermaid\n"+mermaidText+"\n```", div)
-
+  else if (ABCSetting.env == "obsidian-min") {
+    ABConvertManager.getInstance().m_renderMarkdownFn("```mermaid\n"+mermaidText+"\n```", div)
+  }
   // 3. 四选一。这里不渲，交给上一层让上一层渲
   // 当前mdit选用
   // - 优点：abc模块无需重复内置mermaid。对于mdit，能避免输出格式必须为html
   // - 缺点：这和ab的接口设计是冲突的，属于是取巧临时使用，后面要规范一下。另一方面，不知道为什么这种方案容易爆内存 (markmap那边也这样用也没事，就mermaid这边会)
   // - 选用：mdit可以用这种，dev环境的最佳策略
-  // div.classList.add("ab-raw")
-  // div.innerHTML = `<div class="ab-raw-data" type-data="mermaid" content-data='${mermaidText}'></div>`
-
+  else {
+    div.classList.add("ab-raw")
+    div.innerHTML = `<div class="ab-raw-data" type-data="mermaid" content-data='${mermaidText}'></div>`
+  }
   // 4. 四选一。纯动态/手动渲染
   // - 优点：abc模块无需重复内置mermaid
   // - 缺点：是不由ab转换的mermaid块自己不管，转换可能有延迟，还要手动触发
   // - 选用：都可以用这种，虽然效果不太好，但省内存。方案3不知道为什么，会爆内存
-  // const div_btn = document.createElement("button"); div.appendChild(div_btn); div_btn.textContent = "ChickMe ReRender Mermaid";
-  // div_btn.setAttribute("style", "background-color: argb(255, 125, 125, 0.5)");
-  // div_btn.setAttribute("onclick", `
-  // console.log("mermaid chick");
-  // let script_el = document.querySelector('script[script-id="ab-mermaid-script"]');
-  // if (script_el) script_el.remove();
-  // script_el = document.createElement('script'); document.head.appendChild(script_el);
-  // script_el.type = "module";
-  // script_el.setAttribute("script-id", "ab-mermaid-script");
-  // script_el.textContent = \`
-  // import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-  // mermaid.initialize({ startOnLoad: false });
-  // const el_mermaids = document.querySelectorAll('.ab-mermaid-raw');
-  // function getID(length=16){
-  //   return Number(Math.random().toString().substr(3,length) + Date.now()).toString(36);
-  // }
-  // for(const el_mermaid of el_mermaids) {
-  //   const { svg } = await mermaid.render("ab-mermaid-"+getID(), el_mermaid.textContent);
-  //   el_mermaid.innerHTML = svg
-  // }
-  // \``);
-  // const pre_div = document.createElement("pre"); div.appendChild(pre_div); pre_div.classList.add("ab-mermaid-raw"); pre_div.textContent = mermaidText;
-  
+  {
+    // const div_btn = document.createElement("button"); div.appendChild(div_btn); div_btn.textContent = "ChickMe ReRender Mermaid";
+    // div_btn.setAttribute("style", "background-color: argb(255, 125, 125, 0.5)");
+    // div_btn.setAttribute("onclick", `
+    // console.log("mermaid chick");
+    // let script_el = document.querySelector('script[script-id="ab-mermaid-script"]');
+    // if (script_el) script_el.remove();
+    // script_el = document.createElement('script'); document.head.appendChild(script_el);
+    // script_el.type = "module";
+    // script_el.setAttribute("script-id", "ab-mermaid-script");
+    // script_el.textContent = \`
+    // import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    // mermaid.initialize({ startOnLoad: false });
+    // const el_mermaids = document.querySelectorAll('.ab-mermaid-raw');
+    // function getID(length=16){
+    //   return Number(Math.random().toString().substr(3,length) + Date.now()).toString(36);
+    // }
+    // for(const el_mermaid of el_mermaids) {
+    //   const { svg } = await mermaid.render("ab-mermaid-"+getID(), el_mermaid.textContent);
+    //   el_mermaid.innerHTML = svg
+    // }
+    // \``);
+    // const pre_div = document.createElement("pre"); div.appendChild(pre_div); pre_div.classList.add("ab-mermaid-raw"); pre_div.textContent = mermaidText;
+  }
+
   return div
 }

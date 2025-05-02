@@ -7,6 +7,7 @@
 
 import { ABConvert_IOEnum, ABConvert } from "./ABConvert"
 import { ABConvertManager } from "../ABConvertManager"
+import { ABCSetting } from "../ABReg";
 
 export const DECOProcessor = 0  // 用于模块化，防报错，其实没啥用
 
@@ -68,27 +69,32 @@ const abc_fold = ABConvert.factory({
     mid_el.appendChild(sub_el)
 
     // 二选一。仅ob环境，mdit环境不支持
-    // 特殊：如果折叠内容是列表格。将该处理器的折叠行为修改该按钮的折叠功能
-    if (sub_el.classList.contains("ab-list-table")) {
-      const btn = sub_el.querySelector(":scope>.ab-table-fold")
-      if (btn) {
-        // 1. 回溯原折叠
-        fn_fold()
-        sub_button.textContent = "全部折叠/展开"
-        // 2. 使用新折叠
-        const fn_fold2 = ()=>{
-          const clickEvent = new MouseEvent("click", {
-            view: window,
-            bubbles: true,
-            cancelable: true
-          });
-          btn.dispatchEvent(clickEvent);
+    if (ABCSetting.env == "obsidian" || ABCSetting.env == "obsidian-min") {
+      // 特殊：如果折叠内容是列表格。将该处理器的折叠行为修改该按钮的折叠功能
+      if (sub_el.classList.contains("ab-list-table")) {
+        const btn = sub_el.querySelector(":scope>.ab-table-fold")
+        if (btn) {
+          // 1. 回溯原折叠
+          fn_fold()
+          sub_button.textContent = "全部折叠/展开"
+          // 2. 使用新折叠
+          const fn_fold2 = ()=>{
+            const clickEvent = new MouseEvent("click", {
+              view: window,
+              bubbles: true,
+              cancelable: true
+            });
+            btn.dispatchEvent(clickEvent);
+          }
+          fn_fold2()
+          // 3. 按钮功能替换
+          sub_button.onclick = fn_fold2
         }
-        fn_fold2()
-        // 3. 按钮功能替换
-        sub_button.onclick = fn_fold2
       }
     }
+    // mdit (vuepress、app) 选用
+    // TODO
+    else {}
     return content
   }
 })

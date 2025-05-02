@@ -206,9 +206,9 @@ export class DirProcess{
       for (let i=0; i<l_tr.length; i++){
         let targetEl = l_tr[i]
         targetEl = targetEl.querySelector(':scope>td:first-child') ?? targetEl // 优先使用第一列作为可点击区域
-        // 1. 二选一，二选一，正常绑定方法
+        // 1. 二选一，正常绑定方法
         // 当前ob使用
-        if (ABCSetting.env == "obsidian") {
+        if (ABCSetting.env == "obsidian" || ABCSetting.env == "obsidian-min") {
           targetEl.onclick = ()=>{
             const tr_level = Number(tr.getAttribute("tr_level"))
             if (isNaN(tr_level)) return
@@ -226,7 +226,7 @@ export class DirProcess{
             if (flag_do_fold) tr.setAttribute("is_fold", tr_isfold=="true"?"false":"true")
           }
         }
-        // 2. 嵌入内联onclick
+        // 2. 二选一，嵌入内联onclick
         // 当前mdit (vuepress、app) 使用
         else {
           targetEl.setAttribute("onclick", `
