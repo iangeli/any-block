@@ -17,13 +17,10 @@ jobs:                         # 工作流
       uses: actions/setup-node@v4 # 配置node环境 (使用的是官方提供的action)，Node.js版本
       with:
         node-version: '20'
-    - name: npm depend1
-      run: npm ci                 # (npm ci代替npm install以获得更快的速度)
-    - name: npm depend2
-      working-directory: ./src/ABConverter/
-      run: npm ci
-    - name: npm build
-      run: npm run build
+    - name: pnpm depend
+      run: pnpm ci                # (npm ci代替npm install以获得更快的速度)
+    - name: pnpm ob:build
+      run: pnpm ob:build
     - name: upload build artifact
       if: always()                      # 即使之前的构建步骤失败，也会上载构建产物
       uses: actions/upload-artifact@v4  # 保存构建产物 (使用的是官方提供的action)
@@ -43,14 +40,11 @@ jobs:                         # 工作流
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-    - name: npm depend1
-      run: npm ci
-    - name: npm depend2
-      working-directory: ./src/ABConverter/
-      run: npm ci
-    - name: npm build-min
+    - name: pnpm depend
+      run: pnpm ci
+    - name: pnpm ob:build-min
       run: |                  # [!code] min
-        npm run ob:build-min
+        pnpm ob:build-min
         mv dist-min/main.js main.js
         mv dist-min/manifest.json manifest.json
     - name: upload build artifact
@@ -74,14 +68,9 @@ jobs:                         # 工作流
         node-version: '20'
     - name: Build
       run: |
-        # npm run app:build
-        npm ci
-        cd ./src/ABConverter/
-        npm ci
-        cd ../../
+        pnpm ci
         cd ./src/App/
-        npm ci
-        npm run build
+        pnpm build
         > ./dist/.nojekyll
     - name: Build - Dist to Website Branch
       if: github.event_name != 'pull_request'
