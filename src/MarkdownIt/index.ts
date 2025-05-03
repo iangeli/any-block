@@ -46,23 +46,27 @@ import MarkdownIt from "markdown-it"
 // 2. markdown-it-container
 import MarkdownItConstructor from "markdown-it-container";
 
-// 3. markdown-it-anyblock 插件
+// 3. JsDom。仅用于提供document对象支持 (如果Ob环境中则不需要，用ob自带document对象的)
+import { jsdom_init } from './jsdom_init'
+export const jsdom_init_ = jsdom_init;
+
+// 4. markdown-it-anyblock 插件
 // import { ABConvertManager } from "./index"
-import { ABConvertManager } from "../../ABConverter/ABConvertManager"
-import { ABCSetting, ABReg } from "../../ABConverter/ABReg"
+import { ABConvertManager } from "../ABConverter/ABConvertManager"
+import { ABCSetting, ABReg } from "../ABConverter/ABReg"
 // 加载所有转换器 (都是可选的)
 // (当然，如果A转换器依赖B转换器，那么你导入A必然导入B)
-import "../../ABConverter/converter/abc_text"
-import "../../ABConverter/converter/abc_list"
-import "../../ABConverter/converter/abc_c2list"
-import "../../ABConverter/converter/abc_table"
-import "../../ABConverter/converter/abc_dir_tree"
-import "../../ABConverter/converter/abc_deco"
-import "../../ABConverter/converter/abc_ex"
-import "../../ABConverter/converter/abc_mdit_container"
-import "../../ABConverter/converter/abc_plantuml" // 可选建议：
-import "../../ABConverter/converter/abc_mermaid"  // 可选建议：非 min 环境下 7.1MB
-import "../../ABConverter/converter/abc_markmap"  // 可选建议：1.3MB
+import "../ABConverter/converter/abc_text"
+import "../ABConverter/converter/abc_list"
+import "../ABConverter/converter/abc_c2list"
+import "../ABConverter/converter/abc_table"
+import "../ABConverter/converter/abc_dir_tree"
+import "../ABConverter/converter/abc_deco"
+import "../ABConverter/converter/abc_ex"
+import "../ABConverter/converter/abc_mdit_container"
+import "../ABConverter/converter/abc_plantuml" // 可选建议：
+import "../ABConverter/converter/abc_mermaid"  // 可选建议：非 min 环境下 7.1MB
+import "../ABConverter/converter/abc_markmap"  // 可选建议：1.3MB
 
 interface Options {
   multiline: boolean;
@@ -81,7 +85,7 @@ interface Options {
  * 选择 [] 包裹的正文段
  */
 function abSelector_squareInline(md: MarkdownIt, options?: Partial<Options>): void {
-  md.block.ruler.before('paragraph', 'AnyBlockParagraph', function (state,startLine,endLine) {
+  md.block.ruler.before('paragraph', 'AnyBlockParagraph', function (state:any,startLine:number,endLine:number) {
     
     // (1) 匹配ab块头部
     let ab_header: string                   // ab块 - 头部 (包含)
@@ -267,7 +271,7 @@ function abSelector_container_vuepress(md: MarkdownIt, options?: Partial<Options
  */
 function abSelector_container_app(md: MarkdownIt, options?: Partial<Options>): void {
   md.block.ruler.before('fence', 'AnyBlockMditContainer', (
-    state, startLine, endLine, silent
+    state:any, startLine:number, endLine:number, silent:any
   ): boolean => {
     // 获取当前行的内容
     const start = state.bMarks[startLine] + state.tShift[startLine];
@@ -336,11 +340,11 @@ function abSelector_container_app(md: MarkdownIt, options?: Partial<Options>): v
  * 渲染 anyBlock 块 - codeBlock/fence 规则
  */
 function abRender_fence(md: MarkdownIt, options?: Partial<Options>): void {
-  const oldFence = md.renderer.rules.fence || function(tokens, idx, options, env, self) {
+  const oldFence = md.renderer.rules.fence || function(tokens:any, idx:number, options:any, env:any, self:any) {
     return self.renderToken(tokens, idx, options);
   };
 
-  md.renderer.rules.fence = (tokens, idx, options, env, self) => {
+  md.renderer.rules.fence = (tokens:any, idx:number, options:any, env:any, self:any) => {
     // 查看是否匹配
     let token = tokens[idx]
     let lines = token.content.split('\n')
@@ -406,7 +410,7 @@ function abRender_fence(md: MarkdownIt, options?: Partial<Options>): void {
   }
 }
 
-export default function ab_mdit(md: MarkdownIt, options?: Partial<Options>): void {
+export function ab_mdit(md: MarkdownIt, options?: Partial<Options>): void {
   // 定义默认渲染行为
   ABConvertManager.getInstance().redefine_renderMarkdown((markdown: string, el: HTMLElement): void => {
     el.classList.add("markdown-rendered")

@@ -7,18 +7,14 @@
 	"license": "GNU Affero General Public License v3.0",
 	"main": "main.js",
 	"scripts": {
-		"build": "npm run copy_abc_style && tsc -noEmit -skipLibCheck && node ./src/Obsidian/esbuild.config.mjs production",
-		"build-min": "npm run copy_abc_style && tsc -noEmit -skipLibCheck && node ./src/Obsidian/esbuild.config.min.mjs production",
-		"ob:dev": "node ./src/Obsidian/esbuild.config.mjs",
-		"ob:dev2": "vite build --watch --mode=development",
+		"build": "npm run ob:build",
+		"build-min": "npm run ob:build-min",
 		"ob:build": "npm run copy_abc_style && tsc -noEmit -skipLibCheck && node ./src/Obsidian/esbuild.config.mjs production",
 		"ob:build-min": "npm run copy_abc_style && tsc -noEmit -skipLibCheck && node ./src/Obsidian/esbuild.config.min.mjs production",
-		"build2": "npm run copy_abc_style && npx svelte-check && vite build --mode=production",
 		"copy_abc_style": "copyfiles --flat ./src/ABConverter/style/styles.css ./",
-		"version": "node version-bump.mjs && git add manifest.json versions.json",
-		"bumpversion": "node version-bump.mjs && git add manifest.json versions.json",
 		"app:dev": "vite --config ./src/App/vite.config.js",
-		"app:build": "vite build --config ./src/App/vite.config.js"
+		"app:build": "vite build --config ./src/App/vite.config.js",
+		"mdit:build": "vite build --config ./src/MarkdownIt/vite.config.js"
 	},
 	"keywords": [
 		"obsidian",

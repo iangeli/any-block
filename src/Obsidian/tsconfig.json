@@ -15,7 +15,7 @@
     "noImplicitAny": true,
     "moduleResolution": "node",
     "importHelpers": true,
-    // "allowSyntheticDefaultImports": true, // markdown-it模块要加这个
+    "allowSyntheticDefaultImports": true, // 导入markdown-it/plantuml-encoder等cjs模块要加这个
     "isolatedModules": true,
     "strictNullChecks": true,
     "lib": [
@@ -30,4 +30,5 @@
   "include": [
     "**/*.ts"
   ],
+  "exclude": ["../App/", "../MarkdownIt/", "../Vuepress/"]
 }
