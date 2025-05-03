@@ -8,12 +8,12 @@ App版本的编译：(两种方法都可以)
 
 ```bash
 cd src/App
-npm install
-npm run dev # or npm run build
+pnpm install
+pnpm dev # or pnpm build
 ```
 
 方法二：
 
 ```bash
-npm run app:dev # or npm run app:build
+pnpm app:dev # or onpm app:build
 ```

@@ -1,7 +1,7 @@
 import { MarkdownRenderChild } from "obsidian";
 import { ABReplacer_Widget } from "../abm_cm/ABReplacer_Widget";
-import { ABConvertManager } from "src/ABConverter/ABConvertManager"
-import { abConvertEvent } from "src/ABConverter/ABConvertEvent";
+import { ABConvertManager } from "@/ABConverter/ABConvertManager"
+import { abConvertEvent } from "@/ABConverter/ABConvertEvent";
 
 export class ABReplacer_Render extends MarkdownRenderChild {
   content: string;

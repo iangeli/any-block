@@ -1,0 +1,40 @@
+{
+	"name": "obsidian-any-block",
+	"version": "3.2.2",
+	"description": "You can flexibility to create a 'Block' by some means.",
+	"author": "LincZero",
+	"authorUrl": "https://github.com/LincZero",
+	"license": "GNU Affero General Public License v3.0",
+	"main": "main.js",
+	"scripts": {
+		"dev": "node esbuild.config.mjs",
+		"build": "npm run copy_abc_style && tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"build-min": "npm run copy_abc_style && tsc -noEmit -skipLibCheck && node esbuild.config.min.mjs production",
+		"ob:build": "npm run copy_abc_style && tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"ob:build-min": "npm run copy_abc_style && tsc -noEmit -skipLibCheck && node esbuild.config.min.mjs production",
+    "copy_abc_style": "copyfiles --flat ../../src/ABConverter/style/styles.css ../../"
+	},
+	"keywords": [],
+	"devDependencies": {
+		"@codemirror/language": "^6.3.2",
+    "@codemirror/state": "^6.3.2",
+    "@codemirror/view": "^6.3.2",
+		"@sveltejs/vite-plugin-svelte": "^2.0.2",
+		"@tsconfig/svelte": "^3.0.0",
+		"@types/node": "^16.11.6",
+		"@typescript-eslint/eslint-plugin": "5.29.0",
+		"@typescript-eslint/parser": "5.29.0",
+		"builtin-modules": "3.3.0",
+		"copyfiles": "^2.4.1",
+		"esbuild": "^0.14.47",
+		"esbuild-svelte": "^0.7.3",
+		"obsidian": "latest",
+		"svelte": "^3.55.1",
+		"tslib": "2.4.0",
+		"typescript": "4.7.4",
+		"vite": "^4.1.1"
+	},
+	"dependencies": {
+		"html-to-md": "^0.8.3"
+	}
+}

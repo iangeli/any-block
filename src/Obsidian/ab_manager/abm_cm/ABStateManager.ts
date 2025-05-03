@@ -20,7 +20,7 @@ import { ConfDecoration } from "../../config/ABSettingTab"
 import { autoMdSelector, type MdSelectorRangeSpec} from "./ABSelector_Md"
 import { ABDecorationManager } from "./ABDecorationManager"
 import { ABReplacer_Widget } from "./ABReplacer_Widget"
-import { abConvertEvent } from "src/ABConverter/ABConvertEvent";
+import { abConvertEvent } from "@/ABConverter/ABConvertEvent";
 
 // 获取 - 模式
 enum Editor_mode{
@@ -144,13 +144,13 @@ export class ABStateManager{
 
   /** 一个类成员。StateField，该状态管理Decoration */
   private decorationField = StateField.define<DecorationSet>({
-    create: (editorState)=>{return Decoration.none},
+    create: (editorState:any)=>{return Decoration.none},
     // create好像不用管，update无论如何都能触发的
     // 函数的根本作用，是为了修改decorationSet的范围，间接修改StateField的管理范围
-    update: (decorationSet, tr)=>{
+    update: (decorationSet:any, tr:any)=>{
       return this.onUpdate(decorationSet, tr)
     },
-    provide: f => EditorView.decorations.from(f)
+    provide: (f:any) => EditorView.decorations.from(f)
   })
 
   /** --------------------------------- on更新事件 ------------------------- */
@@ -199,7 +199,7 @@ export class ABStateManager{
       // 大刷新，全文刷新，全清空掉再重新赋予
       if (decoration_mode!=this.prev_decoration_mode){
         decorationSet = decorationSet.update({
-          filter: (from, to, value)=>{return false}
+          filter: (from:any, to:any, value:any)=>{return false}
         })
         this.is_prev_cursor_in = true
         this.prev_decoration_mode = decoration_mode
@@ -262,7 +262,7 @@ export class ABStateManager{
 
       // 装饰调整 - 删
       decorationSet = decorationSet.update({            // 减少，全部删掉
-        filter: (from, to, value)=>{return false}
+        filter: (from:any, to:any, value:any)=>{return false}
       })
       // 装饰调整 - 增
       // 这里有点脱屁股放屁，但好像因为范围重叠的原因，直接传列表会报错：

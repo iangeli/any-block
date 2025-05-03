@@ -1,19 +1,21 @@
 {
+  "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
-    "types": ["node"],
+    "types": ["svelte", "node"],
     "experimentalDecorators": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["../../src/*"]
     },
     // "inlineSourceMap": true, // 否则svelete文件报错：[svelte-preprocess] Encountered type error
+    "inlineSources": true,
     "module": "ESNext",
     "target": "ES6",
     "allowJs": true,
     "noImplicitAny": true,
     "moduleResolution": "node",
     "importHelpers": true,
-    "allowSyntheticDefaultImports": true, // 导入markdown-it/plantuml-encoder等cjs模块要加这个
+    // "allowSyntheticDefaultImports": true, // markdown-it模块要加这个
     "isolatedModules": true,
     "strictNullChecks": true,
     "lib": [
@@ -28,5 +30,4 @@
   "include": [
     "**/*.ts"
   ],
-  "exclude": ["src/App/", "src/MarkdownIt/", "src/Vuepress/"]
 }

@@ -8,10 +8,10 @@ import {
 import { ConfDecoration } from "../../config/ABSettingTab"
 import type AnyBlockPlugin from "../../main"
 import { ABReplacer_Render } from "./ABReplacer_Render"
-import { ABReg } from "src/ABConverter/ABReg"
-import { ABConvertManager } from "src/ABConverter/ABConvertManager"
-import { abConvertEvent } from "src/ABConverter/ABConvertEvent";
-import { ABCSetting } from 'src/ABConverter/ABReg'
+import { ABReg } from "@/ABConverter/ABReg"
+import { ABConvertManager } from "@/ABConverter/ABConvertManager"
+import { abConvertEvent } from "@/ABConverter/ABConvertEvent";
+import { ABCSetting } from '@/ABConverter/ABReg'
 
 /**
  * Html处理器
@@ -79,7 +79,7 @@ export class ABSelector_PostHtml{
         // 而这里的mdSrc对应的是对应内容的那个文件名，如果用叶子节点方式，可能产生不一致的 !!! 这里推荐只使用ctx方式 !!!
 
         // 判断是否悬浮窗口。悬浮窗口禁用强制渲染
-        const view: View|null = app.workspace.getActiveViewOfType(MarkdownView); // 未聚焦(active)会返回null，非聚焦于md区返回null (也包括canvas、excalidraw)
+        const view: View|null = this.app.workspace.getActiveViewOfType(MarkdownView); // 未聚焦(active)会返回null，非聚焦于md区返回null (也包括canvas、excalidraw)
         // 判断方式一：内容与窗口的文件名是否一致 (切换页面时 (aIncludeB -> b)，有可能检测有问题，要用另一判断方式)
         // @ts-ignore 类型“View”上不存在属性“file”
         const path = view?.file.path

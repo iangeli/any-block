@@ -6,10 +6,10 @@
 
 import {App, PluginSettingTab, Setting, Modal} from "obsidian"
 import type AnyBlockPlugin from "../main"
-import {ABConvertManager} from "src/ABConverter/ABConvertManager"
-import {ABConvert, type ABConvert_SpecUser} from "src/ABConverter/converter/ABConvert"
-import { ABAlias_json, ABAlias_json_default } from "src/ABConverter/ABAlias"
-import { ABCSetting, ABReg } from "src/ABConverter/ABReg"
+import {ABConvertManager} from "@/ABConverter/ABConvertManager"
+import {ABConvert, type ABConvert_SpecUser} from "@/ABConverter/converter/ABConvert"
+import { ABAlias_json, ABAlias_json_default } from "@/ABConverter/ABAlias"
+import { ABCSetting, ABReg } from "@/ABConverter/ABReg"
 
 // 加载所有选择器
 import {} from "../ab_manager/abm_cm/ABSelector_MdBase"

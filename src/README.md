@@ -15,14 +15,16 @@
 
 可以参考github工作流文件: `/.github/workflows/nodejs-build.yml`
 
+单独编译某一版本：
+
+核心模块
+
 ```bash
-npm install
-cd ./src/ABConverter && npm install && cd ../../
+pnpm install      # monorepo，会自动 install 子包的依赖
 
-npm run build # 编译ob版本，或 npm run ob:build
-npm run ob:build-min # v3.2.1 新增min版本的工作流
+pnpm ob:build     # 编译ob版本，或 npm run ob:build
+pnpm ob:build-min # v3.2.1 新增min版本的工作流
 
-cd ./src/App && npm install && cd ../../
-npm app:dev   # app版本的开发调试，也可以 cd src/App 后运行 npm run dev
-npm app:build # app版本的构建，也可以 cd src/App 后运行 npm run build
+pnpm app:dev      # app版本的开发调试，也可以 cd src/App 后运行 npm run dev
+pnpm app:build    # app版本的构建，也可以 cd src/App 后运行 npm run build
 ```
