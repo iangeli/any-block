@@ -10,6 +10,7 @@
 		"dev": "node esbuild.config.mjs",
 		"dev2": "vite build --watch --mode=development",
 		"build": "npm run copy_abc_style && tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"build-min": "npm run copy_abc_style && tsc -noEmit -skipLibCheck && node esbuild.config.min.mjs production",
 		"ob:build": "npm run copy_abc_style && tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
 		"ob:build-min": "npm run copy_abc_style && tsc -noEmit -skipLibCheck && node esbuild.config.min.mjs production",
 		"build2": "npm run copy_abc_style && npx svelte-check && vite build --mode=production",
