@@ -6,6 +6,7 @@
 	"authorUrl": "https://github.com/LincZero",
 	"license": "GNU Affero General Public License v3.0",
 	"main": "main.js",
+	"packageManager": "pnpm@10.10.0",
 	"scripts": {
 		"build": "npm run copy_abc_style && tsc -noEmit -skipLibCheck && node ./src/Obsidian/esbuild.config.mjs production",
 		"build-min": "npm run copy_abc_style && tsc -noEmit -skipLibCheck && node ./src/Obsidian/esbuild.config.min.mjs production",
