@@ -38,7 +38,7 @@ export interface ABSettingInterface {
 
   // 其他
   is_debug: boolean,                // 是否开启调试打印
-  is_enhance_refresh: boolean,      // 是否开启刷新增强
+  enhance_refresh_time: number,     // 刷新增强的刷新时间 (ms) (<1000为关闭，最快1s)
   inline_split: string,             // 正则里的内联分隔符
 }
 export enum ConfSelect{
@@ -84,7 +84,7 @@ export const AB_SETTINGS: ABSettingInterface = {
   }],
 
   is_debug: false,
-  is_enhance_refresh: true, // 修改成刷新时间也许更好，-1为不刷新
+  enhance_refresh_time: 2000,
   inline_split: "/\\| |,  |， |\\.  |。 |:  |： /",
 }
 
