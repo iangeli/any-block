@@ -22,9 +22,11 @@
 ```bash
 pnpm install      # monorepo，会自动 install 子包的依赖
 
-pnpm ob:build     # 编译ob版本，或 npm run ob:build
+pnpm ob:build     # 编译ob版本，或 pnpm run ob:build
 pnpm ob:build-min # v3.2.1 新增min版本的工作流
 
-pnpm app:dev      # app版本的开发调试，也可以 cd src/App 后运行 npm run dev
-pnpm app:build    # app版本的构建，也可以 cd src/App 后运行 npm run build
+pnpm app:dev      # app版本的开发调试，也可以 cd src/App 后运行 pnpm run dev
+pnpm app:build    # app版本的构建，也可以 cd src/App 后运行 pnpm run build
+
+pnpm mdit:build   # markdown-it版本的构建 (已上传npm)
 ```

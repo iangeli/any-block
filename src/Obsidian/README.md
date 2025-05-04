@@ -5,8 +5,8 @@
 ### 编译
 
 ```bash
-npm i
-npm run build
+pnpm i
+pnpm build
 ```
 
 ### 使用

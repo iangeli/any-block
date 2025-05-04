@@ -7,14 +7,13 @@
 	"license": "GNU Affero General Public License v3.0",
 	"main": "main.js",
 	"scripts": {
-		"build": "npm run ob:build",
-		"build-min": "npm run ob:build-min",
-		"ob:build": "npm run copy_abc_style && tsc -noEmit -skipLibCheck && node ./src/Obsidian/esbuild.config.mjs production",
-		"ob:build-min": "npm run copy_abc_style && tsc -noEmit -skipLibCheck && node ./src/Obsidian/esbuild.config.min.mjs production",
-		"copy_abc_style": "copyfiles --flat ./src/ABConverter/style/styles.css ./",
-		"app:dev": "vite --config ./src/App/vite.config.js",
-		"app:build": "vite build --config ./src/App/vite.config.js",
-		"mdit:build": "vite build --config ./src/MarkdownIt/vite.config.js"
+		"build": "pnpm run ob:build",
+		"build-min": "pnpm run ob:build-min",
+		"ob:build": "cd ./src/Obsidian && pnpm build",
+		"ob:build-min": "cd ./src/Obsidian && pnpm build-min",
+		"app:dev": "cd ./src/App && pnpm dev",
+		"app:build": "cd ./src/App && pnpm build",
+		"mdit:build": "cd ./src/MarkdownIt && pnpm build"
 	},
 	"keywords": [
 		"obsidian",
