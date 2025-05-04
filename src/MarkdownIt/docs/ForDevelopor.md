@@ -98,9 +98,9 @@
 // import { ab_mdit } from "./plugins/ABConvertManager/MarkdownIt/dist/index.js"  // 编译版tsup (ab环境编译成功，vp环境编译失败，使用未测试)
 // import { ab_mdit } from "./plugins/ABConvertManager/MarkdownIt/lib/index.js"   // 编译版rollup (编译成功，使用失败，打包缺失了很多东西，体积很小)
 // import { ab_mdit } from "./plugins/ABConvertManager/MarkdownIt/dist/mdit-any-block.js"// 编译版vite (成功)
-// import { ab_mdit, jsdom_init_ } from "./plugins/ABConvertManager/MarkdownIt/index.js" // 源码版 (成功)
-// import { ab_mdit, jsdom_init_ } from "markdown-it-any-block"             // npm-rsup (使用失败：error Error: Dynamic require of "node:process" is not supported)
-// import { ab_mdit, jsdom_init_ } from "markdown-it-any-block"             // npm-vite (成功，jsdom封装问题待测试)
+// import { ab_mdit, jsdom_init } from "./plugins/ABConvertManager/MarkdownIt/index.js"  // 源码版 (成功)
+// import { ab_mdit, jsdom_init } from "markdown-it-any-block"              // npm-rsup (使用失败：error Error: Dynamic require of "node:process" is not supported)
+// import { ab_mdit, jsdom_init } from "markdown-it-any-block"              // npm-vite (成功，jsdom封装问题待测试)
 
 // 旧版
 // import ab_mdit from "./plugins/ABConvertManager/dist/index_mdit.js"     // 编译版tsc (成功)
@@ -241,9 +241,9 @@ external: Object.keys(pkg.dependencies || {}), // 排除所有依赖
 新版看一下是不是漏了 jsdom_init
 
 ```ts
-import { ab_mdit, jsdom_init_ } from "markdown-it-any-block"
+import { ab_mdit, jsdom_init } from "markdown-it-any-block"
 
-jsdom_init_() // 如果模块根部有直接使用的，可能要改成 await jsdom_init_() 同步操作
+jsdom_init() // 如果模块根部有直接使用的，可能要改成 await jsdom_init() 同步操作
 
 ...
 ```
