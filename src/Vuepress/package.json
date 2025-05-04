@@ -13,7 +13,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run build_tsc",
+    "build": "npm run build_tsup",
     "build_tsc": "tsc",
     "build_tsup": "tsup",
     "build_vite": "vite build",

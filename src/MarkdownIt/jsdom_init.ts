@@ -1,19 +1,18 @@
 /**
  * 初始化JSDOM
+ * 
+ * JsDom。仅用于提供document对象支持 (如果Ob等客户端渲染环境中则不需要，服务端渲染则需要)
  */
 
+// import jsdom from "jsdom"
+
 export async function jsdom_init() {
-  // JsDom。仅用于提供document对象支持 (如果Ob等客户端渲染环境中则不需要，服务端渲染则需要)
-  const { default: jsdom } = await import('jsdom')
+  const { default: jsdom } = await import('jsdom') // 废弃，要同步，避免docuemnt初始化不及时
   const { JSDOM } = jsdom
   const dom = new JSDOM(`<!DOCTYPE html><html><body></body></html>`, {
     url: 'http://localhost/', // @warn 若缺少该行，则在mdit+build环境下，编译报错
   });
-  // @ts-ignore 不能将类型“DOMWindow”分配给类型“Window & typeof globalThis”
-  global.Storage = function () { // @warn 若缺少改行，则在不知名环境下会出现"Storage is not defined"错误
-    this.temp_method = function () {
-    }
-  }
+  global.Storage = dom.window.Storage;
   // @ts-ignore 不能将类型“DOMWindow”分配给类型“Window & typeof globalThis”
   global.window = dom.window
   global.history = dom.window.history // @warn 若缺少该行，则在mdit+build环境下，编译报错：ReferenceError: history is not defined

@@ -21,7 +21,7 @@ export default defineConfig({
     },
     rollupOptions: {
       // 确保您的库与其他包兼容
-      external: ['markdown-it'],
+      external: ['markdown-it', 'jsdom'],
       output: {
         // Provide global variables to other scripts
         globals: {

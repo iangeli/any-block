@@ -1,6 +1,6 @@
 {
   "name": "markdown-it-any-block",
-  "version": "3.2.2",
+  "version": "3.2.4",
   "description": "```typescript\r import { ABConvertManager } from \"ABConvertManager\"",
   "types": "@types/index_mdit.d.ts",
   "type": "module",
@@ -13,12 +13,13 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run build_rollup",
+    "build": "pnpm build_vite",
     "build_tsc": "tsc",
     "build_tsup": "tsup",
     "build_vite": "vite build",
     "build_rollup": "rollup -c rollup.config.ts --configPlugin esbuild",
-    "prepublishOnly": "npm run build_vite"
+    "build_test": "echo '区别见README文件的 `构建测试` 一节'",
+    "prepublishOnly": "pnpm build"
   },
   "author": "LincZero",
   "license": "GNU Affero General Public License v3.0",
@@ -26,7 +27,7 @@
     "markdown-it": "^14.1.0"
   },
   "dependencies": {
-    "jsdom": "^25.0.1",
+    "jsdom": "^26.0.0",
     "markdown-it": "^14.1.0",
     "plantuml-encoder": "^1.4.0"
   },

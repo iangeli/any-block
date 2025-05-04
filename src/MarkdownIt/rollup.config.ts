@@ -1,10 +1,10 @@
 // take from: https://github.com/mdit-plugins/mdit-plugins/blob/main/scripts/rollup.ts
 
-import alias from '@rollup/plugin-alias' // [+code] rollup不走tsconfig.json的paths别名，得自己处理别名
-import path from 'path'
+// import alias from '@rollup/plugin-alias' // [+code] rollup不走tsconfig.json的paths别名，得自己处理别名
+// import path from 'path'
 
-import { basename } from "node:path";
-import { cwd } from "node:process";
+// import { basename } from "node:path";
+// import { cwd } from "node:process";
 
 // 这个codecov是用于代码覆盖率统计，还需要TOKEN，我不需要，注释掉了
 // import { codecovRollupPlugin } from "@codecov/rollup-plugin";
@@ -38,7 +38,7 @@ export const rollupTypescript = (
       input: `./index.ts`,
       output: [
         {
-          file: `./lib/index.js`,
+          file: `./dist/mdit-any-block.js`,
           format: "esm",
           sourcemap: true,
           exports: "named",
@@ -75,7 +75,7 @@ export const rollupTypescript = (
       ? [
           defineConfig({
             input: `./index.ts`,
-            output: [{ file: `./lib/index.d.ts`, format: "esm" }],
+            output: [{ file: `./dist/mdit-any-block.d.ts`, format: "esm" }],
             plugins: [
               dts({
                 compilerOptions: {

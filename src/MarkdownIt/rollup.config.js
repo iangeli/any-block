@@ -17,15 +17,15 @@ const config_umd_full = {
   input: 'index.ts',
   output: [
     {
-      file: `dist/${pkg.name}.js`,
+      file: `dist/mdit-any-block.js`,
       format: 'umd',
-      name: globalName(pkg.name),
+      name: 'mdit-any-block',
       plugins: []
     },
     {
-      file: `dist/${pkg.name}.min.js`,
+      file: `dist/mdit-any-block.min.js`,
       format: 'umd',
-      name: globalName(pkg.name),
+      name: 'mdit-any-block',
       plugins: []
     }
   ],
@@ -38,7 +38,7 @@ const config_cjs_no_deps = {
     file: 'dist/index.cjs.js',
     format: 'cjs'
   },
-  external: Object.keys(pkg.dependencies || {}),
+  external: ['markdown-it', 'jsdom'], // Object.keys(pkg.dependencies || {}),
   plugins: []
 }
 
