@@ -112,4 +112,18 @@ jobs:                         # 工作流
       run: |
         pnpm install --frozen-lockfile
         pnpm mdit:build
-    # 这里可以添加如果tag改变，就上传npm的行动。目前暂时手动
+    # 快速迭代和慢迭代冲突问题
+    # 使用tag触发还是package.json version触发 (后者较繁琐)
+    # - name: Publish to npm
+    #   if: startsWith(github.ref, 'refs/tags/')  # 仅当 tag 推送时执行
+    #   run: pnpm publish -r --access public --no-git-checks
+    #   env:
+    #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # 暂时手动发布，主要是更新频率不好控制
+    # - name: Publish to npm (自动忽略版本冲突)
+    #   if: github.event_name != 'pull_request'  # 仅在 push 时发布
+    #   run: |
+    #     cd src/markdownit
+    #     pnpm publish --access public --no-git-checks || echo "::warning::Publish failed (可能版本未变更)"
+    #   env:
+    #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    #   continue-on-error: true  # 关键配置：允许步骤失败但不中断工作流

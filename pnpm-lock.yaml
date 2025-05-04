@@ -113,6 +113,9 @@ importers:
       '@types/plantuml-encoder':
         specifier: ^1.4.2
         version: 1.4.2
+      copyfiles:
+        specifier: ^2.4.1
+        version: 2.4.1
       markdown-it-container:
         specifier: ^4.0.0
         version: 4.0.0

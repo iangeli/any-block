@@ -17,6 +17,7 @@ export async function jsdom_init() {
   global.window = dom.window
   global.history = dom.window.history // @warn 若缺少该行，则在mdit+build环境下，编译报错：ReferenceError: history is not defined
   global.document = dom.window.document
+  global.Node = dom.window.Node
   global.NodeList = dom.window.NodeList
   global.HTMLElement = dom.window.HTMLElement
   global.HTMLDivElement = dom.window.HTMLDivElement

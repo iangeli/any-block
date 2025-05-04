@@ -29,6 +29,13 @@ const userConfig: UserConfig = {
 }
 ```
 
+> [!WARNING]
+> 
+> 注意，构建出来的只有对应的dom结构，而没有样式。因为纯markdown-it插件是不含样式的（除非用内联样式），自己引用一下就好
+> 
+> 对应的样式位置，例如在scss中：
+> `@import '../../../node_modules/markdown-it-any-block/styles.css'`
+
 ## 构建
 
 构建就简单的 `pnpm build`
@@ -51,3 +58,11 @@ $ npm publish  # 上传 (注意不要重名、npm账号可能需要邮箱验证)
 $ npm publish --tag beta  # 如果使用测试或beta版本 (包含 `-tagname`)，如 `-beta` 
                           # 需要 添加 `--tag <tagname>`，如 `--tag beta`
 ```
+
+## 服务端渲染与客户端渲染
+
+其中，如果你想部署静态文档，并使用 anyblock 提前渲染好对应的结果，
+那么你需要执行 `jsdom_init_()`，像前面教程中说到的那样。
+
+又或者，你可能想二次封装该 markdown-it 插件，让其在客户端渲染，
+那么你无需使用虚拟dom模块，即无需执行 `jsdom_init_()`

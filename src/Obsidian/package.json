@@ -9,11 +9,11 @@
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"ob:dev2": "vite build --watch --mode=development",
-		"build": "npm run copy_abc_style && tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
-		"build-min": "npm run copy_abc_style && tsc -noEmit -skipLibCheck && node esbuild.config.min.mjs production",
-		"ob:build": "npm run copy_abc_style && tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
-		"ob:build-min": "npm run copy_abc_style && tsc -noEmit -skipLibCheck && node esbuild.config.min.mjs production",
-		"build2": "npm run copy_abc_style && npx svelte-check && vite build --mode=production",
+		"build": "pnpm copy_abc_style && tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"build-min": "pnpm copy_abc_style && tsc -noEmit -skipLibCheck && node esbuild.config.min.mjs production",
+		"ob:build": "pnpm copy_abc_style && tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"ob:build-min": "pnpm copy_abc_style && tsc -noEmit -skipLibCheck && node esbuild.config.min.mjs production",
+		"build2": "pnpm copy_abc_style && npx svelte-check && vite build --mode=production",
 		"version": "node version-bump.mjs && git add manifest.json versions.json",
 		"bumpversion": "node version-bump.mjs && git add manifest.json versions.json",
     	"copy_abc_style": "copyfiles --flat ../../src/ABConverter/style/styles.css ../../"
