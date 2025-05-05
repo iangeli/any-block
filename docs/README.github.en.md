@@ -4,36 +4,36 @@
 
 [中文](./README.md)|[English](./README.en.md)
 
-## AnyBlock是什么?
+## What's AnyBlock?
 
-- 一个渲染模块，以及通用插件。(**Obsidian插件, Markdown-it插件, 在线App, Vuepress插件**)
-- 您可以通过许多方式灵活地创建一个“块”。它还提供了许多有用的功能，如“列表转表格”等。
+- A rendering module, and universal plugin. (**Obsidian plugin, Markdown-it plugin, Online App, Vuepress plugin**)
+- You can flexibility to create a 'Block' by many means. It also provides many useful features, like `list to table` and so on.
 
-## 相关链接
+## More Links
 
-- 相关链接：**教程**、使用技能、贡献、二次开发、在线使用。文档是**多语言**的（zh/en），不用担心
-- [在线文档 - github.io](https://linczero.github.io/MdNote_Public/ProductDoc/AnyBlock/)
-- [在线效果展示/教程 - github.io](https://linczero.github.io/MdNote_Public/ProductDoc/AnyBlock/README.show.md), 你可以通过切换里面的标签页来学习用法
-- [在线交互 - github.io](https://any-block.github.io/obsidian-any-block/)，你可以在这里编写体验、通过模板学习用法
-- [文档对应的仓库 - github](https://github.com/LincDocs/MdNote_Public/tree/main/ProductDoc/AnyBlock), 你可以在此翻译或补充文档
-- 备用网站链接：如果网站失效，则将网站链接部分的 `linczero.github.io` 替换成 `linczero-github-io.pages.dev` 就可以了
-	  （**本文的默认网站链接指向 github.io，如果国内有不能访问的朋友，那么大概率需要做这一步**）
+- en
+- Related links：**tutorial**、use skill、contribution、secondary development、online use. Documentation is **multilingual** (zh/en), don't worry.
+- [Online Wiki - github.io](https://linczero.github.io/MdNote_Public/ProductDoc/AnyBlock/)
+- [Online Effects warrior/Tutorial - github.io](https://linczero.github.io/MdNote_Public/ProductDoc/AnyBlock/README.show.md), You can learn how to use it by switching between tabs.
+- [Online Interaction - github.io](https://any-block.github.io/obsidian-any-block/). You can write experiences here and learn usage through templates
+- [Docs Repo - github](https://github.com/LincDocs/MdNote_Public/tree/main/ProductDoc/AnyBlock), You can translate or supplement documents here
+- Alternate site links：When the website link to this article fails, try replacing `linczero.github.io` with `linczero-github-io.pages.dev` in the url
 
-## 亮点
+## Lightspot
 
-这是一个 **【无语法、可扩展、灵活强大、多平台】** 的 Markdown 块扩展解析与渲染模块插件。
+This is a **【Syntax free, Extensible、Powerful and flexible、Multi-platform】** Markdown block extension analysis and rendering module/plugin.
 
-- 无语法
-    - 没有新语法、没有语法入侵
-	- 这也导致没有过度的插件依赖。我认为好的插件不应该导致 —— 当你用了一段时间插件后，离开该插件会导致原来的内容变形，不可读或维护
-- 可扩展性
-    - 插件方便二次开发
-- 灵活且强大
-    - 选择器 (灵活)：选择范围灵活，六种选择方式，简单易用
-	- 处理器 (强大)：丰富多样、功能强大、扩展性强
-- 多平台, 高通用
-    - 可用于: **Obsidian插件, Markdown-it插件, 在线App, Vuepress插件**
-	- 支持markdown-it解析的博客，如vuepress/vitepress等
+- Syntax free
+    - No new syntax、Syntax-free intrusion
+	- This also leads to no excessive reliance on plugins. I think a good plugin should not cause - when you have used the plugin for a period of time, leaving it will cause the original content to deform, become unreadable or maintainable
+- Extensible
+    - Facilitate secondary development
+- Flexible and powerful
+    - Selector (Flexible)：The selection range is flexible, with six selection methods, making it simple and easy to use
+	- Processor (Powerful)：Rich and diverse, powerful in function and highly scalable
+- Multi-platform, strong universality
+    - It can use: **Obsidian plugin, Markdown-it plugin, Online App, Vuepress plugin**
+	- Blogs such as vuepress/vitepress that support markdown-it parsing
 
 ## Effects warrior (效果展示)
 

@@ -1,7 +1,7 @@
 {
 	"name": "any-block",
 	"version": "3.2.2",
-	"description": "You can flexibility to create a 'Block' by some means.",
+	"description": "You can flexibility to create a 'Block' by many means. It also provides many useful features, like `list to table`. (obsidian/markdown-it/vuepress plugin/app)",
 	"author": "LincZero",
 	"authorUrl": "https://github.com/LincZero",
 	"license": "GNU Affero General Public License v3.0",
@@ -16,10 +16,10 @@
 		"mdit:build": "cd ./src/MarkdownIt && pnpm build"
 	},
 	"keywords": [
-		"obsidian",
-		"vuepress",
-		"markdown",
-		"markdown-it"
+		"anyblock", "any-block",
+		"obsidian", "obsidian plugin",
+		"vuepress", "vuepress plugin",
+		"markdown", "markdown-it", "markdown-it plugin"
 	],
 	"devDependencies": {
 		"@codemirror/language": "^6.3.2",
