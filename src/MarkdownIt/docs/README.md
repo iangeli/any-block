@@ -11,6 +11,22 @@
 
 ## any-block-converter-markdown-it 模块的使用
 
+### 废弃声明 (备用)
+
+```ts
+npm deprecate <your-old-package>@* "❗ 此包已废弃，请改用新包：<your-new-package> → https://www.npmjs.com/package/<your-new-package>"
+```
+
+或更新 package.json 和 README
+
+```json
+{
+  "name": "your-old-package",
+  "deprecated": "❗ 此包已废弃，请改用：https://www.npmjs.com/package/your-new-package",
+  // ...其他字段
+}
+```
+
 ### 使用流程 - 源码版
 
 ```typescript
