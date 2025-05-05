@@ -18,7 +18,7 @@ $ pnpm install -D markdown-it-any-block@latest
 
 ```ts
 import { ab_mdit, jsdom_init } from "markdown-it-any-block"
-jsdom_init() // 如果模块根部有直接使用的，可能要改成 await jsdom_init() 同步操作
+jsdom_init()
 
 ...
 
@@ -35,6 +35,11 @@ const userConfig: UserConfig = {
 > 
 > 对应的样式位置，例如在scss中：
 > `@import '../../../node_modules/markdown-it-any-block/styles.css'`
+
+jsdown_init 命令的补充:
+
+- 如果模块根部有直接使用的，会报错 document 对象找不到，此时应改成同步操作
+- 并非必须的，当用于markdown-it插件时 (服务端渲染) 一般需要先执行。但如果二次封装成客户端渲染，则不一定需要执行
 
 ## 构建
 
