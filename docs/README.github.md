@@ -2,12 +2,12 @@
 
 ![Obsidian plugin](https://img.shields.io/endpoint?url=https%3A%2F%2Fscambier.xyz%2Fobsidian-endpoints%2Fany-block.json) ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/LincZero/obsidian-any-block)
 
-[中文](./README.md)|[English](./README.en.md)
+[中文](./README.md) | [English](./README.en.md)
 
 ## AnyBlock是什么?
 
-- 一个渲染模块，以及通用插件。(**Obsidian插件, Markdown-it插件, 在线App, Vuepress插件**)
-- 您可以通过许多方式灵活地创建一个“块”。它还提供了许多有用的功能，如“列表转表格”等。
+- 一个markdown解析和渲染的模块/插件。(**Obsidian插件, Markdown-it插件, 在线App, Vuepress插件**)
+- 您可以通过许多方式灵活地创建一个“块”。它还提供了许多有用的功能，如“列表转表格”等
 
 ## 相关链接
 

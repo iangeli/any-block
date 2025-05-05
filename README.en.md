@@ -2,12 +2,12 @@
 
 ![Obsidian plugin](https://img.shields.io/endpoint?url=https%3A%2F%2Fscambier.xyz%2Fobsidian-endpoints%2Fany-block.json) ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/LincZero/obsidian-any-block)
 
-[中文](./README.md)|[English](./README.en.md)
+[中文](./README.md) | [English](./README.en.md)
 
 ## What's AnyBlock?
 
-- A rendering module, and universal plugin. (**Obsidian plugin, Markdown-it plugin, Online App, Vuepress plugin**)
-- You can flexibility to create a 'Block' by many means. It also provides many useful features, like `list to table` and so on.
+- A markdown parsing and rendering module/plugin. (**Obsidian plugin, Markdown-it plugin, Online App, Vuepress plugin**)
+- You can flexibility to create a 'Block' by many means. It also provides many useful features, like `list to table` and so on
 
 ## More Links
 
