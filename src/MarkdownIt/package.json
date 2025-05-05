@@ -1,6 +1,6 @@
 {
   "name": "markdown-it-any-block",
-  "version": "3.2.9",
+  "version": "3.2.10",
   "description": "```typescript\r import { ABConvertManager } from \"ABConvertManager\"",
   "types": "@types/index_mdit.d.ts",
   "type": "module",

@@ -33,8 +33,8 @@ const userConfig: UserConfig = {
 > 
 > 注意，构建出来的只有对应的dom结构，而没有样式。因为纯markdown-it插件是不含样式的（除非用内联样式），自己引用一下就好
 > 
-> 对应的样式位置，例如在scss中：
-> `@import '../../../node_modules/markdown-it-any-block/styles.css'`
+> 例如vuepress中可以创建/修改 `src/.vuepress/styles/index.scss`
+> 并添加: `@import '../../../node_modules/markdown-it-any-block/styles';`
 
 ## 扩展补充
 

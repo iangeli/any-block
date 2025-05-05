@@ -14,7 +14,10 @@
 ### 废弃声明 (备用)
 
 ```ts
+// 模板
 npm deprecate <your-old-package>@* "❗ 此包已废弃，请改用新包：<your-new-package> → https://www.npmjs.com/package/<your-new-package>"
+// 实际
+npm deprecate any-block-converter-markdown-it@* "❗ This package has been discarded. Please use a new one instead： markdown-it-any-block → https://www.npmjs.com/package/markdown-it-any-block"
 ```
 
 或更新 package.json 和 README

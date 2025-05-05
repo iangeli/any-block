@@ -12,6 +12,9 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   external: [
-    'markdown-it', 'jsdom'
-  ]
+    'markdown-it',
+    'jsdom',
+    'mermaid',
+    '@mermaid-js/mermaid-mindmap',
+  ],
 });

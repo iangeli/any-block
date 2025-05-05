@@ -11,31 +11,7 @@ import {ABConvertManager} from "../ABConvertManager"
 import {ListProcess, type List_ListItem} from "./abc_list"
 import {ABCSetting, ABReg} from "../ABReg"
 
-// mermaid依赖和初始化相关
-// TODO 非条件编译，打包体积还是会变大
-let mermaid: any = null // type: Mermaid
-;(async () => {
-  // 二选一。mdit/min环境直接不执行这部分
-  if  (ABCSetting.env !== 'obsidian' || true) return
-
-  // 二选一。这里是obsidian版本。
-  // 依赖和主题明暗检测也是ob才需要的
-  // const mermaid_str = 'mermaid' // 避免在此处形成包依赖，如果需要则要额外import来表示依赖该包
-  // const mindmap_str = '@mermaid-js/mermaid-mindmap'
-  const { default: mermaid_ } = await import('mermaid')
-  const { default: mindmap } = await import('@mermaid-js/mermaid-mindmap')
-
-  mermaid = mermaid_
-  const initialize = mermaid.registerExternalDiagrams([mindmap]) // 扩展mindmap功能
-  const isDarkTheme = document.body.classList.contains('theme-dark')
-  const theme = isDarkTheme ? 'dark' : 'light'
-  mermaid.initialize({
-    theme: theme
-  })
-  const mermaid_init = async () => {
-    await initialize;
-  }
-})();
+let mermaid: any = null // type: Mermaid (不一定用得上，占位)
 
 /**
  * 生成一个随机id
@@ -269,9 +245,9 @@ async function render_mermaidText(mermaidText: string, div: HTMLElement) {
   // - 选用：目前的ob环境中用是最好。vuepress-mdit中则有另一个bug，DOMPurify丢失：https://github.com/mermaid-js/mermaid/issues/5204
   // - 补充：废弃函数：mermaid.mermaidAPI.renderAsync("ab-mermaid-"+getID(), mermaidText, (svgCode:string)=>{ div.innerHTML = svgCode })
   if (ABCSetting.env == "obsidian") {
-    // const { svg } = await mermaid.render("ab-mermaid-"+getID(), mermaidText)
-    // div.innerHTML = svg
-    console.error("缺少 mermaid 环境")
+    await init_mermaid()
+    const { svg } = await mermaid?.render("ab-mermaid-"+getID(), mermaidText)
+    div.innerHTML = svg
   }
   // 2. 四选一。在这里给环境渲
   // - 优点：abc模块无需重复内置mermaid
@@ -319,4 +295,21 @@ async function render_mermaidText(mermaidText: string, div: HTMLElement) {
   }
 
   return div
+}
+
+/**
+ * mermaid依赖和初始化相关
+ * 
+ * document依赖，不要根部执行
+ * 一是避免服务端渲染时jsdom创建document对象不及
+ * 二是动态引入，提升性能
+ * 
+ * TODO 非条件编译，打包体积还是会变大
+ */
+async function init_mermaid () {
+  if (mermaid != null) return // 已经初始化过
+    
+  // 二选一。mdit/min环境直接不执行这部分
+  if  (ABCSetting.env !== 'obsidian' || true) return
+  // 在min版本会自动忽略后面，但在vuepress那边居然还会检查过来并发现包丢失，得注释掉
 }
