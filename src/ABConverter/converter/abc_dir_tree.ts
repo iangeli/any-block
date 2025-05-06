@@ -133,10 +133,12 @@ export class DirProcess{
     modeT: boolean,
     is_folder=false
   ){
+    const div2 = document.createElement("div"); div.appendChild(div2); // 避免根div直接包含两个dom
+
     // GeneratorListTable，原Svelte
     {
       // 表格数据 组装成表格
-      const table = document.createElement("table"); div.appendChild(table); table.classList.add("ab-table", "ab-list-table")
+      const table = document.createElement("table"); div2.appendChild(table); table.classList.add("ab-table", "ab-list-table")
       if (is_folder) table.classList.add("ab-table-folder")
       if (modeT) table.setAttribute("modeT", "true")
 
@@ -229,38 +231,14 @@ export class DirProcess{
         // 2. 二选一，嵌入内联onclick
         // 当前mdit (vuepress、app) 使用
         else {
-          targetEl.setAttribute("onclick", `
-          const tr = (this.tagName == "TD") ? this.parentNode : this
-          const l_tr = tr.parentNode.querySelectorAll("tr")
-          const i = ${i}
-          const tr_level = Number(tr.getAttribute("tr_level"))
-          if (isNaN(tr_level)) return
-          const tr_isfold = tr.getAttribute("is_fold")
-          if (!tr_isfold) return
-          let flag_do_fold = false  // 防止折叠最小层
-          for (let j=i+1; j<l_tr.length; j++){
-            const tr2 = l_tr[j]
-            const tr_level2 = Number(tr2.getAttribute("tr_level"))
-            if (isNaN(tr_level2)) break
-            if (tr_level2<=tr_level) break
-            (tr_isfold == "true") ? tr2.style.display = "" : tr2.style.display = "none"
-            flag_do_fold = true
-          }
-          if (flag_do_fold) tr.setAttribute("is_fold", tr_isfold=="true"?"false":"true")
-          `)
-        }
-      }
-
-      // 折叠全列表格 事件绑定 // TODO，可以简化、复用。tr.onclick(这里加上可空传参)
-      const btn = document.createElement("button"); table.appendChild(btn); btn.classList.add("ab-table-fold"); btn.textContent="全部折叠/展开"; btn.setAttribute("is_fold", "false");
-      btn.onclick = ()=>{
-        const l_tr:NodeListOf<HTMLElement> = table.querySelectorAll("tr");
-        for (let i=0; i<l_tr.length; i++) {
-          const tr = l_tr[i]
-          ;(()=>{
+          targetEl.setAttribute("onclick", `\
+            const tr = (this.tagName == "TD") ? this.parentNode : this
+            const l_tr = tr.parentNode.querySelectorAll("tr")
+            const i = ${i}
+            
             const tr_level = Number(tr.getAttribute("tr_level"))
             if (isNaN(tr_level)) return
-            const tr_isfold = btn.getAttribute("is_fold"); // [!code] tr->btn
+            const tr_isfold = tr.getAttribute("is_fold")
             if (!tr_isfold) return
             let flag_do_fold = false  // 防止折叠最小层
             for (let j=i+1; j<l_tr.length; j++){
@@ -272,11 +250,87 @@ export class DirProcess{
               flag_do_fold = true
             }
             if (flag_do_fold) tr.setAttribute("is_fold", tr_isfold=="true"?"false":"true")
-          })()
+          `)
         }
-        if (btn.getAttribute("is_fold")) {
-          btn.setAttribute("is_fold", (btn.getAttribute("is_fold")=="true")?"false":"true")
+      }
+
+      // 折叠全列表格 事件绑定 // TODO，可以简化、复用。tr.onclick(这里加上可空传参)
+      const btn = document.createElement("button"); div2.appendChild(btn); btn.classList.add("ab-table-fold");
+      const svgStr_fold = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-fold-vertical-icon lucide-fold-vertical"><path d="M12 22v-6"/><path d="M12 8V2"/><path d="M4 12H2"/><path d="M10 12H8"/><path d="M16 12h-2"/><path d="M22 12h-2"/><path d="m15 19-3-3-3 3"/><path d="m15 5-3 3-3-3"/></svg>`
+      const svgStr_unfold = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-unfold-vertical-icon lucide-unfold-vertical"><path d="M12 22v-6"/><path d="M12 8V2"/><path d="M4 12H2"/><path d="M10 12H8"/><path d="M16 12h-2"/><path d="M22 12h-2"/><path d="m15 19-3 3-3-3"/><path d="m15 5-3-3-3 3"/></svg>`
+      btn.setAttribute("is_fold", "false"); btn.innerHTML = svgStr_fold;
+      // 1. 二选一，正常绑定方法
+      // 当前ob使用
+      if (ABCSetting.env == "obsidian" || ABCSetting.env == "obsidian-min") {
+        btn.onclick = ()=>{
+          const l_tr = table.querySelectorAll("tr");
+          for (let i=0; i<l_tr.length; i++) {
+            const tr = l_tr[i]
+            ;(()=>{
+              const tr_level = Number(tr.getAttribute("tr_level"))
+              if (isNaN(tr_level)) return
+              const tr_isfold = btn.getAttribute("is_fold"); // [!code] tr->btn
+              if (!tr_isfold) return
+              let flag_do_fold = false  // 防止折叠最小层
+              for (let j=i+1; j<l_tr.length; j++){
+                const tr2 = l_tr[j]
+                const tr_level2 = Number(tr2.getAttribute("tr_level"))
+                if (isNaN(tr_level2)) break
+                if (tr_level2<=tr_level) break
+                (tr_isfold == "true") ? tr2.style.display = "" : tr2.style.display = "none"
+                flag_do_fold = true
+              }
+              if (flag_do_fold) tr.setAttribute("is_fold", tr_isfold=="true"?"false":"true")
+            })()
+          }
+          const is_all_fold = btn.getAttribute("is_fold")
+          if (is_all_fold=="true") {
+            btn.setAttribute("is_fold", "false"); btn.innerHTML = svgStr_fold;
+          }
+          else {
+            btn.setAttribute("is_fold", "true"); btn.innerHTML = svgStr_unfold;
+          }
         }
+      }
+      // 2. 二选一，嵌入内联onclick
+      // 当前mdit (vuepress、app) 使用
+      else {
+        btn.setAttribute("onclick", `\
+          const table = this.parentNode.querySelector("table");
+          if (!table) return;
+          const btn = this;
+          const svgStr_fold = \`${svgStr_fold}\`;
+          const svgStr_unfold = \`${svgStr_unfold}\`;
+
+          const l_tr = table.querySelectorAll("tr");
+          for (let i=0; i<l_tr.length; i++) {
+            const tr = l_tr[i]
+            ;(()=>{
+              const tr_level = Number(tr.getAttribute("tr_level"))
+              if (isNaN(tr_level)) return
+              const tr_isfold = btn.getAttribute("is_fold"); // [!code] tr->btn
+              if (!tr_isfold) return
+              let flag_do_fold = false  // 防止折叠最小层
+              for (let j=i+1; j<l_tr.length; j++){
+                const tr2 = l_tr[j]
+                const tr_level2 = Number(tr2.getAttribute("tr_level"))
+                if (isNaN(tr_level2)) break
+                if (tr_level2<=tr_level) break
+                (tr_isfold == "true") ? tr2.style.display = "" : tr2.style.display = "none"
+                flag_do_fold = true
+              }
+              if (flag_do_fold) tr.setAttribute("is_fold", tr_isfold=="true"?"false":"true")
+            })()
+          }
+          const is_all_fold = btn.getAttribute("is_fold")
+          if (is_all_fold=="true") {
+            btn.setAttribute("is_fold", "false"); btn.innerHTML = svgStr_fold;
+          }
+          else {
+            btn.setAttribute("is_fold", "true"); btn.innerHTML = svgStr_unfold;
+          }
+          `
+        )
       }
     }
 

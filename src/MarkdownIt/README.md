@@ -10,6 +10,8 @@ markdown-it 版本的入口
 
 ```bash
 $ pnpm install -D markdown-it-any-block@latest
+
+# 或beta/测试版 (供开发者测试使用，不建议) pnpm install -D markdown-it-any-block@beta
 ```
 
 使用 (vuepress为例，其他使用markdown-it插件的类似)
