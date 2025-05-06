@@ -133,17 +133,18 @@ export class DirProcess{
     modeT: boolean,
     is_folder=false
   ){
-    const div2 = document.createElement("div"); div.appendChild(div2); // 避免根div直接包含两个dom
+    // 避免根div直接包含两个dom
+    const div2 = document.createElement("div"); div.appendChild(div2); div2.classList.add("ab-list-table-parent")
 
-    // GeneratorListTable，原Svelte
+    // 列表格
+    let table: HTMLElement, thead: HTMLElement|undefined, tbody: HTMLElement;
     {
       // 表格数据 组装成表格
-      const table = document.createElement("table"); div2.appendChild(table); table.classList.add("ab-table", "ab-list-table")
+      table = document.createElement("table"); div2.appendChild(table); table.classList.add("ab-table", "ab-list-table")
       if (is_folder) table.classList.add("ab-table-folder")
       if (modeT) table.setAttribute("modeT", "true")
 
       // 创建表头和表体
-      let thead, tbody
       {
         if(list_tableInfo[0].content.indexOf("< ")==0){ // 判断是否有表头
           thead = document.createElement("thead"); table.appendChild(thead);
@@ -202,12 +203,14 @@ export class DirProcess{
         const td_cell = document.createElement("div"); td.appendChild(td_cell); td_cell.classList.add("ab-list-table-witharrow");
         ABConvertManager.getInstance().m_renderMarkdownFn(cell_item.content, td_cell);
       }
+    }
 
-      // 折叠列表格 事件绑定
+    // 折叠列表格 事件绑定
+    {
       const l_tr:NodeListOf<HTMLElement> = tbody.querySelectorAll("tr")
       for (let i=0; i<l_tr.length; i++){
-        let targetEl = l_tr[i]
-        targetEl = targetEl.querySelector(':scope>td:first-child') ?? targetEl // 优先使用第一列作为可点击区域
+        const tr = l_tr[i]
+        const targetEl: HTMLElement = tr.querySelector(':scope>td:first-child') ?? tr // 优先使用第一列作为可点击区域
         // 1. 二选一，正常绑定方法
         // 当前ob使用
         if (ABCSetting.env == "obsidian" || ABCSetting.env == "obsidian-min") {
@@ -253,7 +256,10 @@ export class DirProcess{
           `)
         }
       }
+    }
 
+    // 折叠全列表格
+    {
       // 折叠全列表格 事件绑定 // TODO，可以简化、复用。tr.onclick(这里加上可空传参)
       const btn = document.createElement("button"); div2.appendChild(btn); btn.classList.add("ab-table-fold");
       const svgStr_fold = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-fold-vertical-icon lucide-fold-vertical"><path d="M12 22v-6"/><path d="M12 8V2"/><path d="M4 12H2"/><path d="M10 12H8"/><path d="M16 12h-2"/><path d="M22 12h-2"/><path d="m15 19-3-3-3 3"/><path d="m15 5-3 3-3-3"/></svg>`
@@ -296,12 +302,12 @@ export class DirProcess{
       // 当前mdit (vuepress、app) 使用
       else {
         btn.setAttribute("onclick", `\
-          const table = this.parentNode.querySelector("table");
-          if (!table) return;
           const btn = this;
           const svgStr_fold = \`${svgStr_fold}\`;
           const svgStr_unfold = \`${svgStr_unfold}\`;
-
+          const table = btn.parentNode?.querySelector("table");
+          if (!table) return;
+          
           const l_tr = table.querySelectorAll("tr");
           for (let i=0; i<l_tr.length; i++) {
             const tr = l_tr[i]

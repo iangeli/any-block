@@ -429,10 +429,18 @@ html[data-theme=dark] #app {
   border-right: none;
   border-bottom: none;
 }
-.ab-note table.ab-list-table .ab-table-fold {
+.ab-note .ab-list-table-parent {
+  position: relative;
+}
+.ab-note .ab-list-table-parent .ab-table-fold {
   position: absolute;
   bottom: 0;
   right: 0;
+  background: none;
+  border: none;
+  color: currentColor;
+  cursor: pointer;
+  padding: 2px 6px;
 }
 .ab-note table.ab-table-timeline td {
   border-right: none;

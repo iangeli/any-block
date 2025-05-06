@@ -499,12 +499,20 @@ html[data-theme="dark"] #app {
         border-bottom: none;
       }
     }
-
-    // 折叠按钮
+  }
+  // 列表格 - 总折叠按钮
+  .ab-list-table-parent {
+    position: relative;
     .ab-table-fold {
       position: absolute;
       bottom: 0;
       right: 0;
+
+      background: none;
+      border: none;
+      color: currentColor;
+      cursor: pointer;
+      padding: 2px 6px;
     }
   }
 
