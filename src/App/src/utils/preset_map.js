@@ -24,15 +24,15 @@ this is ~~a~~ **MarkDown** *test*
 - ==ABC head office==| | | 
   - **Shanghai branch**| ==ABC head office==  | ZhangSan| 13&xxxxxxxx
     - Marketing section| **Shanghai branch** | LiSi| 
-      |self    |father  |mother  |
-      |--------|--------|--------|
-      |201xxxxx|202xxxxx|203xxxxx|
       - Marketing Division 1| | | 
       - Marketing Division 2| | | 
     - Sales section| **Shanghai branch** | WangWu| 15&xxxxxxxx
   - *Beijing branch*| ==ABC head office==  | ChenLiu| 16&xxxxxxxx
     - Technical division| *Beijing branch* | OuYang| 17&xxxxxxxx
-    - Finance| *Beijing branch* | HuangPu| 18&xxxxxxxx
+    - Finance| *Beijing branch* | HuangPu| 
+      |self    |father  |mother  |
+      |--------|--------|--------|
+      |201xxxxx|202xxxxx|203xxxxx|
 
 [nodes]
 
