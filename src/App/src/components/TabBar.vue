@@ -10,7 +10,7 @@
       </a>
     </div>
     <div class="menu-1" style="padding: 0 16px; font-weight:bold; font-size: 16px; float: right;">
-      <a href="https://any-block.github.io/obsidian-any-block/">在线交互</a>
+      <a href="https://any-block.github.io/any-block/">在线交互</a>
     </div>
     <div class="menu-1" style="padding: 0 16px; font-weight:bold; font-size: 16px; float: right;">
       <a href="https://linczero.github.io/MdNote_Public/ProductDoc/AnyBlock/README.show.md">在线展示</a>
@@ -23,7 +23,7 @@
       @mouseover="clickedMenu=clickedMenu===''?'':'serialLinks'">
       其他在线
       <div class="menus-2" v-show="clickedMenu==='serialLinks'">
-        <div class="menu-2"><a href="https://any-block.github.io/obsidian-any-block/">AnyBlock</a></div>
+        <div class="menu-2"><a href="https://any-block.github.io/any-block/">AnyBlock</a></div>
         <div class="menu-2"><a href="https://linczero.github.io/obsidian-node-flow/">NodeFlow</a></div>
         <div class="menu-2"><a href="https://linczero.github.io/obsidian-chat-view-qq/">ChatView</a></div>
         <div></div>

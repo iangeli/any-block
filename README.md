@@ -14,7 +14,7 @@
 - 相关链接：**教程**、使用技能、贡献、二次开发、在线使用。文档是**多语言**的（zh/en），不用担心
 - [在线文档 - github.io](https://linczero.github.io/MdNote_Public/ProductDoc/AnyBlock/)
 - [在线效果展示/教程 - github.io](https://linczero.github.io/MdNote_Public/ProductDoc/AnyBlock/README.show.md), 你可以通过切换里面的标签页来学习用法
-- [在线交互 - github.io](https://any-block.github.io/obsidian-any-block/)，你可以在这里编写体验、通过模板学习用法
+- [在线交互 - github.io](https://any-block.github.io/any-block/)，你可以在这里编写体验、通过模板学习用法
 - [文档对应的仓库 - github](https://github.com/LincDocs/MdNote_Public/tree/main/ProductDoc/AnyBlock), 你可以在此翻译或补充文档
 - 备用网站链接：如果网站失效，则将网站链接部分的 `linczero.github.io` 替换成 `linczero-github-io.pages.dev` 就可以了
 	  （**本文的默认网站链接指向 github.io，如果国内有不能访问的朋友，那么大概率需要做这一步**）
