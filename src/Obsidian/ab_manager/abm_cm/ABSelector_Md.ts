@@ -149,7 +149,7 @@ export interface MdSelectorRangeSpecSimp {
   to_line: number,  // .
   header: string,   // 头部信息
   selector: string, // 选择器（范围选择方式）
-  levelFlag: string,// (用来判断code符号或heading层级的)
+  levelFlag: string,// 结束标记 (主要用来判断 代码块/mdit块的符号(`'~:`)数量、heading层级数量，其他选择器则用不上)
   content: string,  // 内容信息
   prefix: string,
 }

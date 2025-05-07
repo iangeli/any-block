@@ -396,7 +396,7 @@ interface HTMLSelectorRangeSpec {
   header: string,     // 头部信息
   seFlag: string,     // 开始/结束标志 - 可变
                       //     对于nowMdSrc来说，这是当前标志，对于selectedMdSrc来说，这是结束标志
-                      //     内敛选择器 (如标题选择器和mdit `:::`) 才会用到，块选择器不需要使用
+                      //     选择器flag为内联行 (如标题选择器和mdit `:::`) 才会用到，块选择器不需要使用
   prefix: string,     // 选择器的前缀 (为了去除前缀后再进行渲染)
 }
 /**

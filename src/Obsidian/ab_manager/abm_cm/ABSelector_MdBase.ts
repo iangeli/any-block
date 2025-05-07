@@ -125,7 +125,9 @@ const mdSelector_headtail:MdSelectorSpecSimp = {
       if (ABReg.reg_emptyline_noprefix.test(line2)) {continue}
       last_nonempty = i
       // 结束
-      if (ABReg.reg_mdit_tail_noprefix.test(line2)) {last_nonempty = i; break}
+      if (line2.indexOf(mdRange.levelFlag)==0) { // ABReg.reg_mdit_tail_noprefix.test(line2)
+        last_nonempty = i; break
+      }
     }
     mdRange.to_line = last_nonempty+1
     mdRange.content = list_text
