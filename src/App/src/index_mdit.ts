@@ -270,17 +270,16 @@ function abSelector_container(md: MarkdownIt, options?: Partial<Options>): void 
   md.block.ruler.before('fence', 'AnyBlockMditContainer', (
     state, startLine, endLine, silent
   ): boolean => {
-    const typeNames = ["col", "card", "tab"] // 在这里设置支持的ab块类型
-    let start = state.bMarks[startLine] + state.tShift[startLine];
+    const typeNames = ["col", "card", "tab", "mditABDemo"] // 在这里设置需要接管ab块类型，其余放行
+    let start = state.bMarks[startLine];
     let max = state.eMarks[startLine];
 
-    // Check out the first character quickly,
-    // this should filter out most of non-containers
+    // 快速检查第一个字符，过滤掉非容器块
     if (state.src[start] !== ":") return false;
 
     let pos = start + 1;
 
-    // Check out the rest of the marker string
+    // 检查标记字符串的剩余部分
     while (pos <= max) {
       if (state.src[pos] !== ":") break;
       pos++;
@@ -288,15 +287,16 @@ function abSelector_container(md: MarkdownIt, options?: Partial<Options>): void 
 
     const markerCount = pos - start;
 
+    // 需要至少3个冒号才视为有效标记
     if (markerCount < 3) return false;
 
     const markup = state.src.slice(start, pos);
     const ab_mdit_header = state.src.slice(pos, max);
 
-
+    // 检查是否在允许的类型列表中
     if (!typeNames.includes(ab_mdit_header.split("|")[0].trim())) return false;
 
-    // Since start is found, we can report success here in validation mode
+    // 静默模式下直接返回验证成功
     if (silent) return true;
 
     const ab_startLine = startLine;
@@ -305,14 +305,14 @@ function abSelector_container(md: MarkdownIt, options?: Partial<Options>): void 
 
     let ab_content = "";
 
-    // Search for the end of the block
+    // 搜索块的结束标记
     while (
       // unclosed block should be auto closed by end of document.
       // also block seems to be auto closed by end of parent
       nextLine < endLine
     ) {
       nextLine++;
-      start = state.bMarks[nextLine] + state.tShift[nextLine];
+      start = state.bMarks[nextLine];
       max = state.eMarks[nextLine];
       
       if (start < max && state.sCount[nextLine] < state.blkIndent)

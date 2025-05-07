@@ -218,7 +218,8 @@ function abSelector_squareInline(md: MarkdownIt, options?: Partial<Options>): vo
 }
 
 /**
- * 选择 anyBlock 块 - :::规则 (vuepress-mdit 版本)
+ * 选择 anyBlock 块 - :::规则 (vuepress-mdit 版本), 
+ * TODO: 该函数应该可以被abSelector_container替代，测试后删除
  * 
  * @detail 选择 `:::anyBlock` 包裹的片段
  */
@@ -246,15 +247,15 @@ function abSelector_container_vuepress(md: MarkdownIt, options?: Partial<Options
 }
 
 /**
- * 选择 anyBlock 块 - :::规则 (app-mdit 版本)
+ * 选择 anyBlock 块 - :::规则 (通用版本)
  * 
  * @detail 
  * 注意:
- * - 如果有其他基于 markdown-it-container 的mdit插件，会产生冲突。这里的行为会覆盖/被覆盖其他插件
- * - 所以这部分的代码仅能在没有其他 md-it-container 类别插件 (tab/demo/codetab等) 时使用
+ * - 基于 https://github.com/mdit-plugins/mdit-plugins 下的 mdit-tab 重写了 mdit 选择器解析规则
+ * - 应该不会与 markdown-it-container 的mdit插件冲突，（待测试）
  * 
  * 该函数负责识别和处理Markdown中的:::容器语法，ABConvert支持的container容器都能被支持
- * 例如 :::col、:::tab
+ * 例如 :::col、:::tab、:::card
  * 
  * 工作流程：
  * 1. 识别以:::开头的行
@@ -265,69 +266,95 @@ function abSelector_container_vuepress(md: MarkdownIt, options?: Partial<Options
  * @param md MarkdownIt实例
  * @param options 可选配置参数
  */
-function abSelector_container_app(md: MarkdownIt, options?: Partial<Options>): void {
+function abSelector_container(md: MarkdownIt, options?: Partial<Options>): void {
   md.block.ruler.before('fence', 'AnyBlockMditContainer', (
-    state:any, startLine:number, endLine:number, silent:any
+    state, startLine, endLine, silent
   ): boolean => {
-    // 获取当前行的内容
-    const start = state.bMarks[startLine] + state.tShift[startLine];
-    const max = state.eMarks[startLine];
-    const marker = state.src.slice(start, max).trim();
+    const typeNames = ["mditABDemo"] // 在这里设置需要接管ab块类型，其余放行
+    let start = state.bMarks[startLine];
+    let max = state.eMarks[startLine];
 
-    // 检查是否为指定块的开始标记
-    if (!(/^:::(.+)$/.test(marker))) return false;
+    // 快速检查第一个字符，过滤掉非容器块
+    if (state.src[start] !== ":") return false;
 
-    // 提取header内容
-    const header = marker.slice(3).trim();
+    let pos = start + 1;
 
-    let nextLine = startLine + 1;
-    const content: string[] = [];
-    let nestLevel = 0;
-
-    // 逐行解析内容，直到遇到结束标记
-    while (nextLine < endLine) {
-        const lineStart = state.bMarks[nextLine] + state.tShift[nextLine];
-        const lineEnd = state.eMarks[nextLine];
-        const line = state.src.slice(lineStart, lineEnd);
-        const trimmedLine = line.trim();
-
-        // 检查是否为围栏块标记
-        if (trimmedLine.startsWith(':::')) {
-            if (trimmedLine === ':::') {
-                // 结束标记
-                if (nestLevel === 0) {
-                    break;
-                } else {
-                    // 嵌套块的结束
-                    nestLevel--;
-                    content.push(line);
-                }
-            } else {
-                // 开始标记
-                nestLevel++;
-                content.push(line);
-            }
-        } else {
-            // 收集内容
-            content.push(line);
-        }
-        nextLine++;
+    // 检查标记字符串的剩余部分
+    while (pos <= max) {
+      if (state.src[pos] !== ":") break;
+      pos++;
     }
 
-    // 如果是验证模式，直接返回true
+    const markerCount = pos - start;
+
+    // 需要至少3个冒号才视为有效标记
+    if (markerCount < 3) return false;
+
+    const markup = state.src.slice(start, pos);
+    const ab_mdit_header = state.src.slice(pos, max);
+
+    // 检查是否在允许的类型列表中
+    if (!typeNames.includes(ab_mdit_header.split("|")[0].trim())) return false;
+
+    // 静默模式下直接返回验证成功
     if (silent) return true;
 
-    // 更新解析器状态，移动到下一个待处理行
-    state.line = nextLine + 1;
+    const ab_startLine = startLine;
+    let nextLine = startLine;
+    let autoClosed = false;
 
-    // (3) 插入ab块token
-    let token = state.push('fence', 'code', 0)
+    let ab_content = "";
+
+    // 搜索块的结束标记
+    while (
+      // unclosed block should be auto closed by end of document.
+      // also block seems to be auto closed by end of parent
+      nextLine < endLine
+    ) {
+      nextLine++;
+      start = state.bMarks[nextLine];
+      max = state.eMarks[nextLine];
+      
+      if (start < max && state.sCount[nextLine] < state.blkIndent)
+        // non-empty line with negative indent should stop the list:
+        // - ```
+        //  test
+        break;
+      if (
+        // match start
+        state.src[start] === ":" &&
+        // closing fence should be indented less than 4 spaces
+        state.sCount[nextLine] - state.blkIndent < 4
+      ) {
+        // check rest of marker
+        for (pos = start + 1; pos <= max; pos++)
+          if (state.src[pos] !== ":") break;
+
+        // closing code fence must be at least as long as the opening one
+        if (pos - start >= markerCount) {
+          // make sure tail has spaces only
+          pos = state.skipSpaces(pos);
+
+          if (pos >= max) {
+            // found!
+            autoClosed = true;
+            break;
+          }
+          
+        }
+      }
+      ab_content += "\n" + state.src.substring(start, max);
+    }
+
+    state.line = nextLine + (autoClosed ? 1 : 0);
+
+    const token = state.push('fence', 'code', 0)
     token.info = "AnyBlock"
-    token.content = `[${header}]\n${content.join('\n')}` // TODO 应改为原文本整体
-    console.log('token.content', token.content)
-    token.map = [startLine, nextLine]
-    token.markup = ':::::';
+    token.content = `[${ab_mdit_header}]\n${ab_content}`
+    token.map = [ab_startLine, nextLine]
+    token.markup = markup;
     token.nesting = 0;
+
     return true
   });
 }
@@ -419,6 +446,6 @@ export function ab_mdit(md: MarkdownIt, options?: Partial<Options>): void {
   ABCSetting.env = "vuepress"
 
   md.use(abSelector_squareInline)
-  md.use(abSelector_container_vuepress) // [env] vuepress版本
+  md.use(abSelector_container)
   md.use(abRender_fence)
 }
