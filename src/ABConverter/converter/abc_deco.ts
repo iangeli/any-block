@@ -202,50 +202,52 @@ const abc_overfold = ABConvert.factory({
       const args = matchs[1].split(",").map(arg => 
         /^\d*\.?\d+$/.test(arg.trim()) ? `${arg.trim()}%` : arg.trim()
       )
+
       // 检查容器是否包含需要处理的类名, 根据不同的容器, 处理方式不同
-      switch(true){
-        // ab-col支持渲染混合单位参数
-        case content.children[0].classList.contains('ab-col'): {
-          const sub_els = content.children[0].children
-          if(sub_els.length==0) return content
-          // 允许参数数量与分栏数量不一致，多的部分会被忽略 
-          for(let i=0;i<Math.min(sub_els.length, args.length);i++){
-            const sub_el = sub_els[i] as HTMLElement
-            if(args[i].endsWith("%")) sub_el.style.flex = `0 1 ${args[i]}`
-            else {
-              sub_el.style.width = args[i]
-              sub_el.style.flex = `0 0 auto`
-            }
+      // b1. ab-col版本
+      // 支持渲染混合单位参数
+      if (content.children[0].classList.contains('ab-col')) {
+        const sub_els = content.children[0].children
+        if(sub_els.length==0) return content
+        // 允许参数数量与分栏数量不一致，多的部分会被忽略 
+        for(let i=0;i<Math.min(sub_els.length, args.length);i++){
+          const sub_el = sub_els[i] as HTMLElement
+          if(args[i].endsWith("%")) sub_el.style.flex = `0 1 ${args[i]}`
+          else {
+            sub_el.style.width = args[i]
+            sub_el.style.flex = `0 0 auto`
           }
-          return content
         }
-        /**
-         * table目前无法很好渲染混合单位的参数（px和rem可以混合)
-         * 用settimeout延迟获取table宽度可解决，但是会延长渲染时间
-         * 可以尝试改用grid布局
-         */
-        // 使用非百分比单位尽量保证参数数量与列数一致，使用百分比单位表格会被按比例拉伸到行宽
-        case content.children[0].querySelector('table') !== null: {
-          const table = content.children[0].querySelector('table')
-          if (!table) return content
-          table.style.tableLayout = 'fixed'
-          // 检查是否存在 % 单位的参数，使用100%，否则使用fit-content
-          table.style.width = args.some(arg => arg.endsWith('%')) ? '100%' : 'fit-content'
-          // setTimeout(() => {
-          //   console.log('Table width:', table.offsetWidth);
-          //   console.log('Computed width:', window.getComputedStyle(table).width);
-          // }, 10);
-          table.querySelectorAll('tr').forEach(row => {
-            for (let i = 0; i < Math.min(row.children.length, args.length); i++) {
-              const cell = row.children[i] as HTMLElement
-              cell.style.width = cell.style.minWidth = cell.style.maxWidth = args[i]
-            }
-          })
-          return content
-        }
-        default:
-          return content
+        return content
       }
+
+      /**
+       * b2. table版本
+       * table目前无法很好渲染混合单位的参数（px和rem可以混合)
+       * 用settimeout延迟获取table宽度可解决，但是会延长渲染时间
+       * 可以尝试改用grid布局
+       */
+      // 使用非百分比单位尽量保证参数数量与列数一致，使用百分比单位表格会被按比例拉伸到行宽
+      const table = content.children[0].querySelector('table')
+      if (table !== null) {
+        table.style.tableLayout = 'fixed'
+        // 检查是否存在 % 单位的参数，使用100%，否则使用fit-content
+        table.style.width = args.some(arg => arg.endsWith('%')) ? '100%' : 'fit-content'
+        // setTimeout(() => {
+        //   console.log('Table width:', table.offsetWidth);
+        //   console.log('Computed width:', window.getComputedStyle(table).width);
+        // }, 10);
+        table.querySelectorAll('tr').forEach(row => {
+          for (let i = 0; i < Math.min(row.children.length, args.length); i++) {
+            const cell = row.children[i] as HTMLElement
+            cell.style.width = cell.style.minWidth = cell.style.maxWidth = args[i]
+          }
+        })
+        return content
+      }
+
+      // b3. 不符合
+      return content
     }
   })
 
@@ -381,13 +383,15 @@ const abc_transposition = ABConvert.factory({
   process: (el, header, content: HTMLElement): HTMLElement=>{
 
     // 1. 数据准备 - 旧表格简单解析 (暂时仅支持规范列表，不支持跨行跨列或缺格)
-    const origi_table: HTMLTableElement | null = content.querySelector('table'); if (!origi_table) return content;
+    const origi_table: HTMLTableElement | null = content.querySelector('table'); if (!origi_table) return content; // 注意table不一定是content直系儿子
     const origi_rows = origi_table.rows;
     const origi_rowCount: number = origi_rows.length;           // 行数
     const origi_colCount: number = origi_rows[0].cells.length;  // 列数 (只取第一行的列数)
 
-    // 2. 准备表格元素
-    const trans_table = document.createElement('table'); content.appendChild(trans_table); origi_table.classList.add("ab-transposition"); origi_table.classList.add("ab-table");
+    // 2. 准备表格元素 (元素替换)
+    const table_parent = origi_table.parentElement // 不一定是content
+    if (!table_parent) return content
+    const trans_table = document.createElement('table'); table_parent.appendChild(trans_table); origi_table.classList.add("ab-transposition"); origi_table.classList.add("ab-table");
     origi_table.classList.forEach(className => { // 并应用原表格的样式
       trans_table.classList.add(className);
     });
@@ -440,7 +444,7 @@ const abc_transpose = ABConvert.factory({
     }
 
     // 1.1. 数据准备 - 旧表格简单解析 (支持rowspan和colspan)
-    const origi_table: HTMLTableElement | null = content.querySelector('table'); if (!origi_table) return content;
+    const origi_table: HTMLTableElement | null = content.querySelector('table'); if (!origi_table) return content; // 注意table不一定是content直系儿子
     const origi_rows = origi_table.rows;
     const origi_rowCount: number = origi_rows.length;             // 最大行数 (算span范围扩展)
     let origi_colCount: number = 0;                               // 最大列数 (算span范围扩展)
@@ -531,8 +535,10 @@ const abc_transpose = ABConvert.factory({
       }
     }
 
-    // 2. 准备表格元素
-    const trans_table = document.createElement('table'); content.appendChild(trans_table); origi_table.classList.add("ab-transposition"); origi_table.classList.add("ab-table");
+    // 2. 准备表格元素 (元素替换)
+    const table_parent = origi_table.parentElement // 不一定是content
+    if (!table_parent) return content
+    const trans_table = document.createElement('table'); table_parent.appendChild(trans_table); origi_table.classList.add("ab-transposition"); origi_table.classList.add("ab-table");
     origi_table.classList.forEach(className => { // 并应用原表格的样式
       trans_table.classList.add(className);
     });
@@ -592,7 +598,7 @@ const abc_exTable = ABConvert.factory({
     }
 
     // 1.1. 数据准备 - 旧表格简单解析 (支持rowspan和colspan)
-    const origi_table: HTMLTableElement | null = content.querySelector('table'); if (!origi_table) return content;
+    const origi_table: HTMLTableElement | null = content.querySelector('table'); if (!origi_table) return content; // 注意table不一定是content直系儿子
     const origi_rows = origi_table.rows;
     const origi_rowCount: number = origi_rows.length;             // 最大行数 (算span范围扩展)
     let origi_colCount: number = 0;                               // 最大列数 (算span范围扩展)
@@ -712,8 +718,10 @@ const abc_exTable = ABConvert.factory({
     //   }
     // }
 
-    // 2. 准备表格元素
-    const trans_table = document.createElement('table'); content.appendChild(trans_table); origi_table.classList.add("ab-transposition"); origi_table.classList.add("ab-table");
+    // 2. 准备表格元素 (元素替换)
+    const table_parent = origi_table.parentElement // 不一定是content
+    if (!table_parent) return content
+    const trans_table = document.createElement('table'); table_parent.appendChild(trans_table); origi_table.classList.add("ab-transposition"); origi_table.classList.add("ab-table");
     origi_table.classList.forEach(className => { // 并应用原表格的样式
       trans_table.classList.add(className);
     });
