@@ -188,7 +188,7 @@ function abSelector_squareInline(md: MarkdownIt, options?: Partial<Options>): vo
       } else if (ab_blockType == "heading") { // TODO 这里需要跳过标题内的代码块 (python代码块的 `#` 会误截断)
         // heading和mdit类型 需要跳过代码块内的结束标志
         if (codeBlockFlag == '') {
-          const match = text.match(/^((\s|>\s|-\s|\*\s|\+\s)*)(````*|~~~~*)(.*)/)
+          const match = text.match(ABReg.reg_code)
           if (match && match[3]) {
             codeBlockFlag = match[1]+match[3]
             ab_content += "\n" + text; state.line += 1; return findAbEnd()

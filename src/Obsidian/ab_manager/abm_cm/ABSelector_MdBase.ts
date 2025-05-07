@@ -108,7 +108,7 @@ const mdSelector_headtail:MdSelectorSpecSimp = {
       const line = list_text[i]
       // heading和mdit类型 需要跳过代码块内的结束标志
       if (codeBlockFlag == '') {
-        const match = line.match(/^((\s|>\s|-\s|\*\s|\+\s)*)(````*|~~~~*)(.*)/)
+        const match = line.match(ABReg.reg_code)
         if (match && match[3]) {
           codeBlockFlag = match[1]+match[3]
           continue
@@ -296,7 +296,7 @@ const mdSelector_heading:MdSelectorSpecSimp = {
       const line = list_text[i]
       // heading和mdit类型 需要跳过代码块内的结束标志
       if (codeBlockFlag == '') {
-        const match = line.match(/^((\s|>\s|-\s|\*\s|\+\s)*)(````*|~~~~*)(.*)/)
+        const match = line.match(ABReg.reg_code)
         if (match && match[3]) {
           codeBlockFlag = match[1]+match[3]
           continue

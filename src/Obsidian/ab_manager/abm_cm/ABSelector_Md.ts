@@ -22,6 +22,8 @@
  *    上一层需要获取选择器列表，再在上一层遍历
  */
 
+import { ABReg } from "../../../ABConverter/ABReg"
+
 /**
  * 自动选择器
  * 
@@ -65,7 +67,7 @@ export function autoMdSelector(
 
     // 避免代码块内识别
     if (codeBlockFlag == "") {
-      const match = line.match(/^((\s|>\s|-\s|\*\s|\+\s)*)(````*|~~~~*)(.*)/)
+      const match = line.match(ABReg.reg_code)
       if (match && match[3]) {
         codeBlockFlag = match[1]+match[3]
         // TODO V3.0.7beta 发现一个选择器优化方案。未应用。暂时应急修复：这里不再执行 continue，当行可以触发，再往下一行不让触发
