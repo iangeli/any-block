@@ -388,10 +388,8 @@ const abc_transposition = ABConvert.factory({
     const origi_rowCount: number = origi_rows.length;           // 行数
     const origi_colCount: number = origi_rows[0].cells.length;  // 列数 (只取第一行的列数)
 
-    // 2. 准备表格元素 (元素替换)
-    const table_parent = origi_table.parentElement // 不一定是content
-    if (!table_parent) return content
-    const trans_table = document.createElement('table'); table_parent.appendChild(trans_table); origi_table.classList.add("ab-transposition"); origi_table.classList.add("ab-table");
+    // 2. 准备表格元素
+    const trans_table = document.createElement('table'); origi_table.classList.add("ab-transposition", "ab-table");
     origi_table.classList.forEach(className => { // 并应用原表格的样式
       trans_table.classList.add(className);
     });
@@ -408,7 +406,8 @@ const abc_transposition = ABConvert.factory({
       }
     }
 
-    origi_table.remove();
+    // 4. 元素替换
+    origi_table.innerHTML = trans_table.innerHTML;
     return content;
   }
 })
@@ -536,9 +535,7 @@ const abc_transpose = ABConvert.factory({
     }
 
     // 2. 准备表格元素 (元素替换)
-    const table_parent = origi_table.parentElement // 不一定是content
-    if (!table_parent) return content
-    const trans_table = document.createElement('table'); table_parent.appendChild(trans_table); origi_table.classList.add("ab-transposition"); origi_table.classList.add("ab-table");
+    const trans_table = document.createElement('table'); origi_table.classList.add("ab-transposition", "ab-table");
     origi_table.classList.forEach(className => { // 并应用原表格的样式
       trans_table.classList.add(className);
     });
@@ -561,7 +558,8 @@ const abc_transpose = ABConvert.factory({
       }
     }
 
-    origi_table.remove();
+    // 4. 元素替换
+    origi_table.innerHTML = trans_table.innerHTML;
     return content;
   }
 })
@@ -718,10 +716,8 @@ const abc_exTable = ABConvert.factory({
     //   }
     // }
 
-    // 2. 准备表格元素 (元素替换)
-    const table_parent = origi_table.parentElement // 不一定是content
-    if (!table_parent) return content
-    const trans_table = document.createElement('table'); table_parent.appendChild(trans_table); origi_table.classList.add("ab-transposition"); origi_table.classList.add("ab-table");
+    // 2. 准备表格元素
+    const trans_table = document.createElement('table'); origi_table.classList.add("ab-transposition", "ab-table");
     origi_table.classList.forEach(className => { // 并应用原表格的样式
       trans_table.classList.add(className);
     });
@@ -744,7 +740,8 @@ const abc_exTable = ABConvert.factory({
       }
     }
 
-    origi_table.remove();
+    // 4. 元素替换
+    origi_table.innerHTML = trans_table.innerHTML;
     return content;
   }
 })
