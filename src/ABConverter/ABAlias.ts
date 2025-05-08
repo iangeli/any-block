@@ -170,14 +170,14 @@ const ABAlias_json_list: ABAlias_json_item[] = [
 
 // 代码块
 const ABAlias_json_code: ABAlias_json_item[] = [
-  {regex: "|code 140lne|X|", replacement: "|Xcode|"},
-  {regex: "|code2list|", replacement: "|Xcode|region2indent|addList|"},
+  {regex: "|code 140lne|X|", replacement: "|xCode|"},
+  {regex: "|code2list|", replacement: "|xCode|region2indent|addList|"},
   {regex: "|list2code|", replacement: "|xList|code(js)|"},
 ]
 
 // 引用块
 const ABAlias_json_quote: ABAlias_json_item[] = [
-  {regex: "|quote 140lne|X|", replacement: "|Xquote|"},
+  {regex: "|quote 140lne|X|", replacement: "|xQuote|"},
 ]
 
 // 表格块
