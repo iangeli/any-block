@@ -10,6 +10,7 @@ import { ABConvertManager } from "ABConvertManager"
 // 加载所有转换器 (都是可选的)
 // (当然，如果A转换器依赖B转换器，那么你导入A必然导入B)
 import {} from "./ABConverter/converter/abc_text"
+import {} from "./ABConverter/converter/abc_code"
 import {} from "./ABConverter/converter/abc_list"
 import {} from "./ABConverter/converter/abc_table"
 import {} from "./ABConverter/converter/abc_deco"

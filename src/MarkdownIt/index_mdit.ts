@@ -53,6 +53,7 @@ import { ABCSetting, ABReg } from "../ABConverter/ABReg"
 // 加载所有转换器 (都是可选的)
 // (当然，如果A转换器依赖B转换器，那么你导入A必然导入B)
 import "../ABConverter/converter/abc_text"
+import "../ABConverter/converter/abc_code"
 import "../ABConverter/converter/abc_list"
 import "../ABConverter/converter/abc_c2list"
 import "../ABConverter/converter/abc_table"
