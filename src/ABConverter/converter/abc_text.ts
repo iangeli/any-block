@@ -118,30 +118,6 @@ const abc_x = ABConvert.factory({
   }
 })
 
-// TODO 应使用新的别名系统
-// const abc_code2quote = ABConvert.factory({
-//   id: "code2quote",
-//   name: "代码转引用块",
-//   process_alias: "Xcode|quote",
-//   process: ()=>{}
-// })
-
-// const abc_quote2code = ABConvert.factory({
-//   id: "quote2code",
-//   name: "引用转代码块",
-//   match: /^quote2code(\((.*)\))?$/,
-//   default: "quote2code()",
-//   process_alias: "Xquote|code%1",
-//   process: ()=>{
-//     /*let matchs = header.match(/^quote2code(\((.*)\))?$/)
-//     if (!matchs) return content
-//     content = text_Xquote(content)
-//     if (matchs[1]) content = matchs[2]+"\n"+content
-//     content = text_code(content)
-//     return content*/
-//   }
-// })
-
 const abc_slice = ABConvert.factory({
   id: "slice",
   name: "切片",

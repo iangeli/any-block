@@ -11,7 +11,7 @@
 ```js
 // 允许带参数的部分 (这部分的遍历会更耗时间。为了性能考虑，单独拿出来)
 const ABAlias_json_withSub: ABAlias_json_item[] = [
-  { regex: /\|::: 140lne\|(info|note|warn|warning|error)\s?(.*?)\|/, replacement: "|add([!$1] $2)|quote|" },
+  { regex: /\|::: 140lne\|(info|note|warn|warning|error)\s?(.*?)\|/, replacement: "|add([!$1] $2)|addQuote|" },
 ]
 
 // mdit块
