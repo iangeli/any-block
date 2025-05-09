@@ -1,6 +1,6 @@
 {
   "name": "any-block-converter",
-  "version": "3.2.2",
+  "version": "3.3.0",
   "description": "```typescript\r import { ABConvertManager } from \"ABConvertManager\"",
   "main": "index.js",
   "scripts": {

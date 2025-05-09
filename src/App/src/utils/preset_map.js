@@ -210,13 +210,15 @@ this is ~~a~~ **MarkDown** *test*
 'table+transposition (扩展表格+转置)': `\
 ## demo1
 
+[width(20)]
+
 |*a*|*b*|
 |:--|:--|
 | c | d |
 
 转置
 
-[trs]
+[trs|width(20)]
 
 |*a*|*b*|
 |---|---|
@@ -258,7 +260,7 @@ this is ~~a~~ **MarkDown** *test*
 
 转置
 
-[trs|exTable]
+[trs|exTable|width(30)]
 
 |*A*|<| a |
 |---|---|---|

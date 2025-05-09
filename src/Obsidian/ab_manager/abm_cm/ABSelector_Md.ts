@@ -22,6 +22,8 @@
  *    上一层需要获取选择器列表，再在上一层遍历
  */
 
+import { ABReg } from "../../../ABConverter/ABReg"
+
 /**
  * 自动选择器
  * 
@@ -65,7 +67,7 @@ export function autoMdSelector(
 
     // 避免代码块内识别
     if (codeBlockFlag == "") {
-      const match = line.match(/^((\s|>\s|-\s|\*\s|\+\s)*)(````*|~~~~*)(.*)/)
+      const match = line.match(ABReg.reg_code)
       if (match && match[3]) {
         codeBlockFlag = match[1]+match[3]
         // TODO V3.0.7beta 发现一个选择器优化方案。未应用。暂时应急修复：这里不再执行 continue，当行可以触发，再往下一行不让触发
@@ -149,7 +151,7 @@ export interface MdSelectorRangeSpecSimp {
   to_line: number,  // .
   header: string,   // 头部信息
   selector: string, // 选择器（范围选择方式）
-  levelFlag: string,// (用来判断code符号或heading层级的)
+  levelFlag: string,// 结束标记 (主要用来判断 代码块/mdit块的符号(`'~:`)数量、heading层级数量，其他选择器则用不上)
   content: string,  // 内容信息
   prefix: string,
 }

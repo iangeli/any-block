@@ -14,10 +14,10 @@ import {ABReg} from "../ABReg"
  * 2. 让处理器能互相调用
  */
 
-const abc_quote = ABConvert.factory({
-  id: "quote",
+const abc_addQuote = ABConvert.factory({
+  id: "addQuote",
   name: "增加引用块",
-  match: /^(quote|addQuote)$/,
+  match: "addQuote",
   detail: "在文本的每行前面加上 `> `",
   process_param: ABConvert_IOEnum.text,
   process_return: ABConvert_IOEnum.text,
@@ -26,25 +26,26 @@ const abc_quote = ABConvert.factory({
   }
 })
 
-const abc_code = ABConvert.factory({
-  id: "code",
+const abc_addCode = ABConvert.factory({
+  id: "addCode",
   name: "增加代码块",
-  match: /^code(\((.*)\))?$/,
+  match: /^(addCode|code)(\((.*)\))?$/,
   default: "code()",
   detail: "在文本的前后均加上一行代码块围栏。不加`()`表示用原文本的第一行作为代码类型，括号类型为空表示代码类型为空",
   process_param: ABConvert_IOEnum.text,
   process_return: ABConvert_IOEnum.text,
   process: (el, header, content: string): string=>{
-    let matchs = header.match(/^code(\((.*)\))?$/)
+    let matchs = header.match(/^(addCode|code)(\((.*)\))?$/)
     if (!matchs) return content
-    if (matchs[1]) content = matchs[2]+"\n"+content
+    if (matchs[2]) content = matchs[3]+"\n"+content
     return "``````"+content+"\n``````"
   }
 })
 
-const abc_Xquote = ABConvert.factory({
-  id: "Xquote",
+const abc_xQuote = ABConvert.factory({
+  id: "xQuote",
   name: "去除引用块",
+  match: "/^(xQuote|Xquote)$/",
   detail: "在文本的每行前面删除 `> `",
   process_param: ABConvert_IOEnum.text,
   process_return: ABConvert_IOEnum.text,
@@ -55,20 +56,20 @@ const abc_Xquote = ABConvert.factory({
   }
 })
 
-const abc_Xcode = ABConvert.factory({
-  id: "Xcode",
+const abc_xCode = ABConvert.factory({
+  id: "xCode",
   name: "去除代码块",
-  match: /^Xcode(\((true|false|)\))?$/,
-  default: "Xcode(true)",
+  match: /^(xCode|Xcode)(\((true|false|)\))?$/,
+  default: "xCode(true)",
   detail: "参数为是否移除代码类型, Xcode默认为false, Xcode默认为true。记法: code|Xcode 或 code()|Xcode()内容不变",
   process_param: ABConvert_IOEnum.text,
   process_return: ABConvert_IOEnum.text,
   process: (el, header, content: string): string=>{
-    let matchs = header.match(/^Xcode(\((true|false|)\))?$/)
+    let matchs = header.match(/^(xCode|Xcode)(\((true|false|)\))?$/)
     if (!matchs) return content
     let remove_flag:boolean
-    if (matchs[1]=="") remove_flag=false
-    else remove_flag= (matchs[2]!="false")
+    if (matchs[2]=="") remove_flag=false
+    else remove_flag= (matchs[3]!="false")
     let list_content = content.split("\n")
     // 开始去除
     let code_flag = ""
@@ -99,9 +100,10 @@ const abc_Xcode = ABConvert.factory({
   }
 })
 
-const abc_X = ABConvert.factory({
-  id: "X",
+const abc_x = ABConvert.factory({
+  id: "x",
   name: "去除代码或引用块",
+  match: /^(x|X)$/,
   process_param: ABConvert_IOEnum.text,
   process_return: ABConvert_IOEnum.text,
   process: (el, header, content: string): string=>{
@@ -110,35 +112,11 @@ const abc_X = ABConvert.factory({
       if (ABReg.reg_code.test(line)) {flag="code";break}
       else if (ABReg.reg_quote.test(line)) {flag="quote";break}
     }
-    if (flag=="code") return abc_Xcode.process(el, header, content) as string
-    else if (flag=="quote") return abc_Xquote.process(el, header, content) as string
+    if (flag=="code") return abc_xCode.process(el, header, content) as string
+    else if (flag=="quote") return abc_xQuote.process(el, header, content) as string
     return content
   }
 })
-
-// TODO 应使用新的别名系统
-// const abc_code2quote = ABConvert.factory({
-//   id: "code2quote",
-//   name: "代码转引用块",
-//   process_alias: "Xcode|quote",
-//   process: ()=>{}
-// })
-
-// const abc_quote2code = ABConvert.factory({
-//   id: "quote2code",
-//   name: "引用转代码块",
-//   match: /^quote2code(\((.*)\))?$/,
-//   default: "quote2code()",
-//   process_alias: "Xquote|code%1",
-//   process: ()=>{
-//     /*let matchs = header.match(/^quote2code(\((.*)\))?$/)
-//     if (!matchs) return content
-//     content = text_Xquote(content)
-//     if (matchs[1]) content = matchs[2]+"\n"+content
-//     content = text_code(content)
-//     return content*/
-//   }
-// })
 
 const abc_slice = ABConvert.factory({
   id: "slice",
@@ -254,44 +232,6 @@ const abc_xList = ABConvert.factory({
       }
       else {} // 通常是前面的空行或非列表，忽略
     }
-    return newContent.slice(1) // 去除头部 `\n`
-  }
-})
-
-const abc_region2indent = ABConvert.factory({
-  id: "region2indent",
-  name: "代码注释转缩进",
-  detail: "代码块注释转缩进 (识别 `//` 和 `#` 的region注释对)，通常配合code2list使用。默认补充两缩进",
-  process_param: ABConvert_IOEnum.text,
-  process_return: ABConvert_IOEnum.text,
-  process: (el, header, content: string): string=>{
-    const lists = content.trimEnd().split("\n")
-    let newContent = ''
-    // let indent_map: {endFlag: string, indent: string}[] = [] // 缩进表。记录停止标识、区块内需要补充的缩进 (弃用，region自身无关缩进，缩进内容固定加层数*两空格)
-    // let indent_map: string[] = [] // 缩进表。下标表示在第几层嵌套，内容表示缩进内容
-    let startFlagNumber = 0    
-    const regionReg: RegExp = /^([ \t]*)(#|\/\/)\s*#?(region|endregion)(.*)/
-    for (let i=0; i < lists.length; i++) {
-      const item = lists[i]
-      const match = item.match(regionReg)
-
-      // b1. 非region项
-      if (!match) {
-        newContent += '\n' + '  '.repeat(startFlagNumber) + item
-        continue
-      }
-      // b2. region项
-      else {
-        if (match[3] == 'region') {
-          newContent += '\n' + '  '.repeat(startFlagNumber) + match[4].trimStart()
-          startFlagNumber++
-        }
-        else {
-          startFlagNumber--
-        }
-      }
-    }
-
     return newContent.slice(1) // 去除头部 `\n`
   }
 })

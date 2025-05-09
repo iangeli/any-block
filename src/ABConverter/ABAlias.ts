@@ -98,8 +98,8 @@ interface ABAlias_json_item {
 
 // 允许带参数的部分 (这部分的遍历会更耗时间。为了性能考虑，单独拿出来)
 const ABAlias_json_withSub: ABAlias_json_item[] = [
-  { regex: /\|::: 140lne\|(info|note|warning|caution|attention|error|danger|tips|tip|hint|example|abstract|summary|tldr|quote|cite|todo|success|check|done|important|question|help|faq|failure|fail|missing|bug)([+-]?)\s?(.*?)\|/, replacement: "|add([!$1]$2 $3)|quote|" },
-  { regex: /\|quote (\S+)([+-]?)\s?(.*)\|/, replacement: "|add([!$1]$2 $3)|quote|" }, // 注意避免和callout语法冲突，以及自身递归
+  { regex: /\|(info|note|warning|caution|attention|error|danger|tips|tip|hint|example|abstract|summary|tldr|quote|cite|todo|success|check|done|important|question|help|faq|failure|fail|missing|bug)([+-]?)\s?(.*?)\|/, replacement: "|add([!$1]$2 $3)|addQuote|" },
+  { regex: /\|quote (\S+)([+-]?)\s?(.*)\|/, replacement: "|add([!$1]$2 $3)|addQuote|" }, // 注意避免和callout语法冲突，以及自身递归
 ]
 
 // mdit块
@@ -170,14 +170,14 @@ const ABAlias_json_list: ABAlias_json_item[] = [
 
 // 代码块
 const ABAlias_json_code: ABAlias_json_item[] = [
-  {regex: "|code 140lne|X|", replacement: "|Xcode|"},
-  {regex: "|code2list|", replacement: "|Xcode|region2indent|addList|"},
+  {regex: "|code 140lne|X|", replacement: "|xCode|"},
+  {regex: "|code2list|", replacement: "|xCode|region2indent|addList|"},
   {regex: "|list2code|", replacement: "|xList|code(js)|"},
 ]
 
 // 引用块
 const ABAlias_json_quote: ABAlias_json_item[] = [
-  {regex: "|quote 140lne|X|", replacement: "|Xquote|"},
+  {regex: "|quote 140lne|X|", replacement: "|xQuote|"},
 ]
 
 // 表格块

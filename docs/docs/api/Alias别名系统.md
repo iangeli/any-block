@@ -4,14 +4,20 @@
 
 **（由于代码初期没有别名系统，所以会有一些处理器，本可以使用处理器串联完成，却还是有单独的处理器。这部分处理器会在后期的优化中逐渐变为通过别名系统实现）**
 
-也可以使用 `[info_alias]` 处理器随时查表，而且那个可以显示用户自定义的别名。
-
 这里的版本是代码版本，多了一些类型区分：
+
+> [!warning]
+> 
+> 此处不一定最新
+> 
+> 可以使用 `[info_alias]` 处理器随时查表，而且那个可以显示用户自定义的别名。
+> 
+> 也可以到项目的 `ABAlias.ts` 文件查看最新版
 
 ```js
 // 允许带参数的部分 (这部分的遍历会更耗时间。为了性能考虑，单独拿出来)
 const ABAlias_json_withSub: ABAlias_json_item[] = [
-  { regex: /\|::: 140lne\|(info|note|warn|warning|error)\s?(.*?)\|/, replacement: "|add([!$1] $2)|quote|" },
+  { regex: /\|::: 140lne\|(info|note|warn|warning|error)\s?(.*?)\|/, replacement: "|add([!$1] $2)|addQuote|" },
 ]
 
 // mdit块
