@@ -98,7 +98,25 @@ interface ABAlias_json_item {
 
 // 允许带参数的部分 (这部分的遍历会更耗时间。为了性能考虑，单独拿出来)
 const ABAlias_json_withSub: ABAlias_json_item[] = [
-  { regex: /\|(info|note|warning|caution|attention|error|danger|tips|tip|hint|example|abstract|summary|tldr|quote|cite|todo|success|check|done|important|question|help|faq|failure|fail|missing|bug)([+-]?)\s?(.*?)\|/, replacement: "|add([!$1]$2 $3)|addQuote|" },
+  // 分下类，排下序
+  // `gfm` 就支持五种: note, tip, important, warning, caution
+  // `vuepress` 比gfm多了个: info
+  // `obsidian` 不完全是gfm超集，其important和tip一样，caution和warning一样
+  //   note
+  //   abstract, summary, tldr
+  //   info
+  //   todo
+  //   tip. hint, Important
+  //   succcess, check, done
+  //   question, help, faq
+  //   warning, caution, attention
+  //   failure, fail, missing
+  //   danger, error
+  //   bug
+  //   example
+  //   quote, cite
+  // `其他` 避免错字, 我之前加过 warn, tips。后面又删了
+  { regex: /\|(note|warning|caution|attention|error|info|danger|tip|hint|example|abstract|summary|tldr|quote|cite|todo|success|check|done|important|question|help|faq|failure|fail|missing|bug)([+-]?)\s?(.*?)\|/, replacement: "|add([!$1]$2 $3)|addQuote|" },
   { regex: /\|quote (\S+)([+-]?)\s?(.*)\|/, replacement: "|add([!$1]$2 $3)|addQuote|" }, // 注意避免和callout语法冲突，以及自身递归
 ]
 

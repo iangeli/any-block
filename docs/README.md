@@ -18,6 +18,7 @@
 - [文档对应的仓库 - github](https://github.com/LincDocs/MdNote_Public/tree/main/ProductDoc/AnyBlock), 你可以在此翻译或补充文档
 - 备用网站链接：如果网站失效，则将网站链接部分的 `linczero.github.io` 替换成 `linczero-github-io.pages.dev` 就可以了
 	  （**本文的默认网站链接指向 github.io，如果国内有不能访问的朋友，那么大概率需要做这一步**）
+- [体积超小的min版anyblock](https://github.com/any-block/obsidian-any-block-min)，你可以手动下载，或使用BRAT插件自动下载/更新该obsidian插件
 
 ## 亮点
 
