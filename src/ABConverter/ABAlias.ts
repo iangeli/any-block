@@ -81,7 +81,7 @@ export function autoABAlias (header:string, selectorName:string, content:string)
   }
   for (const item of ABAlias_json_withSub) { // 特别组，被替换为带子串表示的结果
     header = header.replace(item.regex, (match, ...groups) => {
-      return item.replacement.replace(/\$(\d+)/g, (_, number) => groups[number - 1]); // 根据捕获组替换
+      return item.replacement.replace(/\$(\d+)/g, (_, number) => groups[number - 1]??""); // 根据捕获组替换。如果某个组是未定义，那么为空
     });
   }
   for (const item of ABAlias_json_end) { // 保证ABAlias_json内容被扩展后，该部分的替换规则仍处于最后
