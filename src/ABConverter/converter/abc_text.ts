@@ -45,7 +45,7 @@ const abc_addCode = ABConvert.factory({
 const abc_xQuote = ABConvert.factory({
   id: "xQuote",
   name: "去除引用块",
-  match: "/^(xQuote|Xquote)$/",
+  match: /^(xQuote|Xquote)$/,
   detail: "在文本的每行前面删除 `> `",
   process_param: ABConvert_IOEnum.text,
   process_return: ABConvert_IOEnum.text,
