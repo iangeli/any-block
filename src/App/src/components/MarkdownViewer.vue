@@ -79,7 +79,7 @@ onMounted(()=>{
     padding: 1em;
   }
   blockquote {
-    background-color: #204E8A;
+    background-color: #204E8A44; /** 半透明以区分嵌套 */
     margin: 16px 0;
     padding: 1em;
   }

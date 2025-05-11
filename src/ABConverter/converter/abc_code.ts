@@ -56,7 +56,7 @@ const abc_region2indent = ABConvert.factory({
 const abc_mdit2code = ABConvert.factory({
   id: "mdit2code",
   name: "mdit转代码块",
-  detail: "mdit转代码块 (允许嵌套)。注意 `:*n` 会转化为 `~*(n+3)`",
+  detail: "mdit转代码块 (允许嵌套)。注意 `:*n` 会转化为 `~*(n+3)`, `@aaa bbb` 会转换为 `# bbb` (h1标题)",
   process_param: ABConvert_IOEnum.text,
   process_return: ABConvert_IOEnum.text,
   process: (el, header, content: string): string=>{
@@ -67,17 +67,24 @@ const abc_mdit2code = ABConvert.factory({
     for (let i=0; i < lists.length; i++) {
       const item = lists[i]
       const match = item.match(ABReg.reg_mdit_head)
+      const match2 = item.trim().match(/^@(\S*?)\s(.*?)$/)
 
-      // b1. 非 `:::` 项
-      if (!match) {
-        newContent += '\n' + item
-        continue
+      // b1. `^@` 项
+      if (match2) {
+        newContent += '\n' + '# ' + match2[2]
       }
-      // b2. `:::` 项
-      else {
+      // b1. `:::` 项
+      else if (match) {
         const flag = '~'.repeat(match[3].length + 3)
         if (match[4].trim() !== "") newContent += '\n' + flag + 'anyblock\n[' + match[4].trimStart() + ']' // 头
         else newContent += '\n' + flag // 尾
+        continue
+        
+      }
+      // b3. 普通
+      else {
+        newContent += '\n' + item
+        continue
       }
     }
 
