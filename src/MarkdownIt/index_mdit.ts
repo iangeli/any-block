@@ -269,9 +269,16 @@ function abSelector_container_vuepress(md: MarkdownIt, options?: Partial<Options
  */
 function abSelector_container(md: MarkdownIt, options?: Partial<Options>): void {
   md.block.ruler.before('fence', 'AnyBlockMditContainer', (state, startLine, endLine): boolean => {
+    // 黑白名单机制：白名单为空标注允许所有规则，黑名单会减少白名单的规则
+    const mdit_whitelist: string[] = ["mditABDemo"]
+    const mdit_blacklist: string[] = [
+      // "left", "center", "right", "justify", // https://mdit-plugins.github.io/zh/align.html
+      // "note", "warning", "tip", "info",     // https://mdit-plugins.github.io/zh/container.html
+      // "demo", "md-demo", "codedemo",
+      // "tabs", // TODO: 可能是 `tabs#fruit` 这种形式的，应该改成手动循环判断，不能以这些开头
+    ]
 
     // (1) 匹配 mdit 块头部
-    const mdit_types = ["mditABDemo"] // 在这里设置需要接管ab块类型，其余放行
     let mdit_header: string                 // 块 - 头部 (全行)
     let mdit_match: RegExpMatchArray        // 块 - 正则结果
     {
@@ -282,7 +289,12 @@ function abSelector_container(md: MarkdownIt, options?: Partial<Options>): void 
       
       mdit_match = mdit_header.match(ABReg.reg_mdit_head)
       if (!mdit_match || !mdit_match.length) return false // 不匹配，则退出
-      if (!mdit_types.includes(mdit_match[4].split("|")[0].trim())) return false; // 不在白名单，则退出
+      if (mdit_whitelist.length && !mdit_whitelist.includes(mdit_match[4].split("|")[0].trim())) { // 检查白名单
+        return false;
+      }
+      if (mdit_blacklist.length && mdit_blacklist.includes(mdit_match[4].split("|")[0].trim())) {  // 检查黑名单
+        return false;
+      }
     }
     const mdit_flag:string = mdit_match[3]
     const mdit_type:string = mdit_match[4]
