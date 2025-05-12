@@ -201,7 +201,12 @@ export class DirProcess{
           }
         }
         const td_cell = document.createElement("div"); td.appendChild(td_cell); td_cell.classList.add("ab-list-table-witharrow");
-        ABConvertManager.getInstance().m_renderMarkdownFn(cell_item.content, td_cell);
+        if (cell_item.tableColumn==0 && is_folder) { // 首列，文件/文件夹部分不使用md渲染 (否则 `01. name` 这种文件名会被误渲染)
+          td_cell.innerHTML = cell_item.content
+        }
+        else {
+          ABConvertManager.getInstance().m_renderMarkdownFn(cell_item.content, td_cell)
+        }
       }
     }
 
