@@ -379,7 +379,7 @@ text2
 
 ## markdown-it-container 嵌套
 
-嵌套方式和代码块一样，通过 \`:\` 的数量不同进行
+嵌套方式和代码块一样，通过 \`:\` 的数量不同进行嵌套 (一般是更多的 \`:\` 层去嵌套更少的)
 
 :::::tabs
 
@@ -430,9 +430,9 @@ text3
 
 注意：在 obsidian 中 markdown-it-container 的嵌套原理，与在 app 或 markdown-it 版本中的不同。
 
-因为 obsidian 中并没有像 markdown-it 那样的解析器并给开发者方便处理嵌套。
+因为 obsidian 中对于重新渲染方法，并没有提供一个比较好的接口去处理重渲染的内容，只能从html中去反推解析。
 
-obsidian中的实现本质上需要通过 \`mdit2code\` 处理器，将markdown-it-container块转换为代码块，将 \`@\` 转换为标题，以此支持mdit的嵌套
+所以obsidian中的实现本质上需要通过 \`mdit2code\` 处理器，将markdown-it-container块转换为代码块，将 \`@\` 转换为标题，以此支持mdit的嵌套
 
 :::
 `,
