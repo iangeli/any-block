@@ -98,7 +98,7 @@ function abSelector_squareInline(md: MarkdownIt, options?: Partial<Options>): vo
 
     // (2) 匹配ab块范围
     // const prefix // ab块 - 前缀，TODO 前缀功能以后再做，暂不支持。不过ob的mc要处理前缀避免嵌套问题，感觉mdit的token应该不需要处理？
-    let ab_blankLine_counter = 0            // ab块 - 连续空行计数器，为1则跳到下行，为2则结束ab块
+    let ab_blankLine_counter = 0            // ab块 - 连续空行计数器，为1则跳到下行，为2则结束ab块 (仅列表)
     const ab_startLine: number = state.line // ab块 - 起始行
     let ab_content: string = ""             // ab块 - 内容
     state.line += 1
@@ -139,14 +139,14 @@ function abSelector_squareInline(md: MarkdownIt, options?: Partial<Options>): vo
         return
       }
 
-      // 2. 连续空行结束
+      // 2. 空行 (如果是列表，且连续空行，则结束)
       if (text.trim() == "") {
-        if (ab_blankLine_counter < 1) {
-          ab_blankLine_counter++;
-          ab_content += "\n"; state.line += 1; return findAbEnd()
+        if (ab_blockType == "list" && ab_blankLine_counter >= 1) {
+          return  
         }
         else {
-          return
+          ab_blankLine_counter++;
+          ab_content += "\n"; state.line += 1; return findAbEnd()
         }
       } else {
         ab_blankLine_counter = 0;
@@ -268,96 +268,66 @@ function abSelector_container_vuepress(md: MarkdownIt, options?: Partial<Options
  * @param options 可选配置参数
  */
 function abSelector_container(md: MarkdownIt, options?: Partial<Options>): void {
-  md.block.ruler.before('fence', 'AnyBlockMditContainer', (
-    state, startLine, endLine, silent
-  ): boolean => {
-    const typeNames = ["col", "card", "tab", "mditABDemo"] // 在这里设置需要接管ab块类型，其余放行
-    let start = state.bMarks[startLine];
-    let max = state.eMarks[startLine];
+  md.block.ruler.before('fence', 'AnyBlockMditContainer', (state, startLine, endLine): boolean => {
 
-    // 快速检查第一个字符，过滤掉非容器块
-    if (state.src[start] !== ":") return false;
-
-    let pos = start + 1;
-
-    // 检查标记字符串的剩余部分
-    while (pos <= max) {
-      if (state.src[pos] !== ":") break;
-      pos++;
-    }
-
-    const markerCount = pos - start;
-
-    // 需要至少3个冒号才视为有效标记
-    if (markerCount < 3) return false;
-
-    const markup = state.src.slice(start, pos);
-    const ab_mdit_header = state.src.slice(pos, max);
-
-    // 检查是否在允许的类型列表中
-    if (!typeNames.includes(ab_mdit_header.split("|")[0].trim())) return false;
-
-    // 静默模式下直接返回验证成功
-    if (silent) return true;
-
-    const ab_startLine = startLine;
-    let nextLine = startLine;
-    let autoClosed = false;
-
-    let ab_content = "";
-
-    // 搜索块的结束标记
-    while (
-      // unclosed block should be auto closed by end of document.
-      // also block seems to be auto closed by end of parent
-      nextLine < endLine
-    ) {
-      nextLine++;
-      start = state.bMarks[nextLine];
-      max = state.eMarks[nextLine];
+    // (1) 匹配 mdit 块头部
+    const mdit_types = ["col", "card", "tab", "mditABDemo"] // 在这里设置需要接管ab块类型，其余放行
+    let mdit_header: string                 // 块 - 头部 (全行)
+    let mdit_match: RegExpMatchArray        // 块 - 正则结果
+    {
+      state.line = startLine
+      const pos = state.bMarks[state.line]  // 这行字符的初始位置
+      const max = state.eMarks[state.line]  // 这行字符的结束位置
+      mdit_header = state.src.substring(pos, max)  // 这一行的内容
       
-      if (start < max && state.sCount[nextLine] < state.blkIndent)
-        // non-empty line with negative indent should stop the list:
-        // - ```
-        //  test
-        break;
-      if (
-        // match start
-        state.src[start] === ":" &&
-        // closing fence should be indented less than 4 spaces
-        state.sCount[nextLine] - state.blkIndent < 4
-      ) {
-        // check rest of marker
-        for (pos = start + 1; pos <= max; pos++)
-          if (state.src[pos] !== ":") break;
-
-        // closing code fence must be at least as long as the opening one
-        if (pos - start >= markerCount) {
-          // make sure tail has spaces only
-          pos = state.skipSpaces(pos);
-
-          if (pos >= max) {
-            // found!
-            autoClosed = true;
-            break;
-          }
-          
-        }
-      }
-      ab_content += "\n" + state.src.substring(start, max);
+      mdit_match = mdit_header.match(ABReg.reg_mdit_head)
+      if (!mdit_match || !mdit_match.length) return false // 不匹配，则退出
+      if (!mdit_types.includes(mdit_match[4].split("|")[0].trim())) return false; // 不在白名单，则退出
     }
+    const mdit_flag:string = mdit_match[3]
+    const mdit_type:string = mdit_match[4]
 
-    state.line = nextLine + (autoClosed ? 1 : 0);
+    // (2) 匹配 mdit 块范围
+    const mdit_startLine: number = state.line // mdit块 - 起始行
+    let mdit_content: string = ""             // mdit块 - 内容 (不包含首尾 `:::`)
+    state.line += 1
+    findMditEnd()
+    const mdit_endLine: number = state.line   // mdit块 - 结束行 (不包含)
 
+    // (3) 插入 mdit 块token
     const token = state.push('fence', 'code', 0)
     token.info = "AnyBlock"
-    token.content = `[${ab_mdit_header}]\n${ab_content}`
-    token.map = [ab_startLine, nextLine]
-    token.markup = markup;
+    token.content = `[${mdit_type}]\n${mdit_content}`
+    token.map = [mdit_startLine, mdit_endLine]
+    token.markup = mdit_flag;
     token.nesting = 0;
-
     return true
-  });
+
+    // -------------------------- 子函数部分 ------------------------
+
+    /// 找到ab块的结尾，迭代部分
+    function findMditEnd() {
+      const pos = state.bMarks[state.line]  // 这行字符的初始位置
+      const max = state.eMarks[state.line]  // 这行字符的结束位置
+      const text = state.src.substring(pos, max) // 这一行的内容
+
+      // 1. 文章末行结束
+      if (state.line > endLine) {
+        state.line = endLine+1
+        return
+      }
+
+      // 2. 结束
+      if (text.trim() == mdit_flag) {
+        state.line += 1; return
+      }
+
+      // 3. 未结束，继续递归寻找
+      else {
+        mdit_content += "\n" + text; state.line += 1; return findMditEnd()
+      }
+    }
+  })
 }
 
 /**
