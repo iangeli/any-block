@@ -5,7 +5,7 @@
 import {ABConvert_IOEnum, ABConvert, type ABConvert_SpecSimp} from "./ABConvert"
 import {ABConvertManager} from "../ABConvertManager"
 import {C2ListProcess, type List_C2ListItem} from "./abc_c2list"
-import {ABReg} from "../ABReg"
+import {ABCSetting, ABReg} from "../ABReg"
 
 /// 按mdit-tabs的标准转化为二列列表数据
 function mditTabs2listdata(content:string, reg: RegExp): List_C2ListItem {
@@ -71,9 +71,36 @@ const abc_mditABDemo = ABConvert.factory({
   process_param: ABConvert_IOEnum.text,
   process_return: ABConvert_IOEnum.el,
   process: (el, header, content: string): HTMLElement=>{
-    const newContent = `@tab show\n${content}\n@tab withoutPlugin\n(noPlugin)${content.trimStart()}\n@tab mdSource\n~~~~~md\n${content}\n~~~~~`
-    abc_mditTabs.process(el, header, newContent)
-    return el
+    // 无论哪个版本都有一个bug：
+    // 如果内部包含 mermaid/mermaid markmap/markmap 这三个图，会渲染失败或位置错误
+
+    // 二选一，markdown-it-tab 版本
+    if (ABCSetting.env == "vuepress") {
+      ABConvertManager.getInstance().m_renderMarkdownFn(`::::: tabs
+
+@tab show
+
+${content}
+
+@tab withoutPlugin
+
+(noPlugin)${content.trimStart()}
+
+@tab mdSource
+
+~~~~~md
+${content}
+~~~~~
+
+:::::`, el)
+      return el
+    }
+    // 二选一，anyblock 版本
+    else {
+      const newContent = `@tab show\n${content}\n@tab withoutPlugin\n(noPlugin)${content.trimStart()}\n@tab mdSource\n~~~~~md\n${content}\n~~~~~`
+      abc_mditTabs.process(el, header, newContent)
+      return el
+    }
   }
 })
 

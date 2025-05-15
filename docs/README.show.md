@@ -151,21 +151,18 @@ Describe print statements for various common programming languages (描述一下
   - Print statement<br>打印语句
     - characteristic<br>特点
 - Java
-  - 
-    ```java
+  - ```java
     System.out.
         println("Hello World");
     ```
     - This sentence is a little long<br>这语句有点长
 - C
-  - 
-    ```c
+  - ```c
     printf("Hello World");
     ```
     - The raw C output<br>原始的C输出
 - C++
-  - 
-    ```cpp
+  - ```cpp
     std::cout<<"Hello Wrold";
     // <<std::end;
     ```
@@ -174,8 +171,7 @@ Describe print statements for various common programming languages (描述一下
       > - newline：`<<std::end;`
       > - 换行: `<<std::end;`
 - Python
-  - 
-    ```python
+  - ```python
     print("Hello World")
     ```
       - Note that Python2 and Python3 have different print statements<br>需要注意一下Python2和Python3的打印语句不同
@@ -183,11 +179,13 @@ Describe print statements for various common programming languages (描述一下
         |---|---|
         |`print ""`|`print("")`|
 - JavaScript
-  - 
-    ```js
+  - ```js
     console.log("Hello World");
     ```
       - Console printing<br>控制台打印
+
+*注意：在 obsidian 实时模式中，`- ` 后面不能直接接代码块或表格，要换一行。否则可能有bug
+这是 obsidian 实时模式的机制缺陷所导致的。在大多数md平台中，这样做是合法的*
 
 ::::
 
@@ -550,7 +548,11 @@ How to install python on each platform (python在各平台上的安装方法)：
 
 demo：描述一下树设计的脑图
 
-::::mditABDemo
+<!--这里不能用ABDemo，很奇怪，不知道为什么-->
+
+:::: tabs
+
+@tab show
 
 [list2mermaid]
 
@@ -565,6 +567,40 @@ demo：描述一下树设计的脑图
   - 二叉树
     - 分支1
     - 分支2
+
+@tab withoutPlugin
+
+(noPlugin)[list2mermaid]
+
+- 树结构
+  - 基本术语
+    - A
+    - B(BB)
+    - C(CC)
+      - A
+  - 性质
+  - 基本运算
+  - 二叉树
+    - 分支1
+    - 分支2
+
+@tab mdSource
+
+~~~~~md
+[list2mermaid]
+
+- 树结构
+  - 基本术语
+    - A
+    - B(BB)
+    - C(CC)
+      - A
+  - 性质
+  - 基本运算
+  - 二叉树
+    - 分支1
+    - 分支2
+~~~~~
 
 ::::
 
@@ -633,6 +669,8 @@ demo：描述一下树设计的脑图
     |Banana|2|
   - ![](https://markmap.js.org/favicon.png)
 
+(文档的这里有时黑暗模式显示不出来，可能是bug)
+
 ::::
 
 min 样式，更紧凑、样式上也更像 markmap
@@ -686,7 +724,11 @@ min 样式，更紧凑、样式上也更像 markmap
 
 推荐需要内嵌md时，或需要拖拽折叠等操作时使用
 
-::::mditABDemo
+<!--这里不能用ABDemo，很奇怪，不知道为什么-->
+
+:::: tabs
+
+@tab show
 
 [list2markmap]
 
@@ -716,6 +758,68 @@ min 样式，更紧凑、样式上也更像 markmap
     |Banana|2|
   - ![](https://markmap.js.org/favicon.png)
 
+@tab withoutPlugin
+
+(noPlugin)[list2markmap]
+
+- Links
+  - [Website](https://markmap.js.org/)
+  - [GitHub](https://github.com/gera2ld/markmap)
+- Related Projects
+  - [coc-markmap](https://github.com/gera2ld/coc-markmap) for Neovim
+  - [markmap-vscode](https://marketplace.visualstudio.com/items?itemName=gera2ld.markmap-vscode) for VSCode
+  - [eaf-markmap](https://github.com/emacs-eaf/eaf-markmap) for Emacs
+- Features
+  - Lists
+    - **strong** ~~del~~ *italic* ==highlight==
+    - `inline code`
+    - [x] checkbox
+    - Katex: $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$ <\!-- markmap: fold -->
+    - [More Katex Examples](#?d=gist:af76a4c245b302206b16aec503dbe07b:katex.md)
+    - Now we can wrap very very very very long text based on `maxWidth` option
+  - Blocks
+  - 
+    ```javascript
+    console.log("hello, JavaScript")
+    ```
+  - |Products|Price|
+    |-|-|
+    |Apple|4|
+    |Banana|2|
+  - ![](https://markmap.js.org/favicon.png)
+
+@tab mdSource
+
+~~~~~md
+[list2markmap]
+
+- Links
+  - [Website](https://markmap.js.org/)
+  - [GitHub](https://github.com/gera2ld/markmap)
+- Related Projects
+  - [coc-markmap](https://github.com/gera2ld/coc-markmap) for Neovim
+  - [markmap-vscode](https://marketplace.visualstudio.com/items?itemName=gera2ld.markmap-vscode) for VSCode
+  - [eaf-markmap](https://github.com/emacs-eaf/eaf-markmap) for Emacs
+- Features
+  - Lists
+    - **strong** ~~del~~ *italic* ==highlight==
+    - `inline code`
+    - [x] checkbox
+    - Katex: $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$ <\!-- markmap: fold -->
+    - [More Katex Examples](#?d=gist:af76a4c245b302206b16aec503dbe07b:katex.md)
+    - Now we can wrap very very very very long text based on `maxWidth` option
+  - Blocks
+  - 
+    ```javascript
+    console.log("hello, JavaScript")
+    ```
+  - |Products|Price|
+    |-|-|
+    |Apple|4|
+    |Banana|2|
+  - ![](https://markmap.js.org/favicon.png)
+~~~~~
+
 ::::
 
 #### to mermaid mindmap (转mermaid思维导图)
@@ -727,7 +831,11 @@ min 样式，更紧凑、样式上也更像 markmap
 
 这里我就直接使用mermaid官方给的例子了:
 
-::::mditABDemo
+<!--这里不能用ABDemo，很奇怪，不知道为什么-->
+
+::::tabs
+
+@tab show
 
 [listroot(root((mindmap)))|list2mindmap]
 
@@ -746,6 +854,48 @@ min 样式，更紧凑、样式上也更像 markmap
 - Tools
   - Pen and paper
   - Mermaid
+
+@tab withoutPlugin
+
+(noPlugin)[listroot(root((mindmap)))|list2mindmap]
+
+- Origins
+  - Long history
+  - ::icon(fa fa-book)
+  - Popularisation
+    - British popular psychology author Tony Buzan
+- Research
+  - On effectiveness<br/>and features
+  - On Automatic creation
+    - Uses
+      - Creative techniques
+      - Strategic planning
+      - Argument mapping
+- Tools
+  - Pen and paper
+  - Mermaid
+
+@tab mdSource
+
+~~~~~md
+[listroot(root((mindmap)))|list2mindmap]
+
+- Origins
+  - Long history
+  - ::icon(fa fa-book)
+  - Popularisation
+    - British popular psychology author Tony Buzan
+- Research
+  - On effectiveness<br/>and features
+  - On Automatic creation
+    - Uses
+      - Creative techniques
+      - Strategic planning
+      - Argument mapping
+- Tools
+  - Pen and paper
+  - Mermaid
+~~~~~
 
 ::::
 
@@ -825,4 +975,3 @@ min 样式，更紧凑、样式上也更像 markmap
 url: [Selector](docs/en/03.%20Selector.md)
 
 :::
-
