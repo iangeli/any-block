@@ -228,7 +228,7 @@ const abc_overfold = ABConvert.factory({
        * 可以尝试改用grid布局
        */
       // 使用非百分比单位尽量保证参数数量与列数一致，使用百分比单位表格会被按比例拉伸到行宽
-      const table = content.children[0].querySelector('table')
+      const table: HTMLElement|null = content.querySelector('table')
       if (table !== null) {
         table.style.tableLayout = 'fixed'
         // 检查是否存在 % 单位的参数，使用100%，否则使用fit-content

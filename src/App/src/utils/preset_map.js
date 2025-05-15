@@ -318,7 +318,7 @@ It is blue color text
 \`\`\`
 
 \`\`\`anyblock
-[table]
+[table|width(20)]
 
 - It is a **multicross table**
   - fork1
