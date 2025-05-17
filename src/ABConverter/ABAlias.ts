@@ -117,7 +117,7 @@ const ABAlias_json_withSub: ABAlias_json_item[] = [
   //   quote, cite
   // `其他` 避免错字, 我之前加过 warn, tips。后面又删了
   { regex: /\|(note|warning|caution|attention|error|info|danger|tip|hint|example|abstract|summary|tldr|quote|cite|todo|success|check|done|important|question|help|faq|failure|fail|missing|bug)([+-]?)(\s.*)?\|/, replacement: "|add([!$1]$2$3)|addQuote|" },
-  { regex: /\|callout (\S+)([+-]?)\s?(.*)\|/, replacement: "|add([!$1]$2 $3)|addQuote|" }, // 注意避免和原上/上面的callout语法冲突，以及自身递归
+  { regex: /\|(callout|alert) ([^+-\s]+)([+-]?)\s?(.*)\|/, replacement: "|add([!$2]$3 $4)|addQuote|" }, // 注意避免和原上/上面的callout语法冲突，以及自身递归
 ]
 
 // mdit块
