@@ -11,8 +11,6 @@ import {ABConvertManager} from "../ABConvertManager"
 import {ListProcess, type List_ListItem} from "./abc_list"
 import {ABCSetting, ABReg} from "../ABReg"
 
-let mermaid: any = null // type: Mermaid (不一定用得上，占位)
-
 /**
  * 生成一个随机id
  * 
@@ -238,24 +236,36 @@ async function data2mindmap(
 
 // 通过mermaid块里的内容来渲染mermaid块
 async function render_mermaidText(mermaidText: string, div: HTMLElement) {
+  // 0. 四选一。使用obsidian的loadMermaid引入依赖
+  // 优点：无需自带mermaid依赖
+  // full-ob和min-ob选用
+  if ((ABCSetting.env == "obsidian" || ABCSetting.env == "obsidian-min") && ABCSetting.mermaid) {
+    ABCSetting.mermaid.then(async mermaid => {
+      const isDarkTheme = document.body.classList.contains('theme-dark')
+      const theme = isDarkTheme ? 'dark' : 'light'
+      mermaid.initialize({ theme: theme })
+      const { svg } = await mermaid.render("ab-mermaid-"+getID(), mermaidText)
+      div.innerHTML = svg
+    })
+  }
   // 1. 四选一。自己渲
-  // full-ob使用
+  // 旧full-ob使用
   // - 优点: 最快，无需通过二次转换
   // - 缺点: abc模块要内置mermaid，旧版插件使用是因为当时的obsidian内置的mermaid版本太老了
   // - 选用：目前的ob环境中用是最好。vuepress-mdit中则有另一个bug，DOMPurify丢失：https://github.com/mermaid-js/mermaid/issues/5204
   // - 补充：废弃函数：mermaid.mermaidAPI.renderAsync("ab-mermaid-"+getID(), mermaidText, (svgCode:string)=>{ div.innerHTML = svgCode })
-  if (ABCSetting.env == "obsidian") {
-    await init_mermaid()
-    const { svg } = await mermaid?.render("ab-mermaid-"+getID(), mermaidText)
-    div.innerHTML = svg
-  }
+  // if (ABCSetting.env == "obsidian") {
+  //   await init_mermaid()
+  //   const { svg } = await mermaid?.render("ab-mermaid-"+getID(), mermaidText)
+  //   div.innerHTML = svg
+  // }
   // 2. 四选一。在这里给环境渲
   // - 优点：abc模块无需重复内置mermaid
   // - 缺点：在ob里中，一个mermaid块的变更会导致所在页面内的所有mermaid一起变更，在mdit里似乎id会有问题
-  // min-ob使用
-  else if (ABCSetting.env == "obsidian-min") {
-    ABConvertManager.getInstance().m_renderMarkdownFn("```mermaid\n"+mermaidText+"\n```", div)
-  }
+  // 旧min-ob使用
+  // else if (ABCSetting.env == "obsidian-min") {
+  //   ABConvertManager.getInstance().m_renderMarkdownFn("```mermaid\n"+mermaidText+"\n```", div)
+  // }
   // 3. 四选一。这里不渲，交给上一层让上一层渲
   // 当前mdit选用
   // - 优点：abc模块无需重复内置mermaid。对于mdit，能避免输出格式必须为html
@@ -305,8 +315,10 @@ async function render_mermaidText(mermaidText: string, div: HTMLElement) {
  * 二是动态引入，提升性能
  * 
  * TODO 非条件编译，打包体积还是会变大
+ * 
+ * @deprecated 使用 loadMermaid from obsidian 代替
  */
-async function init_mermaid () {
+/*async function init_mermaid () {
   if (mermaid != null) return // 已经初始化过
     
   // 二选一。mdit/min环境直接不执行这部分
@@ -329,4 +341,4 @@ async function init_mermaid () {
   const mermaid_init = async () => {
     await initialize;
   }
-}
+}*/

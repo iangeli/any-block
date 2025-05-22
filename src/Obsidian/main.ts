@@ -7,8 +7,7 @@
  * - 接管渲染后 (渲染/阅读模式)
  */
 
-import { Plugin } from "obsidian"
-import { MarkdownRenderChild, MarkdownRenderer } from 'obsidian'
+import { MarkdownRenderChild, MarkdownRenderer, loadMermaid, Plugin } from 'obsidian'
 
 // 转换器模块
 import { ABConvertManager } from "@/ABConverter/index"
@@ -28,7 +27,7 @@ export default class AnyBlockPlugin extends Plugin {
     await this.loadSettings();
     this.addSettingTab(new ABSettingTab(this.app, this));
 
-    // 将ob的渲染行为传入回调函数 (目的是将转换器和Obsidian相解耦合)
+    // 适配 - 将ob的渲染行为传入回调函数 (目的是将转换器和Obsidian相解耦合)
     ABConvertManager.getInstance().redefine_renderMarkdown((markdown: string, el: HTMLElement, ctx?: any): void => {
       el.classList.add("markdown-rendered")
 
@@ -64,6 +63,9 @@ export default class AnyBlockPlugin extends Plugin {
       // @ts-ignore 新接口，但旧接口似乎不支持
       MarkdownRenderer.render(app, markdown, el, app.workspace.activeLeaf?.view?.file?.path??"", mdrc)
     })
+
+    // 适配 - mermaid
+    ABCSetting.mermaid = loadMermaid()
 
     // 钩子组1 - 代码块
     this.registerMarkdownCodeBlockProcessor("ab", ABReplacer_CodeBlock.processor);

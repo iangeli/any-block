@@ -59,8 +59,14 @@ export const ABReg = {
  * 可以被obsidian的设置覆盖，如果没有GUI设置页面，可以人工修改
  * 这部分是给非obsidian环境用的
  */
-export const ABCSetting: {is_debug: boolean, env: "obsidian"|"obsidian-min"|"app"|"vuepress", global_ctx: any} = {
+export const ABCSetting: {
+  is_debug: boolean,
+  env: "obsidian"|"obsidian-min"|"app"|"vuepress",
+  global_ctx: any,
+  mermaid?: Promise<any>,
+} = {
   is_debug: false,
   env: "obsidian",
   global_ctx: null, // MarkdownPostProcessorContext类型, obsidian专用
+  mermaid: undefined, // obsidian专用，表示使用哪种方式渲染mermaid
 }
