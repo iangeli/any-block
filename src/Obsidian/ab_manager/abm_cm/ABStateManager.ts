@@ -212,12 +212,8 @@ export class ABStateManager{
    * @param editor_mode 编辑器模式 (源码/实时/阅读)
    */
   private onUpdate_refresh(decorationSet:DecorationSet, tr:Transaction, decoration_mode:ConfDecoration, editor_mode:Editor_mode){
-    console.log('刷新 ----------- 函数调用')
-
-    // #region 不查了
+    // #region 不装饰，则直接返回，不查了
     if (decoration_mode == ConfDecoration.none) {
-      // console.log('刷新 - 大刷新，应减少调用')
-
       // 大刷新，全文刷新。全清空掉再重新赋予
       if (decoration_mode != this.prev_decoration_mode){
         decorationSet = decorationSet.update({
@@ -233,54 +229,122 @@ export class ABStateManager{
     }
     // #endregion
 
-    // #region 得到范围集
+    // #region 得到映射装饰集 (范围映射 旧装饰集 得到)
+    const old_decorationSet = decorationSet
+    try {
+      decorationSet = decorationSet.map(tr.changes)
+    } catch (e) {
+      // 如果将tr更新的新旧对象错误混用，会出现这种问题 (之前修复了光标位置延时问题后，触发了这个问题)
+      console.warn('decorationSet map error, maybe paste ab at end', e)
+    }
+    // #endregion
+
+    // #region 得到新范围集 (更新后)
     const list_rangeSpec:MdSelectorRangeSpec[] = autoMdSelector(this.getMdText(tr))
     // #endregion
 
-    // #region 得到装饰集。范围集 (list_rangeSpec) -> 装饰集 (list_add_decoration)
+    // #region 得到新装饰集 (范围集 (list_rangeSpec) -> 装饰集 (list_add_decoration) 生成)
     // (用于局部刷新)
-    const cursorSpec = this.getCursorCh(tr) // 将来光标的位置 (光标移动后的位置)
-    const cursorSpec_last = this.getCursorCh() // 过去光标的位置 (光标移动前的位置)
+    let list_decoration_nochange:Range<Decoration>[] = [] // 装饰集 - 无光标变动部分 -> 不会导致刷新
+    let list_decoration_change:Range<Decoration>[] = []   // 装饰集 - 有光标变动部分 -> 会导致刷新
+    const cursorSpec = this.getCursorCh(tr)               // 光标位置 - 将来 (光标移动后的位置)
+    const cursorSpec_last = this.getCursorCh()            // 光标位置 - 过去 (光标移动前的位置)
     let cursorSepc_correct:number|null = null // 需要纠正的光标位置 (必须在应用完tr后再纠正，避免被覆盖)
-    let list_add_decoration:Range<Decoration>[] = [] // 规则表
     let is_current_cursor_in = false // 当前光标是否在ab块区域内
     for (let rangeSpec of list_rangeSpec){
-      let decoration: Decoration
-      // 当前光标位于该ab区域内，则该ab区域显示为下划线装饰
-      if (cursorSpec.from>=rangeSpec.from_ch && cursorSpec.from<=rangeSpec.to_ch
-          || cursorSpec.to>=rangeSpec.from_ch && cursorSpec.to<=rangeSpec.to_ch
+      // (1) 判断光标与该范围项的关系
+      let isCursorIn = false // 当前光标是否位于该ab区域内
+      let isCursonIn_last = false // 旧光标位于该ab区域内
+      if (cursorSpec.from >= rangeSpec.from_ch && cursorSpec.from <= rangeSpec.to_ch
+          || cursorSpec.to >= rangeSpec.from_ch && cursorSpec.to <= rangeSpec.to_ch
       ) {
-        // console.log('刷新 - 内部光标变更')
-        decoration = Decoration.mark({class: "ab-line-yellow"}) // TODO fix bug：当光标在局部频繁移动时或其他情况? 这里会被重复添加很多层带这个class的span嵌套
-        is_current_cursor_in = true
-        // 纠正光标位置
-        // if (cursorSpec.from==rangeSpec.from_ch && cursorSpec_last.from>rangeSpec.to_ch) {
-        //   cursorSepc_correct = rangeSpec.to_ch
-        // }
+        isCursorIn = true
       }
-      // 当前光标不位于该ab区域内，则该ab区域显示为渲染的ab块
-      else {
-        // console.log('刷新 - 外部光标变更')
-        decoration = Decoration.replace({
+      if (cursorSpec_last.from >= rangeSpec.from_ch && cursorSpec_last.from <= rangeSpec.to_ch
+        || cursorSpec_last.to >= rangeSpec.from_ch && cursorSpec_last.to <= rangeSpec.to_ch
+      ) {
+        isCursonIn_last = true
+      }
+
+      // (2) 给当前范围项创建一个装饰类，并添加到装饰集
+      // 该ab区域显示为下划线装饰
+      if (isCursorIn) {
+        is_current_cursor_in = true
+        const decoration = Decoration.mark({class: "ab-line-yellow"}) // TODO fix bug：当光标在局部频繁移动时或其他情况? 这里会被重复添加很多层带这个class的span嵌套
+        list_decoration_change.push(decoration.range(rangeSpec.from_ch, rangeSpec.to_ch))
+      }
+      // 该ab区域显示为渲染的ab块 - 变化
+      else if (isCursonIn_last) {
+        const decoration = Decoration.replace({
           widget: new ABReplacer_Widget(rangeSpec, this.editor),
           // inclusive: true, block: false,
         })
+        list_decoration_change.push(decoration.range(rangeSpec.from_ch, rangeSpec.to_ch))
       }
-      list_add_decoration.push(decoration.range(rangeSpec.from_ch, rangeSpec.to_ch))
+      // 该ab区域显示为渲染的ab块 - 不变化
+      else {
+        const decoration = Decoration.replace({
+          widget: new ABReplacer_Widget(rangeSpec, this.editor),
+          // inclusive: true, block: false,
+        })
+        list_decoration_nochange.push(decoration.range(rangeSpec.from_ch, rangeSpec.to_ch))
+      }
     }
-    // console.log(`光标位置改变-----`,
-    //   '\n    光标是否在位置集中: ', is_current_cursor_in,
-    //   '\n    新位置', cursorSpec,
-    //   '\n    位置集', list_rangeSpec,
-    //   '\n    样式集', list_add_decoration.length, list_add_decoration,
-    //   '\n    修改内容tr', tr.changes, tr
-    // )
     // #endregion
 
-    // #region 光标进出范围集事件检测
-    if (is_current_cursor_in!=this.is_prev_cursor_in
-      ||decoration_mode!=this.prev_decoration_mode
-      ||editor_mode!=this.prev_editor_mode
+    // #region 用 "新生成的装饰集" 去调整 "新的旧装饰集"
+    // 注意DecorationSet是比较特殊的容器，无法直接更新，要通过给定的update > (filter/add) api来更新
+    // 注意尽可能保证装饰集变动少，虽然大部分情况这样做没性能问题，但如果存在渲染慢的ab块 (mermaid等)，会存在卡顿
+
+    // debug_count1 - debug_count2(非不变项) + debug_count3(变化项1) + debug_count4(变化项2)
+    let debug_count1 = 0, debug_count2 = 0, debug_count3 = 0, debug_count4 = 0
+    // 没有变化项，可提前返回
+    // 包括: 装饰集没有变化 (光标不在范围集内且没有进出范围集)，编辑模式没有变化
+    if (list_decoration_change.length == 0
+      && is_current_cursor_in == this.is_prev_cursor_in
+      && decoration_mode == this.prev_decoration_mode
+      && editor_mode == this.prev_editor_mode
+    ){
+      return decorationSet
+    }
+    // 删除变化项
+    decorationSet = decorationSet.update({
+      filter(from, to, value) { // 全部删掉，和不变集相同的则保留
+        for (let i = 0; i < list_decoration_nochange.length; i++) {
+          const item = list_decoration_nochange[i]
+          if (item.from == from && item.to == to) {
+            debug_count1++
+            list_decoration_nochange.splice(i, 1); return true;
+          }
+        }
+        debug_count1++
+        debug_count2++
+        return false
+      },
+    })
+    // 新增变化项1
+    // 测出了存在一个没有光标变化的新ab块 (在黏贴一段ab块文本会出现这种情况)
+    for (const item of list_decoration_nochange) {
+      debug_count3++
+      decorationSet = decorationSet.update({
+        add: [item],
+      })
+    }
+    // 新增变化项2
+    for (const item of list_decoration_change) {
+      debug_count4++
+      decorationSet = decorationSet.update({
+        add: [item],
+      })
+    }
+    if (this.plugin_this.settings.is_debug) console.log(`ab cm 装饰集变化: ${debug_count1}-${debug_count2}+${debug_count3}+${debug_count4}`)
+    // #endregion
+
+    // #region 光标进出范围集事件检测。废弃，代替之的是把之间的新装饰集分成两个部分: 变化/不变。如果有变化，表示有更新事件
+    /*
+    if (is_current_cursor_in != this.is_prev_cursor_in
+      || decoration_mode != this.prev_decoration_mode
+      || editor_mode != this.prev_editor_mode
     ){
       this.is_prev_cursor_in = is_current_cursor_in
       this.prev_decoration_mode = decoration_mode
@@ -291,27 +355,14 @@ export class ABStateManager{
         filter: (from:number, to:number, value:any) => { return false }
       })
       // 装饰调整 - 增
-      // 这里有点脱屁股放屁，但好像因为范围重叠的原因，直接传列表会报错：
-      // Ranges must be added sorted by `from` position and `startSide`
       for (let item of list_add_decoration) {
         
         decorationSet = decorationSet.update({
           add: [item]
         })
       }
-      // console.log('刷新 - 光标切换事件')
-    }
-    // #endregion
-
-    // #region 装饰调整 - 范围映射
-    // [!code error] 自从修复了光标位置延时问题后，多了控制台报错：
-    // 在行尾黏贴anyblock内容会存在问题，报错如: RangeError: Position 118 is out of range for changeset of length 114
-    const old_decorationSet = decorationSet
-    try {
-      decorationSet = decorationSet.map(tr.changes)
-    } catch (e) {
-      console.warn('decorationSet map error, maybe paste ab at end', e)
-    }
+      console.log('刷新 - 光标切换事件')
+    }*/
     // #endregion
 
     return decorationSet
@@ -385,6 +436,7 @@ export class ABStateManager{
    * 获取当前文本
    * 
    * @param tr 如果有tr参数，则获取修改后的md文本
+   * 如果没有，则获取当前位置 (未经tr更新的旧位置)
    */
   private getMdText(tr?: Transaction): string {
     const mdText = tr?.state?.doc?.toString()
