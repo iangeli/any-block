@@ -241,9 +241,6 @@ async function render_mermaidText(mermaidText: string, div: HTMLElement) {
   // full-ob和min-ob选用
   if ((ABCSetting.env == "obsidian" || ABCSetting.env == "obsidian-min") && ABCSetting.mermaid) {
     ABCSetting.mermaid.then(async mermaid => {
-      const isDarkTheme = document.body.classList.contains('theme-dark')
-      const theme = isDarkTheme ? 'dark' : 'light'
-      mermaid.initialize({ theme: theme })
       const { svg } = await mermaid.render("ab-mermaid-"+getID(), mermaidText)
       div.innerHTML = svg
     })
