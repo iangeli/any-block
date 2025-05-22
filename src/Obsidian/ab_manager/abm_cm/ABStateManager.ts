@@ -212,25 +212,26 @@ export class ABStateManager{
    * @param editor_mode 编辑器模式 (源码/实时/阅读)
    */
   private onUpdate_refresh(decorationSet:DecorationSet, tr:Transaction, decoration_mode:ConfDecoration, editor_mode:Editor_mode){
-    // #region 不装饰，则直接返回，不查了
+    // #region 不装饰，则直接返回，不查了 (例如切换到源码模式时)
     if (decoration_mode == ConfDecoration.none) {
-      // 大刷新，全文刷新。全清空掉再重新赋予
-      if (decoration_mode != this.prev_decoration_mode){
+      // 装饰模式改变，则清空装饰集
+      if (decoration_mode != this.prev_decoration_mode) {
         decorationSet = decorationSet.update({
           filter: (from:any, to:any, value:any)=>{ return false }
         })
-        this.is_prev_cursor_in = true
-        this.prev_decoration_mode = decoration_mode
-        this.prev_editor_mode = editor_mode
       }
-      // 不刷新
+      // 装饰模式不改变，不管
       else {}
+
+      this.is_prev_cursor_in = true
+      this.prev_decoration_mode = decoration_mode
+      this.prev_editor_mode = editor_mode
       return decorationSet
     }
     // #endregion
 
     // #region 得到映射装饰集 (范围映射 旧装饰集 得到)
-    const old_decorationSet = decorationSet
+    // const old_decorationSet = decorationSet
     try {
       decorationSet = decorationSet.map(tr.changes)
     } catch (e) {
@@ -292,14 +293,8 @@ export class ABStateManager{
     }
     // #endregion
 
-    // #region 用 "新生成的装饰集" 去调整 "新的旧装饰集"
-    // 注意DecorationSet是比较特殊的容器，无法直接更新，要通过给定的update > (filter/add) api来更新
-    // 注意尽可能保证装饰集变动少，虽然大部分情况这样做没性能问题，但如果存在渲染慢的ab块 (mermaid等)，会存在卡顿
-
-    // debug_count1 - debug_count2(非不变项) + debug_count3(变化项1) + debug_count4(变化项2)
-    let debug_count1 = 0, debug_count2 = 0, debug_count3 = 0, debug_count4 = 0
-    // 没有变化项，可提前返回
-    // 包括: 装饰集没有变化 (光标不在范围集内且没有进出范围集)，编辑模式没有变化
+    // #region 若没有变化项，可提前返回
+    // 变化项包括: 装饰集变化, 光标进出范围集变化，编辑模式变化
     if (list_decoration_change.length == 0
       && is_current_cursor_in == this.is_prev_cursor_in
       && decoration_mode == this.prev_decoration_mode
@@ -307,7 +302,14 @@ export class ABStateManager{
     ){
       return decorationSet
     }
-    // 删除变化项
+    // #endregion
+
+    // #region 用 "新生成的装饰集" 去调整 "新的旧装饰集"
+    // 注意DecorationSet是比较特殊的容器，无法直接更新，要通过给定的update > (filter/add) api来更新
+    // 注意尽可能保证装饰集变动少，虽然大部分情况这样做没性能问题，但如果存在渲染慢的ab块 (mermaid等)，会存在卡顿
+    // 装饰集变化: debug_count1 - debug_count2(非不变项) + debug_count3(变化项1) + debug_count4(变化项2)
+    let debug_count1 = 0, debug_count2 = 0, debug_count3 = 0, debug_count4 = 0
+    // (1) 删除变化项
     decorationSet = decorationSet.update({
       filter(from, to, value) { // 全部删掉，和不变集相同的则保留
         for (let i = 0; i < list_decoration_nochange.length; i++) {
@@ -322,7 +324,7 @@ export class ABStateManager{
         return false
       },
     })
-    // 新增变化项1
+    // (2) 新增变化项1
     // 测出了存在一个没有光标变化的新ab块 (在黏贴一段ab块文本会出现这种情况)
     for (const item of list_decoration_nochange) {
       debug_count3++
@@ -330,7 +332,7 @@ export class ABStateManager{
         add: [item],
       })
     }
-    // 新增变化项2
+    // (3) 新增变化项2
     for (const item of list_decoration_change) {
       debug_count4++
       decorationSet = decorationSet.update({
@@ -340,7 +342,7 @@ export class ABStateManager{
     if (this.plugin_this.settings.is_debug) console.log(`ab cm 装饰集变化: ${debug_count1}-${debug_count2}+${debug_count3}+${debug_count4}`)
     // #endregion
 
-    // #region 光标进出范围集事件检测。废弃，代替之的是把之间的新装饰集分成两个部分: 变化/不变。如果有变化，表示有更新事件
+    // #region (废弃) 光标进出范围集事件检测。废弃，代替之的是把之间的新装饰集分成两个部分: 变化/不变。如果有变化，表示有更新事件
     /*
     if (is_current_cursor_in != this.is_prev_cursor_in
       || decoration_mode != this.prev_decoration_mode
@@ -365,6 +367,9 @@ export class ABStateManager{
     }*/
     // #endregion
 
+    this.is_prev_cursor_in = is_current_cursor_in
+    this.prev_decoration_mode = decoration_mode
+    this.prev_editor_mode = editor_mode
     return decorationSet
   }
 
