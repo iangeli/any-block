@@ -223,11 +223,6 @@ export function list2ActivityDiagramText(listdata: List_ListItem): string {
   let result = "@startuml\n";
   const stats = listdata.map(item => new Stat(item.content.trim(), item.level));
   const { result: bodyResult } = processBlock(stats, 0, -1);
-  const swimLanes = bodyResult.split("\n").filter(line => line.startsWith("|") && line.endsWith("|"));
-  if (swimLanes.length > 0) {
-    result += swimLanes.join("\n");
-    result += "\n";
-  }
   result += bodyResult;
   result += "@enduml";
   return result;
