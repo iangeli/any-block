@@ -548,7 +548,7 @@ How to install python on each platform (python在各平台上的安装方法)：
 
 demo：描述一下树设计的脑图
 
-<!--这里不能用ABDemo，很奇怪，不知道为什么-->
+<!--vuepress中，这里不能用ABDemo，很奇怪，不知道为什么-->
 
 :::: tabs
 
@@ -724,7 +724,7 @@ min 样式，更紧凑、样式上也更像 markmap
 
 推荐需要内嵌md时，或需要拖拽折叠等操作时使用
 
-<!--这里不能用ABDemo，很奇怪，不知道为什么-->
+<!--vuepress中，这里不能用ABDemo，很奇怪，不知道为什么-->
 
 :::: tabs
 
@@ -831,7 +831,7 @@ min 样式，更紧凑、样式上也更像 markmap
 
 这里我就直接使用mermaid官方给的例子了:
 
-<!--这里不能用ABDemo，很奇怪，不知道为什么-->
+<!--vuepress中，这里不能用ABDemo，很奇怪，不知道为什么-->
 
 ::::tabs
 
