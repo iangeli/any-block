@@ -14,8 +14,8 @@
 
 - en
 - Related links：**tutorial**、use skill、contribution、secondary development、online use. Documentation is **multilingual** (zh/en), don't worry.
-- [Online Wiki - github.io](https://linczero.github.io/MdNote_Public/ProductDoc/AnyBlock/)
-- [Online Effects warrior/Tutorial - github.io](https://linczero.github.io/MdNote_Public/ProductDoc/AnyBlock/README.show.md), You can learn how to use it by switching between tabs.
+- [Online Wiki - github.io](https://lincdocs.github.io/AnyBlock/)
+- [Online Effects warrior/Tutorial - github.io](https://lincdocs.github.io/AnyBlock/README.show.html), You can learn how to use it by switching between tabs.
 - [Online Interaction - github.io](https://any-block.github.io/any-block/). You can write experiences here and learn usage through templates
 - Alternate site links：When the website link to this article fails, try replacing `linczero.github.io` with `linczero-github-io.pages.dev` in the url
 - [A Min-sized version of anyblock](https://github.com/any-block/obsidian-any-block-min), you can download it manually or use the BRAT plugin to download/update the obsidian plugin automatically

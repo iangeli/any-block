@@ -24,22 +24,22 @@ Chinese problem (文档的语言问题、网站访问问题)
 
 @tab 中文
 
-与一般的插件仅展示 `源码` + `效果` 不同，这里还多了一个 `无插件效果`。
+**与一般的插件仅展示 `源码` + `效果` 不同，这里还多了一个 `无插件效果`**。
 旨在告诉你该插件不会过于影响你的写作习惯，并且哪怕你不再使用该插件，原来的内容依然不会变得“丑陋”，即 “低插件依赖”
 
 - 插件效果
-  - 效果：是使用插件后真实渲染出来的结果而不是图片截图
-  - 展示了: 插件的真实效果
+  - 效果：是使用插件后真实渲染出来的结果，而不是图片截图
+  - 展示了：插件的真实效果
 - 无插件效果
   - 效果：你关闭了插件后的渲染结果
-  - 展示了: 该插件语法几乎无入侵性，在无插件环境下，md文档依然优雅可读，而非变成代码框
+  - 展示了：该插件语法几乎无入侵性，在无插件环境下，md文档依然优雅可读，而非变成代码框
 - md源码
   - 效果：用记事本打开/在Ob的源码模式中看到的结果
-  - 展示了: 方便你看这种效果是怎么写出来的，表现了插件语法的优雅高效
+  - 展示了：方便你看这种效果是怎么写出来的，表现了插件语法的优雅高效
 
 @tab English
 
-Unlike the general plug-in that only shows the `source code` + `effect`, there is also a `no plug-in effect`.
+**Unlike the general plug-in that only shows the `source code` + `effect`, there is also a `no plug-in effect`**.
 The goal is to tell you that the plugin will not affect your writing habits too much, and that even if you no longer use the plugin, the original content will not become "ugly", that is, "low plugin dependency".
 
 - Plugin effect
@@ -283,21 +283,21 @@ The essence is "listtable" based on the addition of a mock list style (本质是
 [list]
 
 - vue-demo/
-  - build/， 项目构建(webpack)相关代码
-  - config/， 配置目录，包括端口号等。我们初学可以使用默认的
-  - node_modules/， npm 加载的项目依赖模块
-  - src/， 这里是我们要开发的目录
-    - assets/， 放置一些图片，如logo等
-    - components， 目录里面放了一个组件文件，可以不用
-    - App.vue， 项目入口文件，我们也可以直接将组件写这里，而不使用 components 目录
-    - main.js， 项目的核心文件。
-  - static/， 静态资源目录，如图片、字体等
-  - test/， 初始测试目录，可删除
+  - build/ | 项目构建(webpack)相关代码
+  - config/       | 配置目录，包括端口号等。我们初学可以使用默认的
+  - node_modules/ | npm 加载的项目依赖模块
+  - src/          | 这里是我们要开发的目录
+    - assets/     | 放置一些图片，如logo等
+    - components  | 目录里面放了一个组件文件，可以不用
+    - App.vue     | 项目入口文件，我们也可以直接将组件写这里，而不使用 components 目录
+    - main.js     | 项目的核心文件。
+  - static/       | 静态资源目录，如图片、字体等
+  - test/         | 初始测试目录，可删除
   - .eslintignore
-  - .gitignore， git配置
-  - .index.html， 首页入口文件，你可以添加一些 meta 信息或统计代码啥的
-  - package.json， 项目配置文件
-  - READED.md， 项目的说明文档，markdown 格式<br>手动换行测试<br>自动换行测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试k
+  - .gitignore    | git配置
+  - .index.html   | 首页入口文件，你可以添加一些 meta 信息或统计代码啥的
+  - package.json  | 项目配置文件
+  - READED.md     | 项目的说明文档，markdown 格式<br>手动换行测试<br>自动换行测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试k
   - ...
 
 ::::
@@ -312,21 +312,21 @@ The essence is "listtable" based on the addition of imitation directory style (�
 [list2dt]
 
 - vue-demo/
-  - build/， 项目构建(webpack)相关代码
-  - config/， 配置目录，包括端口号等。我们初学可以使用默认的
-  - node_modules/， npm 加载的项目依赖模块
-  - src/， 这里是我们要开发的目录
-    - assets/， 放置一些图片，如logo等
-    - components， 目录里面放了一个组件文件，可以不用
-    - App.vue， 项目入口文件，我们也可以直接将组件写这里，而不使用 components 目录
-    - main.js， 项目的核心文件。
-  - static/， 静态资源目录，如图片、字体等
-  - test/， 初始测试目录，可删除
+  - build/ | 项目构建(webpack)相关代码
+  - config/       | 配置目录，包括端口号等。我们初学可以使用默认的
+  - node_modules/ | npm 加载的项目依赖模块
+  - src/          | 这里是我们要开发的目录
+    - assets/     | 放置一些图片，如logo等
+    - components  | 目录里面放了一个组件文件，可以不用
+    - App.vue     | 项目入口文件，我们也可以直接将组件写这里，而不使用 components 目录
+    - main.js     | 项目的核心文件。
+  - static/       | 静态资源目录，如图片、字体等
+  - test/         | 初始测试目录，可删除
   - .eslintignore
-  - .gitignore， git配置
-  - .index.html， 首页入口文件，你可以添加一些 meta 信息或统计代码啥的
-  - package.json， 项目配置文件
-  - READED.md， 项目的说明文档，markdown 格式<br>手动换行测试<br>自动换行测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试k
+  - .gitignore    | git配置
+  - .index.html   | 首页入口文件，你可以添加一些 meta 信息或统计代码啥的
+  - package.json  | 项目配置文件
+  - READED.md     | 项目的说明文档，markdown 格式<br>手动换行测试<br>自动换行测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试k
   - ...
 
 ::::

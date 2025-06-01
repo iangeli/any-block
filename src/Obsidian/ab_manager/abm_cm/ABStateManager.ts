@@ -339,7 +339,7 @@ export class ABStateManager{
         add: [item],
       })
     }
-    if (this.plugin_this.settings.is_debug) console.log(`ab cm 装饰集变化: ${debug_count1}-${debug_count2}+${debug_count3}+${debug_count4}`)
+    if (this.plugin_this.settings.is_debug) console.log(`ab cm 装饰集变化: ${debug_count1} -${debug_count2}+${debug_count3}+${debug_count4}`)
     // #endregion
 
     // #region (废弃) 光标进出范围集事件检测。废弃，代替之的是把之间的新装饰集分成两个部分: 变化/不变。如果有变化，表示有更新事件
