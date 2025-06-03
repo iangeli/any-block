@@ -483,8 +483,8 @@ text3
 
 [list2pumlActivityDiagram]
 
-- start
 - lane l1:
+  - start
   - group g1:
     - if condition a:
       - a branch
@@ -510,7 +510,7 @@ text3
     - loop body
   - print('loop end')
 - lane l1:
-- end
+  - end
 
 ### python/缩进形式
 
@@ -519,8 +519,8 @@ text3
 [code2list|list2pumlActivityDiagram]
 
 \`\`\`python
-start
 lane l1:
+  start
   group g1:
     if condition a:
       a branch
@@ -553,7 +553,7 @@ lane l2:
   print('loop end')
 
 lane l1:
-end
+  end
 \`\`\`
 
 其中也可以用region注释在code2list的过程中表示缩进
