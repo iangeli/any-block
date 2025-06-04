@@ -104,33 +104,37 @@ const abc_fold = ABConvert.factory({
 const abc_scroll = ABConvert.factory({
   id: "scroll",
   name: "滚动",
-  match: /^scroll(\((\d+)\))?(T)?$/,
+  match: /^scroll(X)?(\((\d+)\))?$/,
   default: "scroll(460)",
+  detail: "默认是纵向滚动。可以指定溢出滚动的范围，可以使用scrollX进行横向滚动",
   process_param: ABConvert_IOEnum.el,
   process_return: ABConvert_IOEnum.el,
   process: (el, header, content: HTMLElement): HTMLElement=>{
-    // 找参数
-    const matchs = header.match(/^scroll(\((\d+)\))?(T)?$/)
+    // 参数 - 最大宽/高
+    const matchs = header.match(/^scroll(X)?(\((\d+)\))?$/)
     if (!matchs) return content
-    let arg1
-    if (!matchs[1]) arg1=460  // 默认值
-    else{
-      if (!matchs[2]) return content
-      arg1 = Number(matchs[2])
+    let arg1 = 0 // default flag
+    if (matchs[2] && matchs[3]) {
+      arg1 = Number(matchs[3])
       if (isNaN(arg1)) return content
     }
+
     // 修改元素
-    if(content.children.length!=1) return content
+    if(content.children.length != 1) return content
     const sub_el = content.children[0]
-    sub_el.remove()
+    sub_el.remove() // 应该非必要吧
     const mid_el = document.createElement("div"); content.appendChild(mid_el); mid_el.classList.add("ab-deco-scroll");
-    if (!matchs[3]){
+    mid_el.appendChild(sub_el)
+
+    // 参数 - X/Y
+    if (!matchs[1]){
       mid_el.classList.add("ab-deco-scroll-y")
-      mid_el.setAttribute("style", `max-height: ${arg1}px`)
+      mid_el.setAttribute("style", `max-height: ${arg1 !== 0 ? arg1+'px' : '460px'}`)
     } else {
       mid_el.classList.add("ab-deco-scroll-x")
+      mid_el.setAttribute("style", `max-height: ${arg1 !== 0 ? arg1+'px' : '100%'}`)
     }
-    mid_el.appendChild(sub_el)
+
     return content
   }
 })
