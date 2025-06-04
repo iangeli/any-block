@@ -77,7 +77,8 @@ export class ABStateManager{
     // 后处理钩子 (在页面加载后被触发/定时触发)
     {
       if (global_timer !== null) { clearInterval(global_timer); global_timer = null; }
-      if (plugin_this.settings.enhance_refresh_time < 1000) {
+      if (plugin_this.settings.enhance_refresh_time > 0) {
+        if (plugin_this.settings.enhance_refresh_time < 1000) plugin_this.settings.enhance_refresh_time = 1000
         global_timer = setInterval(() => {
           if (plugin_this.settings.is_debug) console.log("    auto refresh event:", this.initialFileName)
           abConvertEvent(document, true)
