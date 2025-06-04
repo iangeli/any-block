@@ -236,7 +236,7 @@ export class ABSettingTab extends PluginSettingTab {
             // 3. 刷新处理器的图表
             this.processorPanel.remove()
             const div = containerEl.createEl("div");
-            ABConvertManager.autoABConvert(div, "info", "", "null_content")
+            ABConvertManager.autoABConvert(div, "info_converter", "", "null_content")
             this.processorPanel = div
           }).open()
         })
@@ -245,11 +245,11 @@ export class ABSettingTab extends PluginSettingTab {
 
     // 转换器的管理
     containerEl.createEl('h2', {text: 'Convertor Manager (转换器的管理)'});
-    containerEl.createEl('p', {text: 'It can also be viewed in the main page using the `[info]` processor (这部分内容也可以使用 `[info]` 处理器在主页面中查看)'});
+    containerEl.createEl('p', {text: 'It can also be viewed in the main page using the `[info_converter]` processor (这部分内容也可以使用 `[info_converter]` 处理器在主页面中查看)'});
     containerEl.createEl('p', {text: 'This section is for query only and cannot be edited (这一部分仅供查询不可编辑)'})
     containerEl.createEl('p', {text: ''});
     const div = containerEl.createEl("div");
-    ABConvertManager.autoABConvert(div, "info", "", "null_content") // this.processorPanel = ABConvertManager.getInstance().generateConvertInfoTable(containerEl)
+    ABConvertManager.autoABConvert(div, "info_converter", "", "null_content") // this.processorPanel = ABConvertManager.getInstance().generateConvertInfoTable(containerEl)
     this.processorPanel = div
 	}
 }

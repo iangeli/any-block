@@ -50,10 +50,9 @@ const abc_faq = ABConvert.factory({
   }
 })
 
-const abc_info = ABConvert.factory({
-  id: "info",
+const abc_info_converter = ABConvert.factory({
+  id: "info_converter",
   name: "INFO",
-  match: "info",
   detail: "查看当前软件版本下的注册处理器表",
   process_param: ABConvert_IOEnum.text,
   process_return: ABConvert_IOEnum.el,
