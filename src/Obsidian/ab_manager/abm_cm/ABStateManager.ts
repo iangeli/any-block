@@ -11,16 +11,16 @@
  * - 选择范围
  */
 
-import {EditorView, Decoration, type DecorationSet} from "@codemirror/view"
-import {StateField, StateEffect, EditorState, EditorSelection, Transaction, Range} from "@codemirror/state"
-import  {MarkdownView, type View, type Editor, type EditorPosition} from 'obsidian';
+import { EditorView, Decoration, type DecorationSet } from "@codemirror/view"
+import { StateField, StateEffect, EditorState, EditorSelection, Transaction, Range } from "@codemirror/state"
+import  { MarkdownView, type View, type Editor } from 'obsidian';
 
 import type AnyBlockPlugin from '../../main'
 import { ConfDecoration } from "../../config/ABSettingTab"
 import { autoMdSelector, type MdSelectorRangeSpec} from "./ABSelector_Md"
 import { ABDecorationManager } from "./ABDecorationManager"
 import { ABReplacer_Widget } from "./ABReplacer_Widget"
-import { abConvertEvent } from "@/ABConverter/ABConvertEvent";
+import { abConvertEvent } from "@/ABConverter/ABConvertEvent"
 
 // 获取 - 模式
 enum Editor_mode{
@@ -40,7 +40,7 @@ let global_timer: NodeJS.Timer|null = null // 定时器，单例
  * 启用状态字段装饰功能
  * RAII原则，一次性使用
  */
-export class ABStateManager{
+export class ABStateManager {
 
   /** --------------------------------- 主要参数 -------------------------- */
 
@@ -78,7 +78,7 @@ export class ABStateManager{
     {
       if (global_timer !== null) { clearInterval(global_timer); global_timer = null; }
       if (plugin_this.settings.enhance_refresh_time > 0) {
-        if (plugin_this.settings.enhance_refresh_time < 1000) plugin_this.settings.enhance_refresh_time = 1000
+        if (plugin_this.settings.enhance_refresh_time < 500) plugin_this.settings.enhance_refresh_time = 500 // limit min time
         global_timer = setInterval(() => {
           if (plugin_this.settings.is_debug) console.log("    auto refresh event:", this.initialFileName)
           abConvertEvent(document, true)
