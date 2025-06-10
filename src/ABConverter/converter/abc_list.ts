@@ -33,7 +33,7 @@ import {ABConvertManager} from "../ABConvertManager"
 export interface ListItem {
   content: string;        // 内容
   level: number;          // 级别 (缩进空格数/normalization后的递增等级数)
-}[]
+}
 export type List_ListItem = ListItem[]
 
 // 列表节点结构
