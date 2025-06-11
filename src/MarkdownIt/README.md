@@ -1,6 +1,11 @@
 # AnyBlock MarkdownIt
 
-markdown-it 版本的入口
+- en
+  - Welcome to learn more about it in [the GitHub project](https://github.com/any-block/any-block)
+  - Here you will find more detailed function descriptions and multilingual documents.
+- zh
+  - 欢迎到此 [github项目](https://github.com/any-block/any-block) 中了解更多
+  - 这里有更详细的功能介绍和多语言文档
 
 ## markdown-it-any-block 使用
 

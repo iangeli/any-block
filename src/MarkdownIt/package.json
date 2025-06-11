@@ -1,7 +1,7 @@
 {
   "name": "markdown-it-any-block",
   "version": "3.3.1",
-  "description": "```typescript\r import { ABConvertManager } from \"ABConvertManager\"",
+  "description": "You can flexibility to create a 'Block' by many means. It also provides many useful features, like `list to table`. (obsidian/markdown-it/vuepress plugin/app)",
   "types": "@types/index_mdit.d.ts",
   "type": "module",
   "main": "dist/mdit-any-block.cjs",
@@ -22,6 +22,10 @@
     "prepublishOnly": "pnpm build",
     "copy_abc_style": "copyfiles --flat ../../src/ABConverter/style/styles.css ./"
   },
+  "keywords": [
+		"anyblock", "any-block",
+		"markdown", "markdown-it"
+	],
   "author": "LincZero",
   "license": "GNU Affero General Public License v3.0",
   "peerDependencies": {

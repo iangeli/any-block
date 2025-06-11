@@ -166,7 +166,7 @@ Author: LincZero
 
 见: https://github.com/arve0/markdown-it-attrs
 
-这同样是一个灵活性非常高的插件
+这同样是一个高通用性、高灵活性的 markdown-it 插件
 
 其在单元格上的应用示例：
 

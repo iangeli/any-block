@@ -1,7 +1,7 @@
 {
   "name": "any-block-converter",
   "version": "3.3.1",
-  "description": "```typescript\r import { ABConvertManager } from \"ABConvertManager\"",
+  "description": "You can flexibility to create a 'Block' by many means. It also provides many useful features, like `list to table`. (obsidian/markdown-it/vuepress plugin/app)",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
