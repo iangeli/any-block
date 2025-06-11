@@ -161,3 +161,51 @@ Author: LincZero
   - 8
 
 :::
+
+## (5) Markdown-it-attrs
+
+见: https://github.com/arve0/markdown-it-attrs
+
+这同样是一个灵活性非常高的插件
+
+其在单元格上的应用示例：
+
+```markdown
+| A                       | B   | C   | D                |
+| ----------------------- | --- | --- | ---------------- |
+| 1                       | 11  | 111 | 1111 {rowspan=3} |
+| 2 {colspan=2 rowspan=2} | 22  | 222 | 2222             |
+| 3                       | 33  | 333 | 3333             |
+
+{border=1}
+```
+
+输出
+
+```html
+<table border="1">
+  <thead>
+    <tr>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>11</td>
+      <td>111</td>
+      <td rowspan="3">1111</td>
+    </tr>
+    <tr>
+      <td colspan="2" rowspan="2">2</td>
+      <td>22</td>
+    </tr>
+    <tr>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+```
