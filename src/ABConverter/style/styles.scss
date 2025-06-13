@@ -1155,6 +1155,11 @@ table.ab-table-fc {
 
 /**************** 兼容性补充 ******************/
 
+// markmap 需要这个样式，否则公式渲染会存在问题 (原内容没隐藏，且宽度过大)
+[aria-hidden="true"] {
+  display: none;
+}
+
 // BT主题在阅读模式下会干扰表格高度 (不确定有无其他误影响)
 :is(.markdown-preview-view,.markdown-rendered).is-readable-line-width:not(.matrix) .ab-note :is(.markdown-rendered) {
   width: auto !important;
