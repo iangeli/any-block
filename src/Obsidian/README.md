@@ -75,16 +75,38 @@ pnpm build
 注意一些迁移问题：anyblock的开发过程中，obsidian也在更新。有些接口是发生过改变的
 
 ```ts
-console.log('对比',
-    this.plugin_this.app.workspace.getActiveViewOfType(MarkdownView).containerEl, // el1
-    this.plugin_this.app.workspace.activeLeaf).containerEl // el2
+// old
+this.plugin_this.app.workspace.activeLeaf.containerEl
 
+// new
+this.plugin_this.app.workspace.getActiveViewOfType(MarkdownView).containerEl
+
+// 区别
 // dom如下
 - div.workspace-leaf.mod-active // el2
   - hr.workspace-leaf-resize-handle
   - div.workspace-leaf-content[data-type="markdown"][data-mode="source"]
-
 // el1的用法是新的，el2的用法弃用了，且el1能保证当前活跃窗口下的是Markdown编辑区域
+```
+
+```ts
+// old
+import  { type View } from 'obsidian';
+const view: View|null = this.plugin_this.app.workspace.activeLeaf.file.view; // 未聚焦(active)会返回null
+
+// new
+import  { MarkdownView } from 'obsidian';
+const view: MarkdownView|null = this.plugin_this.app.workspace.getActiveViewOfType(MarkdownView); // 未聚焦(active)会返回null
+
+// 区别：如果是View类型，这里会下面都要ts-ignore。而用MarkdownView就不需要了
+this.view = view
+// ts-ignore 这里会说View没有file属性
+this.initialFileName = this.view.file.basename
+// ts-ignore 这里会说View没有editor属性
+this.editor = this.view.editor
+// ts-ignore 这里会说Editor没有cm属性
+this.editorView = this.editor.cm
+this.editorState = this.editorView.state
 ```
 
 ```ts

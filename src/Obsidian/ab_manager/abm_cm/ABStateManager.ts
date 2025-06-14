@@ -46,11 +46,11 @@ export class ABStateManager {
 
   plugin_this: AnyBlockPlugin
   replace_this = this
-  view: View                // Ob View
+  view: MarkdownView        // Ob View
   editor: Editor            // Ob Editor
   editorView: EditorView    // CM View
   editorState: EditorState  // CM State
-  initialFileName: String   // 固定为构造时的名字
+  initialFileName: String | undefined // 固定为构造时的名字
 
   // 用于防止频繁刷新
   // 若 true->true/false->false，不大刷新，仅局部刷新
@@ -90,14 +90,12 @@ export class ABStateManager {
 
   // 设置常用变量
   private constructor_init() {
-    const view: View|null = this.plugin_this.app.workspace.getActiveViewOfType(MarkdownView); // 未聚焦(active)会返回null
+    const view: MarkdownView|null = this.plugin_this.app.workspace.getActiveViewOfType(MarkdownView); // 未聚焦(active)会返回null
     if (!view) return false
     this.view = view
-    // @ts-ignore 这里会说View没有file属性
-    this.initialFileName = this.view.file.basename
-    // @ts-ignore 这里会说View没有editor属性
+    this.initialFileName = this.view.file?.basename
     this.editor = this.view.editor
-    // @ts-ignore 这里会说Editor没有cm属性
+    // @ts-expect-error Editor without cm
     this.editorView = this.editor.cm
     this.editorState = this.editorView.state
 

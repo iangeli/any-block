@@ -67,7 +67,7 @@ export class ABReplacer_Widget extends WidgetType {
    */
   private moveCursor(line_offset:number = 0): void{
     /** @warning 注意这里千万不能用 toDOM 方法给的 view 参数
-     * const editor: Editor = view.editor // @ts-ignore
+     * const editor: Editor = view.editor
      * 否则editor是undefined
      */
     if (this.global_editor){
