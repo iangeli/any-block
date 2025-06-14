@@ -15,6 +15,8 @@ import { ABCSetting, ABReg } from "@/ABConverter/ABReg"
 import {} from "../ab_manager/abm_cm/ABSelector_MdBase"
 import {generateSelectorInfoTable} from "../ab_manager/abm_cm/ABSelector_Md"
 
+import { t } from "../locales/helper"
+
 /** 设置值接口 */
 export interface ABSettingInterface {
   // 选择器模块部分
@@ -131,17 +133,12 @@ export class ABSettingTab extends PluginSettingTab {
     let settings = this.plugin.settings
     // new Setting(containerEl).setName('AnyBlock').setHeading();
 		const div_url = containerEl.createEl('div');
-    div_url.insertAdjacentHTML("beforeend", `See 
-    <a href="https://linczero.github.io/MdNote_Public/ProductDoc/AnyBlock/README.show.html">website</a>
-    /
-    <a href="https://github.com/LincZero/obsidian-any-block">github</a>
-    for more details (更多使用方法详见Github及网站)
-    `);
+    div_url.insertAdjacentHTML("beforeend", t("see website for detail"));
     containerEl.createEl('hr', {cls: "bright-color"})
 
     // 选择器管理
-    new Setting(containerEl).setName('Selector manager (选择器的管理)').setHeading();
-    containerEl.createEl('p', {text: 'This section is for query only and cannot be edited (这一部分仅供查询不可编辑)'})
+    new Setting(containerEl).setName(t("Selector manager")).setHeading();
+    containerEl.createEl('p', {text: t("Selector manager2")})
     this.selectorPanel = generateSelectorInfoTable(containerEl)
     containerEl.createEl('hr', {cls: "bright-color"})
 
@@ -193,12 +190,11 @@ export class ABSettingTab extends PluginSettingTab {
       })*/
 
     // 别名系统的管理
-    new Setting(containerEl).setName('AliasSystem manager (别名系统的管理)').setHeading();
-    containerEl.createEl('p', {text: 'It can also be viewed in the main page using the `[info_alias]` processor (这部分内容也可以使用 `[info_alias]` 处理器在主页面中查看)'});
-    containerEl.createEl('p', {text: 'This section can also be modified by opening the `data.json` file in the plugin folder (这部分也可以打开插件文件夹中的 `data.json` 文件修改)'});
+    new Setting(containerEl).setName(t("AliasSystem manager")).setHeading();
+    containerEl.createEl('p', {text: t("AliasSystem manager2")});
+    containerEl.createEl('p', {text: t("AliasSystem manager3")});
     new Setting(containerEl)
-      .setName('Add a new registration instruction')
-      .setDesc(`添加新的注册指令`)
+      .setName(t("AliasSystem manager4"))
       .addButton(component => {
         component
         .setIcon("plus-circle")
@@ -221,8 +217,7 @@ export class ABSettingTab extends PluginSettingTab {
         })
       })
     new Setting(containerEl)
-      .setName('Add a new registration instruction (old, will not be used)')
-      .setDesc(`添加新的注册指令 - 旧版，将弃用`)
+      .setName(t("AliasSystem manager5"))
       .addButton(component => {
         component
         .setIcon("plus-circle")
@@ -244,10 +239,10 @@ export class ABSettingTab extends PluginSettingTab {
       containerEl.createEl('hr', {cls: "bright-color"})
 
     // 转换器的管理
-    new Setting(containerEl).setName('Convertor manager (转换器的管理)').setHeading();
-    containerEl.createEl('p', {text: 'It can also be viewed in the main page using the `[info_converter]` processor (这部分内容也可以使用 `[info_converter]` 处理器在主页面中查看)'});
-    containerEl.createEl('p', {text: 'This section is for query only and cannot be edited (这一部分仅供查询不可编辑)'})
-    containerEl.createEl('p', {text: ''});
+    new Setting(containerEl).setName('').setHeading();
+    containerEl.createEl('p', {text: t("Convertor manager")});
+    containerEl.createEl('p', {text: t("Convertor manager2")});
+    containerEl.createEl('p', {text: t("Convertor manager3")});
     const div = containerEl.createEl("div");
     ABConvertManager.autoABConvert(div, "info_converter", "", "null_content") // this.processorPanel = ABConvertManager.getInstance().generateConvertInfoTable(containerEl)
     this.processorPanel = div
@@ -274,7 +269,7 @@ class ABProcessorModal extends Modal {
 
   onOpen() {	// onOpen() 方法在对话框打开时被调用，它负责创建对话框中的内容。想要获取更多信息，可以查阅 HTML elements。
     let { contentEl } = this;
-    contentEl.setText("Custom processor (自定义处理器)");
+    contentEl.setText("Custom processor - deprecated (自定义处理器 - 将废弃)");
     contentEl.createEl("p", {text: ""})
     new Setting(contentEl)
       .setName("Processor id")
@@ -315,7 +310,7 @@ class ABProcessorModal extends Modal {
     new Setting(contentEl)
       .addButton(btn => {
         btn
-        .setButtonText("Submit (提交)")
+        .setButtonText(t("Submit"))
         .setCta() // 这个不知道什么意思
         .onClick(() => {
           if(this.args.id && this.args.name && this.args.match && this.args.process_alias){
@@ -350,11 +345,11 @@ class ABModal_alias extends Modal {
 
   onOpen() {	// onOpen() 方法在对话框打开时被调用，它负责创建对话框中的内容。想要获取更多信息，可以查阅 HTML elements。
     let { contentEl } = this;
-    contentEl.setText("Custom alias (自定义别名)");
+    contentEl.setText(t("Custom alias"));
     contentEl.createEl("p", {text: ""})
     new Setting(contentEl)
-      .setName("Alias matching rule")
-      .setDesc("别名匹配规则 (若用/包括起来则表示正则)")
+      .setName(t("Custom alias2"))
+      .setDesc(t("Custom alias3"))
       .addText((text)=>{
         text.onChange((value) => {
         this.args.regex = value
@@ -362,8 +357,8 @@ class ABModal_alias extends Modal {
     })
 
     new Setting(contentEl)
-      .setName("Alias replacement")
-      .setDesc("别名替换为")
+      .setName(t("Custom alias4"))
+      .setDesc(t("Custom alias5"))
       .addText((text)=>{
         text.onChange((value) => {
         this.args.replacement = value
@@ -373,7 +368,7 @@ class ABModal_alias extends Modal {
     new Setting(contentEl)
       .addButton(btn => {
         btn
-        .setButtonText("Submit (提交)")
+        .setButtonText(t("Submit"))
         .setCta() // 这个不知道什么意思
         .onClick(() => {
           if(this.args.regex && this.args.replacement){
