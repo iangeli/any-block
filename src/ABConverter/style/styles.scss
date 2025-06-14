@@ -1153,6 +1153,27 @@ table.ab-table-fc {
   margin-left: calc((100% - var(--ab-width-outer)) / 2);
 }
 
+/**************** CM Style *******************/
+
+.ab-line-brace {
+  text-decoration: underline 1px red;
+}
+.ab-line-list {
+  text-decoration: underline 1px cyan;
+}
+.ab-line-yellow {
+  text-decoration: solid underline 1px rgba(0, 255, 0, 0.2);
+  // border-left: solid 1px rgba(0, 255, 0, 0.4); // 这种方式对于 `:::` 是对的，但对其他来说，段落不一定是行开头。可能导致一行有多个左边框
+}
+.ab-line-blue {
+  text-decoration: underline 1px blue;
+}
+
+.bright-color {
+  color: var(--ab-bright-color); // border-color:#9999ff
+  border-color: var(--ab-bright-color);
+}
+
 /**************** 兼容性补充 ******************/
 
 // markmap 需要这个样式，否则公式渲染会存在问题 (原内容没隐藏，且宽度过大)

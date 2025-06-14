@@ -57,6 +57,7 @@ export class ABDecorationManager{
     }
   }
 
+  /* 直接写到css里代替之
   static decoration_theme():Extension{
     return [
       EditorView.baseTheme({
@@ -73,6 +74,5 @@ export class ABDecorationManager{
         ".ab-line-blue": { textDecoration: "underline 1px blue" }
       })
     ]
-  }
-  
+  }*/
 }

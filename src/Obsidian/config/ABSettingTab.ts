@@ -137,13 +137,13 @@ export class ABSettingTab extends PluginSettingTab {
     <a href="https://github.com/LincZero/obsidian-any-block">github</a>
     for more details (更多使用方法详见Github及网站)
     `);
-    containerEl.createEl('hr', {attr: {"style": "border-color:#9999ff"}})
+    containerEl.createEl('hr', {cls: "bright-color"})
 
     // 选择器管理
     new Setting(containerEl).setName('Selector Manager (选择器的管理)').setHeading();
     containerEl.createEl('p', {text: 'This section is for query only and cannot be edited (这一部分仅供查询不可编辑)'})
     this.selectorPanel = generateSelectorInfoTable(containerEl)
-    containerEl.createEl('hr', {attr: {"style": "border-color:#9999ff"}})
+    containerEl.createEl('hr', {cls: "bright-color"})
 
     // 装饰管理器
     /*containerEl.createEl('h2', {text: '装饰管理器'});
@@ -241,7 +241,7 @@ export class ABSettingTab extends PluginSettingTab {
           }).open()
         })
       })
-    containerEl.createEl('hr', {attr: {"style": "border-color:#9999ff"}})
+      containerEl.createEl('hr', {cls: "bright-color"})
 
     // 转换器的管理
     new Setting(containerEl).setName('Convertor Manager (转换器的管理)').setHeading();

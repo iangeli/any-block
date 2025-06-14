@@ -30,7 +30,6 @@ enum Editor_mode{
   PREVIEW,      // 阅读模式
 }
 
-let once_flag = false // 保证css的添加只会被触发一次，避免重复添加css。ture为已经触发过了
 let global_timer: NodeJS.Timer|null = null // 定时器，单例
 
 /**
@@ -121,19 +120,17 @@ export class ABStateManager {
      * 当EditorState没有(下划线)StateField时，则将该(下划线)状态字段 添加进 EditorEffect中
      *    （函数末尾再将EditorEffect派发到EditorView中）。
      * 就是说只会在第一次时执行，才会触发
-     * 
-     * TODO fix 后来发现不是第一次也会触发，导致被添加了很多冗余重复的css，所以加了once_flag判定。按理说应该是判断里面有没有某些css会比较稳妥
      */
     if (!this.editorState.field(this.decorationField, false)) {
       stateEffects.push(StateEffect.appendConfig.of(
         [this.decorationField] 
       ))
-      if (!once_flag) {
-        once_flag = true
-        stateEffects.push(StateEffect.appendConfig.of(
-          [ABDecorationManager.decoration_theme()]
-        ))
-      }
+      // if (!once_flag) {
+      //   once_flag = true
+      //   stateEffects.push(StateEffect.appendConfig.of(
+      //     [ABDecorationManager.decoration_theme()]
+      //   ))
+      // }
     }
   
     // 派发
