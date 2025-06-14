@@ -30,7 +30,7 @@ enum Editor_mode{
   PREVIEW,      // 阅读模式
 }
 
-let global_timer: NodeJS.Timer|null = null // 定时器，单例
+let global_timer: number|null = null // 定时器，单例
 
 /**
  * 状态管理器
@@ -75,10 +75,10 @@ export class ABStateManager {
 
     // 后处理钩子 (在页面加载后被触发/定时触发)
     {
-      if (global_timer !== null) { clearInterval(global_timer); global_timer = null; }
+      if (global_timer !== null) { window.clearInterval(global_timer); global_timer = null; }
       if (plugin_this.settings.enhance_refresh_time > 0) {
         if (plugin_this.settings.enhance_refresh_time < 500) plugin_this.settings.enhance_refresh_time = 500 // limit min time
-        global_timer = setInterval(() => {
+        global_timer = window.setInterval(() => {
           if (plugin_this.settings.is_debug) console.log("    auto refresh event:", this.initialFileName)
           abConvertEvent(document, true)
         }, plugin_this.settings.enhance_refresh_time)
@@ -106,7 +106,7 @@ export class ABStateManager {
 
   destructor() {
     if (this.plugin_this.settings.is_debug) console.log("<<< ABStateManager, initialFileName:", this.initialFileName)
-    if (global_timer !== null) { clearInterval(global_timer); global_timer = null; }
+    if (global_timer !== null) { window.clearInterval(global_timer); global_timer = null; }
   }
 
   /** --------------------------------- CM 函数 -------------------------- */
@@ -460,7 +460,7 @@ export class ABStateManager {
    * 把ab-replace的负margin再调整一下，就正常了
    */
   private setPos(cursorSepc: number) {
-    setTimeout(() => { // 使用微任务确保在当前事务完成后执行
+    window.setTimeout(() => { // 使用微任务确保在当前事务完成后执行
       // 方式一：EditorSelection
       const newSelection = EditorSelection.create([
         EditorSelection.range(cursorSepc, cursorSepc)
@@ -505,7 +505,7 @@ export class ABStateManager {
     wait:number,      // 等待
     immediate:boolean // 是否立即执行
   ) {
-    let timeout:NodeJS.Timeout|null
+    let timeout:number|null
     // debounced函数为返回值
     // 使用Async/Await处理异步，如果函数异步执行，等待setTimeout执行完，拿到原函数返回值后将其返回
     // args为返回函数调用时传入的参数，传给method
@@ -524,7 +524,7 @@ export class ABStateManager {
           // 如果定时器不存在，则立即执行，并设置一个定时器，wait毫秒后将定时器置为null
           // 这样确保立即执行后wait毫秒内不会被再次触发
           let callNow = !timeout
-          timeout = setTimeout(() => {
+          timeout = window.setTimeout(() => {
             timeout = null
           }, wait)
           // 如果满足上述两个条件，则立即执行并记录其执行结果
@@ -535,7 +535,7 @@ export class ABStateManager {
         } else {
           // 如果immediate为false，则等待函数执行并记录其执行结果
           // 并将Promise状态置为fullfilled，以使函数继续执行
-          timeout = setTimeout(() => {
+          timeout = window.setTimeout(() => {
             // args是一个数组，所以使用fn.apply
             // 也可写作method.call(context, ...args)
             result = method.apply(context, args)

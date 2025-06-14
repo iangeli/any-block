@@ -74,6 +74,8 @@ pnpm build
 
 注意一些迁移问题：anyblock的开发过程中，obsidian也在更新。有些接口是发生过改变的
 
+### Deprecated activeLeaf
+
 ```ts
 // old
 this.plugin_this.app.workspace.activeLeaf.containerEl
@@ -114,12 +116,16 @@ this.editorView = this.editor.cm
 this.editorState = this.editorView.state
 ```
 
+### Deprecated readerMarkdown
+
 ```ts
 MarkdownRenderer.renderMarkdown(...) // 旧
 MarkdownRenderer.render(...) // 新
 
 // 一个区别是：新版能更好地支持内部的图片显示
 ```
+
+### Other
 
 ```ts
 // new
@@ -131,3 +137,12 @@ innerHTML = "xxx"
 // 区别:
 // 前者插入，不清空内容（但还是解析HTML，只安全一点点）
 ```
+
+> [!quote]
+> Use window.setTimeout, window.clearTimeout, window.setInterval, window.clearInterval instead of their versions without window.
+> 
+> Use number instead of NodeJs.Timeout.
+
+原因：和JS 运行环境以及TypeScript 的类型推断机制有很大关系。
+
+用 window.setTimeout 明确表示你要用浏览器的实现，确保返回值是 number，而不是 Node.js 下的 Timeout 对象。
