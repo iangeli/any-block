@@ -71,38 +71,43 @@ export class ABSelector_PostHtml{
       // 判断核心：使用cache_map
       let is_newContent:boolean = false // 是否内容变更，若是则需要强制刷新。注意，经过后面多次判断后值才是对的
       let is_subContent:boolean = false // 是否是 `![[]]`/`![[#]]` 引起的子页面内容，后者极难检测
-      let cache_item = null;
-      (()=>{
-        // ATTENTION 这里说一个大坑：
-        // this.app.workspace.getActiveViewOfType(MarkdownView)?.file.path 获取的文件路径名和 ctx 的文件名有可能不一致，这种情况是：
-        // 当文件A通过悬浮链接显示文件B时，此时叶子节点方式获取到的是文件A的的文件名，而ctx方式获取到的是文件B的文件名
-        // 而这里的mdSrc对应的是对应内容的那个文件名，如果用叶子节点方式，可能产生不一致的 !!! 这里推荐只使用ctx方式 !!!
-
-        // 判断是否悬浮窗口。悬浮窗口禁用强制渲染
+      let cache_item = { // 默认不存cache_map，也不触发强制刷新
+        name: ctx.sourcePath,
+        content: mdSrc.content_all
+      };
+      ;(()=>{
+        /**
+         * 判断是否引用显示，若是则禁用强制渲染
+         * 
+         * 子链接和父链接的MarkdownView是没有区别的，他们的ctx/el有区别
+         * 
+         * 注意: MarkdownView.file.path 获取的文件路径名和 ctx 的文件名有可能不一致，这种情况是：
+         * 当文件A通过悬浮链接显示文件B时，此时叶子节点方式获取到的是文件A的的文件名，而ctx方式获取到的是文件B的文件名
+         * 而这里的mdSrc对应的是对应内容的那个文件名，如果用叶子节点方式，可能产生不一致的。这里推荐只使用ctx方式
+         */
+        // 判断方式一：直接判断el的祖先节点
+        const ppEl = el.parentElement?.parentElement?.parentElement
+        if (!ppEl) {
+          is_newContent = false; is_subContent = true; return
+        } else if (ppEl.classList.contains("markdown-embed-content")) { // 阅读模式: ppEl.classList.contains("markdown-reading-view")) 实时: 未知
+          is_newContent = false; is_subContent = true; return
+        }
+        /*// 判断方式二：内容与窗口的文件名是否一致 (切换页面时 (aIncludeB -> b)，有可能检测有问题，要用另一判断方式)
         const view: MarkdownView|null = this.app.workspace.getActiveViewOfType(MarkdownView); // 未聚焦(active)会返回null，非聚焦于md区返回null (也包括canvas、excalidraw)
-        // 判断方式一：内容与窗口的文件名是否一致 (切换页面时 (aIncludeB -> b)，有可能检测有问题，要用另一判断方式)
         const path = view?.file?.path
         if (path && path !== ctx.sourcePath) {
           if (this.settings.is_debug) console.log(` !! Cache check: [${path}] use ![[${ctx.sourcePath}]] `)
-          cache_item = { // 注意，极难检测是否 `[[#]]`，不存cache_map，也不触发强制刷新
-            name: ctx.sourcePath,
-            content: mdSrc.content_all
-          }
-          is_newContent = false; is_subContent = true; return
+          is_newContent = false; is_subContent = true; return // 注意，极难检测是否 `[[#]]`，不存cache_map，也不触发强制刷新
         }
-        // 判断方式二：是否是实时模式下显示阅读模式内容
-        const el = view?.containerEl // .workspace-leaf-content
-        // - el 为空时，不强制刷新。可能是其他面板或者是 canvas (`getActiveViewOfType(MarkdownView)` 获取到的canvas等页面为空)
+        // 判断方式三：是否是实时模式下显示阅读模式内容
+        const containerEl = view?.containerEl // .workspace-leaf-content
+        // - containerEl 为空时，不强制刷新。可能是其他面板或者是 canvas (`getActiveViewOfType(MarkdownView)` 获取到的canvas等页面为空)
         // - data-mode 为 source 等时，不强制刷新。仅为 preview 时强制刷新
         // - data-type 为 excalidraw 等时，不强制刷新。仅为 markdown 时强制刷新
-        if (!el || el.getAttribute('data-mode') != 'preview' || el.getAttribute('data-type') != 'markdown') {
-          if (this.settings.is_debug) console.log(` !! Cache check: [${path}] use ![[${ctx.sourcePath}]] in no readmode`, el)
-          cache_item = { // 注意，极难检测是否 `[[file#title]]`，不存cache_map，也不触发强制刷新
-            name: ctx.sourcePath,
-            content: mdSrc.content_all
-          }
-          is_newContent = false; is_subContent = true; return
-        }
+        if (!containerEl || containerEl.getAttribute('data-mode') != 'preview' || containerEl.getAttribute('data-type') != 'markdown') {
+          if (this.settings.is_debug) console.log(` !! Cache check: [${path}] use ![[${ctx.sourcePath}]] in no readmode`, containerEl)
+          is_newContent = false; is_subContent = true; return // 注意，极难检测是否 `[[file#title]]`，不存cache_map，也不触发强制刷新
+        }*/
         
         // 先查缓存
         for (let item of cache_map) {
@@ -114,7 +119,6 @@ export class ABSelector_PostHtml{
         }
         // b1. 无缓存 -> 有修改
         if (!cache_item) {
-          cache_item = {name: ctx.sourcePath, content: mdSrc.content_all}
           cache_map.push(cache_item)
           is_newContent = true
           if (this.settings.is_debug) console.log(" !! 无缓存 -> 有修改, perform a global refresh (rebuildView): ", cache_item, ctx)
