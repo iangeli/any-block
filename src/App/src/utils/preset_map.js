@@ -262,9 +262,9 @@ this is ~~a~~ **MarkDown** *test*
 
 [trs|exTable|width(30)]
 
-|*A*|<| a |
+|*A*| < | a |
 |---|---|---|
-| 1 | 2 |^|
+| 1 | 2 | ^ |
 
 ## demo4
 
@@ -284,15 +284,39 @@ this is ~~a~~ **MarkDown** *test*
 | ^ | ^ | b |
 | 1 | 2 | 3c|
 
+## 规则化
+
+[table|strictTable]
+
+- 1
+  - 1.1
+  - 1.2
+    - 1.2.1
+    - 1.2.2
+
+下面的例子中，必须在trs之前strictTable，否则转置可能不正常
+
+[table|strictTable|trs]
+
+- a | b | c | d
+- 1 | 2 | 3 | 4 | 5 | 6 | 7
+- ① | ② | ③
+
 ## 其他
 
 (TODO \`exTable + trs\` 顺序反过来会有问题，有空研究下)
 
 [exTable|trs]
 
-|*A*|<| a |
+|*A*| < | a |
 |---|---|---|
-| 1 | 2 |^|
+| 1 | 2 | ^ |
+
+[exTable|strictTable]
+
+|*A*| < | a |
+|---|---|---|
+| 1 | 2 | ^ |
 `,
 //
 'mdit (markdown-it-container形式的语法块)': `\
