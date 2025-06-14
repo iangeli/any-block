@@ -2,39 +2,39 @@
 
 ![Obsidian plugin](https://img.shields.io/endpoint?url=https%3A%2F%2Fscambier.xyz%2Fobsidian-endpoints%2Fany-block.json) ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/LincZero/obsidian-any-block)
 
-[中文](./README.md) | [English](./README.en.md)
+[中文](./README.zh.md) | [English](./README.md)
 
-## What's AnyBlock?
+## AnyBlock是什么?
 
-- A markdown parsing and rendering module/plugin. (**Obsidian plugin, Markdown-it plugin, Online App, Vuepress plugin**)
-- Feature: You can flexibility to create a 'Block' by many means. It also provides many useful features, like `list to table` and so on
-- Feature (detail): You can select a section by list/heading/table/quote/codeBlock/markdown-it-container(`:::`), and trun into table/tabs/dir/card/column/mindmap/markmap/mermaid/PlantUML/timeLine/jsonChart/nodeTree and more
+- 一个markdown解析和渲染的模块/插件。(**Obsidian插件, Markdown-it插件, 在线App, Vuepress插件**)
+- 功能: 你可以通过许多方式灵活地创建一个“块”。它还提供了许多有用的功能，如“列表转表格”等
+- 功能 (详细): 你可以通过列表/标题/表格/引用块/代码块/Markdown-it的首尾`:::`等方式来快速选择一个片段，并将该片段转换为表格/标签页/目录/卡片/分栏/时间线/思维导图/plantuml图表/节点图等结果
 
-## More Links
+## 相关链接
 
-- en
-- Related links：**tutorial**、use skill、contribution、secondary development、online use. Documentation is **multilingual** (zh/en), don't worry.
-- [Online Wiki - github.io](https://lincdocs.github.io/AnyBlock/)
-- [Online Effects warrior/Tutorial - github.io](https://lincdocs.github.io/AnyBlock/README.show.html), You can learn how to use it by switching between tabs.
-- [Online Interaction - github.io](https://any-block.github.io/any-block/). You can write experiences here and learn usage through templates
-- Alternate site links：When the website link to this article fails, try replacing `linczero.github.io` with `linczero-github-io.pages.dev` in the url
-- [A Min-sized version of anyblock](https://github.com/any-block/obsidian-any-block-min), you can download it manually or use the BRAT plugin to download/update the obsidian plugin automatically
+- 相关链接：**教程**、使用技能、贡献、二次开发、在线使用。文档是**多语言**的（zh/en），不用担心
+- [在线文档 - github.io](https://lincdocs.github.io/AnyBlock/)
+- [在线效果展示/教程 - github.io](https://lincdocs.github.io/AnyBlock/README.show.html), 你可以通过切换里面的标签页来学习用法
+- [在线交互 - github.io](https://any-block.github.io/any-block/)，你可以在这里编写体验、通过模板学习用法
+- 备用网站链接：如果网站失效，则将网站链接部分的 `linczero.github.io` 替换成 `linczero-github-io.pages.dev` 就可以了
+	  （**本文的默认网站链接指向 github.io，如果国内有不能访问的朋友，那么大概率需要做这一步**）
+- [体积超小的min版anyblock](https://github.com/any-block/obsidian-any-block-min)，你可以手动下载，或使用BRAT插件自动下载/更新该obsidian插件
 
-## Lightspot
+## 亮点
 
-This is a **【Syntax free, Extensible、Powerful and flexible、Multi-platform】** Markdown block extension analysis and rendering module/plugin.
+这是一个 **【无语法、可扩展、灵活强大、多平台】** 的 Markdown 块扩展解析与渲染模块插件。
 
-- Syntax free
-    - No new syntax、Syntax-free intrusion
-	- This also leads to no excessive reliance on plugins. I think a good plugin should not cause - when you have used the plugin for a period of time, leaving it will cause the original content to deform, become unreadable or maintainable
-- Extensible
-    - Facilitate secondary development
-- Flexible and powerful
-    - Selector (Flexible)：The selection range is flexible, with six selection methods, making it simple and easy to use
-	- Processor (Powerful)：Rich and diverse, powerful in function and highly scalable
-- Multi-platform, strong universality
-    - It can use: **Obsidian plugin, Markdown-it plugin, Online App, Vuepress plugin**
-	- Blogs such as vuepress/vitepress that support markdown-it parsing
+- 无语法
+    - 没有新语法、没有语法入侵
+	- 这也导致没有过度的插件依赖。我认为好的插件不应该导致 —— 当你用了一段时间插件后，离开该插件会导致原来的内容变形，不可读或维护
+- 可扩展性
+    - 插件方便二次开发
+- 灵活且强大
+    - 选择器 (灵活)：选择范围灵活，六种选择方式，简单易用
+	- 处理器 (强大)：丰富多样、功能强大、扩展性强
+- 多平台, 高通用
+    - 可用于: **Obsidian插件, Markdown-it插件, 在线App, Vuepress插件**
+	- 支持markdown-it解析的博客，如vuepress/vitepress等
 
 ## Effects warrior (效果展示)
 
