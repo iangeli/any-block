@@ -53,7 +53,6 @@ export class ABConvertManager {
     /// 环境打印 (编译期打印)
     // @ts-ignore 用于检查obsidian是否存在，不存在的话正常是飘红的
     if (typeof obsidian == 'undefined' && typeof app == 'undefined') {
-      // @ts-ignore
       console.log('[environment]: markdown-it, without obsidian')
     } else {
       console.log('[environment]: obsidian')

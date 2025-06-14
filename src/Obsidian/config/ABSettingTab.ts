@@ -157,7 +157,7 @@ export class ABSettingTab extends PluginSettingTab {
         .addOption(ConfDecoration.block, "启用块装饰")
         .setValue(settings.decoration_source)
         .onChange(async v=>{
-          // @ts-ignore 这里枚举必然包含v值的
+          ts-ignore 这里枚举必然包含v值的
           settings.decoration_source = ConfDecoration[v]  
           await this.plugin.saveSettings();    
         })
@@ -172,7 +172,7 @@ export class ABSettingTab extends PluginSettingTab {
         .addOption(ConfDecoration.block, "启用块装饰")
         .setValue(settings.decoration_live)
         .onChange(async v=>{
-          // @ts-ignore 这里枚举必然包含v值的
+          ts-ignore 这里枚举必然包含v值的
           settings.decoration_live = ConfDecoration[v]
           await this.plugin.saveSettings(); 
         })
@@ -186,7 +186,7 @@ export class ABSettingTab extends PluginSettingTab {
         .addOption(ConfDecoration.block, "启用块装饰")
         .setValue(settings.decoration_render)
         .onChange(async v=>{
-          // @ts-ignore 这里枚举必然包含v值的
+          ts-ignore 这里枚举必然包含v值的
           settings.decoration_render = ConfDecoration[v]    
           await this.plugin.saveSettings(); 
         })

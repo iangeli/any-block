@@ -22,7 +22,7 @@ export class ABReplacer_CodeBlock{
 
     // 判断当前是实时还是阅读模式、判断处于重渲染中的还是阅读模式渲染的
     // (可以通过ctx来判断)
-    // @ts-ignore 类型“MarkdownPostProcessorContext”上不存在属性“containerEl”
+    // ts-ignore 类型“MarkdownPostProcessorContext”上不存在属性“containerEl”
     // if (!ctx.containerEl?.classList.contains("cm-scroller")) {
     //   console.log("rerender-env")
     // }

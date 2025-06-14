@@ -156,9 +156,7 @@ export class ABSelector_PostHtml{
         if (/\n((\s|>\s|-\s|\*\s|\+\s)*)(%%)?(\[((?!toc)(?!TOC)[0-9a-zA-Z\u4e00-\u9fa5].*)\]):?(%%)?\s*\n/.test(cache_item.content) ||
           /\n((\s|>\s|-\s|\*\s|\+\s)*)(:::)\s?(\S*)\n/.test(cache_item.content)
         ) {
-          // @ts-ignore 类型“WorkspaceLeaf”上不存在属性“rebuildView”
-          const leaf = app.workspace.activeLeaf; if (!leaf) { return }
-          // @ts-ignore 类型“WorkspaceLeaf”上不存在属性“containerEl”
+          const leaf = this.app.workspace.getActiveViewOfType(MarkdownView)?.leaf; if (!leaf) { return }
           // const el = leaf.containerEl.querySelector(".markdown-source-view") as HTMLElement;
           // if (!el) {
           //   if (this.settings.is_debug) console.log("找不到实时模式div，不强制刷新")
@@ -168,7 +166,7 @@ export class ABSelector_PostHtml{
           //   if (this.settings.is_debug) console.log("处于实时模式，不强制刷新")
           //   return
           // }
-          // @ts-ignore 类型“WorkspaceLeaf”上不存在属性“rebuildView”
+          // @ts-expect-error WorkspaceLeaf have not rebuildView
           leaf.rebuildView()
           return
         }

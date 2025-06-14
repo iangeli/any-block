@@ -13,8 +13,7 @@ export async function jsdom_init() {
     url: 'http://localhost/', // @warn 若缺少该行，则在mdit+build环境下，编译报错
   });
   global.Storage = dom.window.Storage;
-  // @ts-ignore 不能将类型“DOMWindow”分配给类型“Window & typeof globalThis”
-  global.window = dom.window
+  global.window = dom.window as any
   global.history = dom.window.history // @warn 若缺少该行，则在mdit+build环境下，编译报错：ReferenceError: history is not defined
   global.document = dom.window.document
   global.Node = dom.window.Node

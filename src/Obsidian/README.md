@@ -81,12 +81,17 @@ this.plugin_this.app.workspace.activeLeaf.containerEl
 // new
 this.plugin_this.app.workspace.getActiveViewOfType(MarkdownView).containerEl
 
-// 区别
-// dom如下
+// 区别-1, dom
 - div.workspace-leaf.mod-active // el2
   - hr.workspace-leaf-resize-handle
   - div.workspace-leaf-content[data-type="markdown"][data-mode="source"]
+
+// 区别-2
 // el1的用法是新的，el2的用法弃用了，且el1能保证当前活跃窗口下的是Markdown编辑区域
+
+// 区别-3
+// el1 api完全兼容el2
+(this.plugin_this.app.workspace.getActiveViewOfType(MarkdownView).leaf == this.plugin_this.app.workspace.activeLeaf)
 ```
 
 ```ts
