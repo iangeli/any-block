@@ -84,6 +84,8 @@ export class ABSelector_PostHtml{
          * 注意: MarkdownView.file.path 获取的文件路径名和 ctx 的文件名有可能不一致，这种情况是：
          * 当文件A通过悬浮链接显示文件B时，此时叶子节点方式获取到的是文件A的的文件名，而ctx方式获取到的是文件B的文件名
          * 而这里的mdSrc对应的是对应内容的那个文件名，如果用叶子节点方式，可能产生不一致的。这里推荐只使用ctx方式
+         * 
+         * 理论上这里 "判断方式一" 就足以胜任工作，但这里稍有不慎很容易触发无限刷新，又冗余用其他方法多判断了几次
          */
         // 判断方式一：直接判断el的祖先节点
         const ppEl = el.parentElement?.parentElement?.parentElement
@@ -92,7 +94,7 @@ export class ABSelector_PostHtml{
         } else if (ppEl.classList.contains("markdown-embed-content")) { // 阅读模式: ppEl.classList.contains("markdown-reading-view")) 实时: 未知
           is_newContent = false; is_subContent = true; return
         }
-        /*// 判断方式二：内容与窗口的文件名是否一致 (切换页面时 (aIncludeB -> b)，有可能检测有问题，要用另一判断方式)
+        // 判断方式二：内容与窗口的文件名是否一致 (切换页面时 (aIncludeB -> b)，有可能检测有问题，要用另一判断方式)
         const view: MarkdownView|null = this.app.workspace.getActiveViewOfType(MarkdownView); // 未聚焦(active)会返回null，非聚焦于md区返回null (也包括canvas、excalidraw)
         const path = view?.file?.path
         if (path && path !== ctx.sourcePath) {
@@ -107,7 +109,7 @@ export class ABSelector_PostHtml{
         if (!containerEl || containerEl.getAttribute('data-mode') != 'preview' || containerEl.getAttribute('data-type') != 'markdown') {
           if (this.settings.is_debug) console.log(` !! Cache check: [${path}] use ![[${ctx.sourcePath}]] in no readmode`, containerEl)
           is_newContent = false; is_subContent = true; return // 注意，极难检测是否 `[[file#title]]`，不存cache_map，也不触发强制刷新
-        }*/
+        }
         
         // 先查缓存
         for (let item of cache_map) {
