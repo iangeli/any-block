@@ -69,3 +69,27 @@ pnpm build
 其中每个**区域**需要都实现一遍**替换器**和**选择器**。即实现数是他俩的乘积
 
 （其中：CodeBlock 一般自带选择器，一般来说无需再次选择。除非存在嵌套 AnyBlock 的情况）
+
+## Dev Note
+
+注意一些迁移问题：anyblock的开发过程中，obsidian也在更新。有些接口是发生过改变的
+
+```ts
+console.log('对比',
+    this.plugin_this.app.workspace.getActiveViewOfType(MarkdownView).containerEl, // el1
+    this.plugin_this.app.workspace.activeLeaf).containerEl // el2
+
+// dom如下
+- div.workspace-leaf.mod-active // el2
+  - hr.workspace-leaf-resize-handle
+  - div.workspace-leaf-content[data-type="markdown"][data-mode="source"]
+
+// el1的用法是新的，el2的用法弃用了，且el1能保证当前活跃窗口下的是Markdown编辑区域
+```
+
+```ts
+MarkdownRenderer.renderMarkdown(...) // 旧
+MarkdownRenderer.render(...) // 新
+
+// 一个区别是：新版能更好地支持内部的图片显示
+```

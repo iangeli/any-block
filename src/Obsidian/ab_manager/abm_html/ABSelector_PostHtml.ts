@@ -74,7 +74,7 @@ export class ABSelector_PostHtml{
       let cache_item = null;
       (()=>{
         // ATTENTION 这里说一个大坑：
-        // app.workspace.activeLeaf?.view.file.path 获取的文件路径名和 ctx 的文件名有可能不一致，这种情况是：
+        // this.app.workspace.getActiveViewOfType(MarkdownView)?.file.path 获取的文件路径名和 ctx 的文件名有可能不一致，这种情况是：
         // 当文件A通过悬浮链接显示文件B时，此时叶子节点方式获取到的是文件A的的文件名，而ctx方式获取到的是文件B的文件名
         // 而这里的mdSrc对应的是对应内容的那个文件名，如果用叶子节点方式，可能产生不一致的 !!! 这里推荐只使用ctx方式 !!!
 

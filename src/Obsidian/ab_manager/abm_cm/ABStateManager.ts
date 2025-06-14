@@ -380,22 +380,16 @@ export class ABStateManager {
    * 获取编辑器模式
    */ 
   private getEditorMode(): Editor_mode {
-    let editor_dom: Element | null
     /** @warning 不能用 editor_dom = document
      * 再editor_dom = editor_dom?.getElementsByClassName("workspace-tabs mod-top mod-active")[0];
      * 用document的话不知道为什么总是有属性is-live-preview的，总是认为是实时模式 
      */
-    // 类型“WorkspaceLeaf”上不存在属性“containerEl”
-    // 这里不能用getActiveViewOfType(MarkdownView)，好像那个无法判断编辑器模式是源还是实时
-    // @ts-ignore
-    editor_dom = this.plugin_this.app.workspace.activeLeaf.containerEl
-    if (!editor_dom) {
-      console.warn("无法获取dom来得知编辑器模式"); 
+    let editor_dom: Element | undefined = this.plugin_this.app.workspace.getActiveViewOfType(MarkdownView)?.containerEl
+    if (!editor_dom) { // The current cursor is focused on a non-Markdown window.
       return Editor_mode.NONE; 
     }
-    editor_dom = editor_dom?.getElementsByClassName("workspace-leaf-content")[0]
     let str = editor_dom?.getAttribute("data-mode")
-    if (str=="source") {
+    if (str == "source") {
       editor_dom = editor_dom?.getElementsByClassName("markdown-source-view")[0]
       if(editor_dom?.classList.contains('is-live-preview')) return Editor_mode.SOURCE_LIVE
       else return Editor_mode.SOURCE

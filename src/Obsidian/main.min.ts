@@ -7,7 +7,7 @@
  * - 接管渲染后 (渲染/阅读模式)
  */
 
-import { MarkdownRenderChild, MarkdownRenderer, loadMermaid, Plugin } from 'obsidian'
+import { MarkdownRenderChild, MarkdownRenderer, loadMermaid, Plugin, MarkdownView } from 'obsidian'
 
 // 转换器模块
 import { ABConvertManager } from "@/ABConverter/index.min" // [!code hl] min
@@ -45,7 +45,7 @@ export default class AnyBlockPlugin extends Plugin {
        * @public
        * 
        */
-      //MarkdownRenderer.renderMarkdown(markdown, el, app.workspace.activeLeaf?.view?.file?.path??"", new MarkdownRenderChild(el))
+      //MarkdownRenderer.renderMarkdown(markdown, el, this.app.workspace.activeLeaf?.view?.file?.path??"", new MarkdownRenderChild(el))
 
       const mdrc: MarkdownRenderChild = new MarkdownRenderChild(el);
       if (ctx) ctx.addChild(mdrc);
@@ -59,8 +59,7 @@ export default class AnyBlockPlugin extends Plugin {
        * @param component - A parent component to manage the lifecycle of the rendered child components.
        * @public
        */
-      // @ts-ignore 新接口，但旧接口似乎不支持
-      MarkdownRenderer.render(app, markdown, el, app.workspace.activeLeaf?.view?.file?.path??"", mdrc)
+      MarkdownRenderer.render(this.app, markdown, el, this.app.workspace.getActiveViewOfType(MarkdownView)?.file?.path??"", mdrc)
     })
 
     // 适配 - mermaid

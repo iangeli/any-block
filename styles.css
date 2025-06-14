@@ -1134,6 +1134,10 @@ table.ab-table-fc th[col_index="0"], table.ab-table-fc td[col_index="0"] {
 }
 
 /**************** 兼容性补充 ******************/
+[aria-hidden=true] {
+  display: none;
+}
+
 :is(.markdown-preview-view, .markdown-rendered).is-readable-line-width:not(.matrix) .ab-note :is(.markdown-rendered) {
   width: auto !important;
 }
