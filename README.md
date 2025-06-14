@@ -35,69 +35,69 @@ This is a **【Syntax free, Extensible、Powerful and flexible、Multi-platform�
     - It can use: **Obsidian plugin, Markdown-it plugin, Online App, Vuepress plugin**
 	- Blogs such as vuepress/vitepress that support markdown-it parsing
 
-## Effects warrior (效果展示)
+## Effects warrior
 
-`multiWay table`/`multiCross table`/`Cross table` (`多叉表格`/`跨行表格`)
+`multiWay table`/`multiCross table`/`Cross table`
 
 ![](./docs/assets/Pasted%20image%2020240808202548.png)
 
 ![](./docs/assets/Pasted%20image%2020240808203055.png)
 
-`ListTable`/`TreeTable`/`TreeGrid` (`列表格`/`树型表格`)
+`ListTable`/`TreeTable`/`TreeGrid`
 
 ![](./docs/assets/Pasted%20image%2020240808203143.png)
 
-Optimized list (优化列表)
+Optimized list
 
-The essence is "listtable" based on the addition of a mock list style (本质是 "列表格" 的基础上增加仿列表样式)
+The essence is "listtable" based on the addition of a mock list style
 
 ![](./docs/assets/listtable_likelist.png)
 
-Dir Tree (目录树)
+Dir Tree
 
-The essence is "listtable" based on the addition of imitation directory style (本质是"列表格"的基础上增加仿目录样式)
+The essence is "listtable" based on the addition of imitation directory style
 
 ![](./docs/assets/Pasted%20image%2020240808203216.png)
 
-ASCII Dir Tree (ascii 目录树) 
+ASCII Dir Tree
 
 ![](./docs/assets/Pasted%20image%2020240808203232.png)
 
-  WBS (Work Breakdown Structure, 工作分解结构)
+WBS (Work Breakdown Structure)
 
 ![](./docs/assets/Pasted%20image%2020240808203252.png)
 
-timeline (时间线)
+timeline
 
 ![](./docs/assets/Pasted%20image%2020240808203455.png)
 
-tabs & card (标签页和卡片)
+tabs & card 
 
 ![](./docs/assets/tag%20and%20card.png)
 
-mermaid flow (mermaid流程图)
+mermaid flow
 
 ![](./docs/assets/Pasted%20image%2020240808203517.png)
 
-plantuml mindmap (plantuml 思维导图)
+plantuml mindmap
 
 ![](./docs/assets/Pasted%20image%2020240808203534.png)
 
-nodes (ab mindmap) (转节点树图，AnyBlock版思维导图)
+nodes (ab mindmap)
 
 ![](./docs/assets/list2node.png)
 
-markmap mindmap (markmap 思维导图)
+markmap mindmap
 
 ![](./docs/assets/Pasted%20image%2020240808203605.png)
 
-mermaid mindmap (mermaid 思维导图)
+mermaid mindmap
 
 ![](./docs/assets/Pasted%20image%2020240808203621.png)
 
 [more……](https://linczero.github.io/MdNote_Public/%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3/AnyBlock/)
 
-## Effects warrior - old (旧效果展示)
+## Effects warrior - old
 
 Here are some of the more common processors:
 - list2table  (2datatable)

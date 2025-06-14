@@ -36,7 +36,7 @@
     - 可用于: **Obsidian插件, Markdown-it插件, 在线App, Vuepress插件**
 	- 支持markdown-it解析的博客，如vuepress/vitepress等
 
-## Effects warrior (效果展示)
+## 效果展示
 
 `multiWay table`/`multiCross table`/`Cross table` (`多叉表格`/`跨行表格`)
 
@@ -48,57 +48,57 @@
 
 ![](./assets/Pasted%20image%2020240808203143.png)
 
-Optimized list (优化列表)
+优化列表
 
-The essence is "listtable" based on the addition of a mock list style (本质是 "列表格" 的基础上增加仿列表样式)
+本质是 "列表格" 的基础上增加仿列表样式
 
 ![](./assets/listtable_likelist.png)
 
-Dir Tree (目录树)
+目录树
 
-The essence is "listtable" based on the addition of imitation directory style (本质是"列表格"的基础上增加仿目录样式)
+本质是"列表格"的基础上增加仿目录样式
 
 ![](./assets/Pasted%20image%2020240808203216.png)
 
-ASCII Dir Tree (ascii 目录树) 
+ascii 目录树
 
 ![](./assets/Pasted%20image%2020240808203232.png)
 
-  WBS (Work Breakdown Structure, 工作分解结构)
+WBS (Work Breakdown Structure, 工作分解结构)
 
 ![](./assets/Pasted%20image%2020240808203252.png)
 
-timeline (时间线)
+时间线
 
 ![](./assets/Pasted%20image%2020240808203455.png)
 
-tabs & card (标签页和卡片)
+标签页和卡片
 
 ![](./assets/tag%20and%20card.png)
 
-mermaid flow (mermaid流程图)
+mermaid流程图
 
 ![](./assets/Pasted%20image%2020240808203517.png)
 
-plantuml mindmap (plantuml 思维导图)
+plantuml 思维导图
 
 ![](./assets/Pasted%20image%2020240808203534.png)
 
-nodes (ab mindmap) (转节点树图，AnyBlock版思维导图)
+转节点树图，AnyBlock版思维导图
 
 ![](./assets/list2node.png)
 
-markmap mindmap (markmap 思维导图)
+markmap 思维导图
 
 ![](./assets/Pasted%20image%2020240808203605.png)
 
-mermaid mindmap (mermaid 思维导图)
+mermaid 思维导图
 
 ![](./assets/Pasted%20image%2020240808203621.png)
 
 [more……](https://linczero.github.io/MdNote_Public/%E4%BA%A7%E5%93%81%E6%96%87%E6%A1%A3/AnyBlock/)
 
-## Effects warrior - old (旧效果展示)
+## 旧效果展示
 
 Here are some of the more common processors:
 - list2table  (2datatable)

@@ -140,10 +140,10 @@ export class ABStateManager {
 
   /** 一个类成员。StateField，该状态管理Decoration */
   private decorationField = StateField.define<DecorationSet>({
-    create: (editorState:any)=>{return Decoration.none},
+    create: (editorState:unknown) => {return Decoration.none},
     // create好像不用管，update无论如何都能触发的
     // 函数的根本作用，是为了修改decorationSet的范围，间接修改StateField的管理范围
-    update: (decorationSet:any, tr:any)=>{
+    update: (decorationSet:any, tr:Transaction)=>{
       return this.onUpdate(decorationSet, tr)
     },
     provide: (f:any) => EditorView.decorations.from(f)
@@ -213,7 +213,7 @@ export class ABStateManager {
       // 装饰模式改变，则清空装饰集
       if (decoration_mode != this.prev_decoration_mode) {
         decorationSet = decorationSet.update({
-          filter: (from:any, to:any, value:any)=>{ return false }
+          filter: (from:number, to:number, value:unknown)=>{ return false }
         })
       }
       // 装饰模式不改变，不管

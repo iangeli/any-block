@@ -86,7 +86,7 @@ export class ABConvertManager {
    */
   public m_renderMarkdownFn:(markdown: string, el: HTMLElement, ctx?: any) => void = (markdown, el) => {
     el.classList.add("markdown-rendered") // 并注意，应当在使用该函数前将el添加该css类，或者重定义时增加该条语句
-    console.error("AnyBlockError: 请先制定/重定义md渲染器")
+    console.error("Please use renderMarkdownFn redefine render function")
   }
 
   /// 用回调函数替换重渲染器
