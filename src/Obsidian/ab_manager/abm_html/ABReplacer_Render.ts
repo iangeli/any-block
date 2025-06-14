@@ -50,7 +50,7 @@ export class ABReplacer_Render extends MarkdownRenderChild {
       cls: ["ab-button", "ab-button-1", "edit-block-button"],
       attr: {"aria-label": "Refresh the block"}
     });
-    dom_edit2.innerHTML = ABReplacer_Widget.str_icon_refresh
+    dom_edit2.insertAdjacentHTML("beforeend", ABReplacer_Widget.STR_ICON_REFRESH)
     dom_edit2.onclick = ()=>{abConvertEvent(div)}
 
     // 下拉框格式部分
@@ -58,7 +58,7 @@ export class ABReplacer_Render extends MarkdownRenderChild {
       cls: ["ab-button", "ab-button-2", "edit-block-button", "ab-button-select"],
     })
     const dom_edit_mask = dom_edit.createEl("button", {}) // 遮挡select元素的, text: "v"
-    dom_edit_mask.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>`
+    dom_edit_mask.insertAdjacentHTML("beforeend", `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>`)
     const dom_edit_select = dom_edit.createEl("select", {
       attr: {"aria-label": "Change the block - "+this.header}
     });

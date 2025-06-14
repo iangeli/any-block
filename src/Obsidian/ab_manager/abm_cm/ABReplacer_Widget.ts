@@ -38,7 +38,7 @@ export class ABReplacer_Widget extends WidgetType {
         cls: ["ab-button", "ab-button-1", "edit-block-button"], // cm-embed-block和edit-block-button是自带的js样式，用来悬浮显示的，不是我写的
         attr: {"aria-label": "Edit the block - "+this.rangeSpec.header},
       });
-      dom_edit.innerHTML = ABReplacer_Widget.str_icon_code2
+      dom_edit.insertAdjacentHTML("beforeend", ABReplacer_Widget.STR_ICON_CODE2)
       dom_edit.onclick = ()=>{this.moveCursor()}
     }
 
@@ -48,7 +48,7 @@ export class ABReplacer_Widget extends WidgetType {
         cls: ["ab-button", "ab-button-2", "edit-block-button"],
         attr: {"aria-label": "Refresh the block"}
       });
-      dom_edit.innerHTML = ABReplacer_Widget.str_icon_refresh
+      dom_edit.insertAdjacentHTML("beforeend", ABReplacer_Widget.STR_ICON_REFRESH)
       dom_edit.onclick = ()=>{abConvertEvent(this.div); this.moveCursor(-1)}
     }
 
@@ -100,7 +100,7 @@ export class ABReplacer_Widget extends WidgetType {
     }
   }
 
-  static str_icon_code2 = `<svg xmlns="http://www.w3.org/2000/svg" stroke-linecap="round"
+  static STR_ICON_CODE2 = `<svg xmlns="http://www.w3.org/2000/svg" stroke-linecap="round"
       stroke-linejoin="round" data-darkreader-inline-stroke="" stroke-width="2"
       viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" style="--darkreader-inline-stroke:currentColor;">
     <path d="m18 16 4-4-4-4"></path>
@@ -108,7 +108,7 @@ export class ABReplacer_Widget extends WidgetType {
     <path d="m14.5 4-5 16"></path>
   </svg>`
   // https://www.svgrepo.com/svg/18461/refresh, 原viewBox: 0 0 489.698 489.698, 原size 800
-  static str_icon_refresh = `<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+  static STR_ICON_REFRESH = `<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
       xml:space="preserve"
       viewBox="-80 -80 650 650" height="24" width="24" fill="currentColor" stroke="currentColor" style="--darkreader-inline-stroke:currentColor;">
     <g>
@@ -126,7 +126,7 @@ export class ABReplacer_Widget extends WidgetType {
   </svg>`
 }
 
-interface TreeNode{
+interface TreeNode {
     text: string
     children: TreeNode[]
 }

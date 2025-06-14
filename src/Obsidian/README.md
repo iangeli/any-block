@@ -120,3 +120,14 @@ MarkdownRenderer.render(...) // 新
 
 // 一个区别是：新版能更好地支持内部的图片显示
 ```
+
+```ts
+// new
+insertAdjacentHTML("beforeend", "xxx")
+
+// old
+innerHTML = "xxx"
+
+// 区别:
+// 前者插入，不清空内容（但还是解析HTML，只安全一点点）
+```
