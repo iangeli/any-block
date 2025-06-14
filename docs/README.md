@@ -12,7 +12,6 @@
 
 ## More Links
 
-- en
 - Related links：**tutorial**、use skill、contribution、secondary development、online use. Documentation is **multilingual** (zh/en), don't worry.
 - [Online Wiki - github.io](./)
 - [Online Effects warrior/Tutorial - github.io](./README.show.md), You can learn how to use it by switching between tabs.

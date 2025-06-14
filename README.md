@@ -12,7 +12,6 @@
 
 ## More Links
 
-- en
 - Related links：**tutorial**、use skill、contribution、secondary development、online use. Documentation is **multilingual** (zh/en), don't worry.
 - [Online Wiki - github.io](https://lincdocs.github.io/AnyBlock/)
 - [Online Effects warrior/Tutorial - github.io](https://lincdocs.github.io/AnyBlock/README.show.html), You can learn how to use it by switching between tabs.
