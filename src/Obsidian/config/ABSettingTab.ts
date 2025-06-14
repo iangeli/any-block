@@ -129,7 +129,7 @@ export class ABSettingTab extends PluginSettingTab {
 		const {containerEl} = this;
     containerEl.empty();
     let settings = this.plugin.settings
-    containerEl.createEl('h1', {text: 'AnyBlock'});
+    // new Setting(containerEl).setName('AnyBlock').setHeading();
 		const div_url = containerEl.createEl('div');
     div_url.innerHTML = `See 
     <a href="https://linczero.github.io/MdNote_Public/ProductDoc/AnyBlock/README.show.html">website</a>
@@ -140,7 +140,7 @@ export class ABSettingTab extends PluginSettingTab {
     containerEl.createEl('hr', {attr: {"style": "border-color:#9999ff"}})
 
     // 选择器管理
-    containerEl.createEl('h2', {text: 'Selector Manager (选择器的管理)'});
+    new Setting(containerEl).setName('Selector Manager (选择器的管理)').setHeading();
     containerEl.createEl('p', {text: 'This section is for query only and cannot be edited (这一部分仅供查询不可编辑)'})
     this.selectorPanel = generateSelectorInfoTable(containerEl)
     containerEl.createEl('hr', {attr: {"style": "border-color:#9999ff"}})
@@ -193,7 +193,7 @@ export class ABSettingTab extends PluginSettingTab {
       })*/
 
     // 别名系统的管理
-    containerEl.createEl('h2', {text: 'AliasSystem Manager (别名系统的管理)'});
+    new Setting(containerEl).setName('AliasSystem Manager (别名系统的管理)').setHeading();
     containerEl.createEl('p', {text: 'It can also be viewed in the main page using the `[info_alias]` processor (这部分内容也可以使用 `[info_alias]` 处理器在主页面中查看)'});
     containerEl.createEl('p', {text: 'This section can also be modified by opening the `data.json` file in the plugin folder (这部分也可以打开插件文件夹中的 `data.json` 文件修改)'});
     new Setting(containerEl)
@@ -244,7 +244,7 @@ export class ABSettingTab extends PluginSettingTab {
     containerEl.createEl('hr', {attr: {"style": "border-color:#9999ff"}})
 
     // 转换器的管理
-    containerEl.createEl('h2', {text: 'Convertor Manager (转换器的管理)'});
+    new Setting(containerEl).setName('Convertor Manager (转换器的管理)').setHeading();
     containerEl.createEl('p', {text: 'It can also be viewed in the main page using the `[info_converter]` processor (这部分内容也可以使用 `[info_converter]` 处理器在主页面中查看)'});
     containerEl.createEl('p', {text: 'This section is for query only and cannot be edited (这一部分仅供查询不可编辑)'})
     containerEl.createEl('p', {text: ''});
