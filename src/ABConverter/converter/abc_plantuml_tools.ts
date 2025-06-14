@@ -1,5 +1,6 @@
 import type { List_ListItem } from "./abc_list"
 
+// start flag
 const KEYWORD_IF = "if "
 const KEYWORD_SWITCH = "switch "
 const KEYWORD_SWITCH2 = "match "  // python use `match, case, case _` instead of `switch, case, default`
@@ -7,11 +8,14 @@ const KEYWORD_WHILE = "while "
 const KEYWORD_GROUP = "group "
 const KEYWORD_PARTITION = "partition "
 const KEYWORD_LANE = "lane "
-const KEYWORD_ELSE = "else"
+// middle/end flag
 const KEYWORD_ELIF = "elif "
+const KEYWORD_ELSEIF = "else if "
+const KEYWORD_ELSE = "else"
 const KEYWORD_DEFAULT = "default"
 const KEYWORD_DEFAULT2 = "case _" // python use `match, case, case _` instead of `switch, case, default`
 const KEYWORD_CASE = "case "
+// other flag
 const BLOCK_START = ":"
 const INDENT = "  ";
 
@@ -71,7 +75,7 @@ function processBlock(stats: Stat[], index: number, parentLevel: number): Proces
     let processed = false;
     for (const [statType, processor] of Object.entries(statementTypes)) {
       if (stat.isStatementOfType(statType)) {
-        const { result: processedResult, nextIndex: nextNext } = processor(stats, next);
+        const { result: processedResult, nextIndex: nextNext } = processor(stats, next, statType);
         result += processedResult;
         next = nextNext;
         processed = true;
@@ -106,9 +110,12 @@ function processIfStatement(stats: Stat[], index: number): { result: string, nex
   }
 
   // Process else and else if branches
-  while (nextIndex < stats.length && stats[nextIndex].level === stat.level && stats[nextIndex].isStatementOfType(KEYWORD_ELIF, KEYWORD_ELSE)) {
+  while (nextIndex < stats.length && stats[nextIndex].level === stat.level && stats[nextIndex].isStatementOfType(KEYWORD_ELIF, KEYWORD_ELSEIF, KEYWORD_ELSE)) {
     const branch = stats[nextIndex];
-    if (branch.isStatementOfType(KEYWORD_ELIF)) {
+    if (branch.isStatementOfType(KEYWORD_ELSEIF)) { // KEYWORD_ELSEIF must be ahead of ELSE
+      const condition = branch.takeTagOfStat(KEYWORD_ELSEIF);
+      result += `else if(${condition}) then (yes)\n`;
+    } else if (branch.isStatementOfType(KEYWORD_ELIF)) {
       const condition = branch.takeTagOfStat(KEYWORD_ELIF);
       result += `else if(${condition}) then (yes)\n`;
     } else if (branch.isStatementOfType(KEYWORD_ELSE)) {
@@ -124,10 +131,10 @@ function processIfStatement(stats: Stat[], index: number): { result: string, nex
 }
 
 // 处理switch语句
-function processSwitchStatement(stats: Stat[], index: number): { result: string, nextIndex: number } {
-  let result = KEYWORD_SWITCH;
+function processSwitchStatement(stats: Stat[], index: number, statType: string): { result: string, nextIndex: number } {
+  let result = `switch `;
   const stat = stats[index];
-  const condition = stat.takeTagOfStat(KEYWORD_SWITCH);
+  const condition = stat.takeTagOfStat(statType);
   let nextIndex = index + 1;
 
   result += `(${condition})\n`;
