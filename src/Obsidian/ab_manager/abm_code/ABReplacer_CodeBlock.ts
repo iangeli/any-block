@@ -2,6 +2,7 @@ import type {MarkdownPostProcessorContext} from "obsidian"
 import{
   MarkdownRenderChild,
   MarkdownRenderer,
+  sanitizeHTMLToDom,
 } from "obsidian";
 import { ABConvertManager } from "@/ABConverter/ABConvertManager";
 import { abConvertEvent } from "@/ABConverter/ABConvertEvent";
@@ -60,7 +61,7 @@ export class ABReplacer_CodeBlock{
       cls: ["ab-button", "ab-button-2", "edit-block-button"],
       attr: {"aria-label": "Refresh the block"}
     });
-    dom_edit.insertAdjacentHTML("beforeend", ABReplacer_Widget.STR_ICON_REFRESH)
+    dom_edit.empty(); dom_edit.appendChild(sanitizeHTMLToDom(ABReplacer_Widget.STR_ICON_REFRESH));
     dom_edit.onclick = ()=>{abConvertEvent(root_div);}
 
     // 控件部分的隐藏

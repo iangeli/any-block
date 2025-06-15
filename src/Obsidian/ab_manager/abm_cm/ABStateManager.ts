@@ -143,10 +143,10 @@ export class ABStateManager {
     create: (editorState:unknown) => {return Decoration.none},
     // create好像不用管，update无论如何都能触发的
     // 函数的根本作用，是为了修改decorationSet的范围，间接修改StateField的管理范围
-    update: (decorationSet:any, tr:Transaction)=>{
+    update: (decorationSet:DecorationSet, tr:Transaction)=>{
       return this.onUpdate(decorationSet, tr)
     },
-    provide: (f:any) => EditorView.decorations.from(f)
+    provide: (f: StateField<DecorationSet>) => EditorView.decorations.from(f)
   })
 
   /** --------------------------------- on更新事件 ------------------------- */

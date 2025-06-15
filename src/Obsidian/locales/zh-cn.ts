@@ -25,6 +25,16 @@ export default {
   'Custom alias4': '别名替换为',
   'Custom alias5': '暂不开放带参数的替换功能，如多人需要才开放',
 
+  'Custom processor': 'Custom processor - deprecated',
+  'Custom processor2': 'Processor id',
+  'Custom processor3': 'Without conflicting with other processors',
+  'Custom processor4': 'Processor name',
+  'Custom processor5': 'You can fill it in freely. It\'s for your own reference',
+  'Custom processor6': 'Processor matching rule',
+  'Custom processor7': 'Using `/` including it indicates a regular expression',
+  'Custom processor8': 'Processor replacement',
+  'Custom processor9': 'Using `/` including it indicates a regular expression',
+
   // General
   'Submit': '提交',
   'Edit': '编辑',

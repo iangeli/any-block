@@ -4,7 +4,7 @@
  * TODO：设备Debug日志开关
  */
 
-import {App, PluginSettingTab, Setting, Modal} from "obsidian"
+import {App, PluginSettingTab, Setting, Modal, sanitizeHTMLToDom} from "obsidian"
 import type AnyBlockPlugin from "../main"
 import {ABConvertManager} from "@/ABConverter/ABConvertManager"
 import {ABConvert, type ABConvert_SpecUser} from "@/ABConverter/converter/ABConvert"
@@ -133,7 +133,7 @@ export class ABSettingTab extends PluginSettingTab {
     let settings = this.plugin.settings
     // new Setting(containerEl).setName('AnyBlock').setHeading();
 		const div_url = containerEl.createEl('div');
-    div_url.insertAdjacentHTML("beforeend", t("see website for detail"));
+    div_url.empty(); div_url.appendChild(sanitizeHTMLToDom(t("see website for detail")));
     containerEl.createEl('hr', {cls: "bright-color"})
 
     // 选择器管理
@@ -269,11 +269,11 @@ class ABProcessorModal extends Modal {
 
   onOpen() {	// onOpen() 方法在对话框打开时被调用，它负责创建对话框中的内容。想要获取更多信息，可以查阅 HTML elements。
     let { contentEl } = this;
-    contentEl.setText("Custom processor - deprecated (自定义处理器 - 将废弃)");
+    contentEl.setText(t("Custom processor"));
     contentEl.createEl("p", {text: ""})
     new Setting(contentEl)
-      .setName("Processor id")
-      .setDesc("处理器唯一id, 不与其他处理器冲突即可")
+      .setName(t("Custom processor2"))
+      .setDesc(t("Custom processor3"))
       .addText((text)=>{
         text.onChange((value) => {
           this.args.id = value
@@ -281,8 +281,8 @@ class ABProcessorModal extends Modal {
       })
 
     new Setting(contentEl)
-      .setName("Processor name")
-      .setDesc("注册器名，可以乱填，给自己看的")
+      .setName(t("Custom processor4"))
+      .setDesc(t("Custom processor5"))
       .addText((text)=>{
         text.onChange((value) => {
         this.args.name = value
@@ -290,8 +290,8 @@ class ABProcessorModal extends Modal {
     })
 
     new Setting(contentEl)
-      .setName("Processor matching rule")
-      .setDesc("注册器匹配名 (用/包括起来则表示正则)")
+      .setName(t("Custom processor6"))
+      .setDesc(t("Custom processor7"))
       .addText((text)=>{
         text.onChange((value) => {
         this.args.match = value
@@ -299,8 +299,8 @@ class ABProcessorModal extends Modal {
     })
 
     new Setting(contentEl)
-      .setName("Processor replacement")
-      .setDesc("注册器替换为 (用/包括起来则判断为正则)")
+      .setName(t("Custom processor8"))
+      .setDesc(t("Custom processor9"))
       .addText((text)=>{
         text.onChange((value) => {
         this.args.process_alias = value

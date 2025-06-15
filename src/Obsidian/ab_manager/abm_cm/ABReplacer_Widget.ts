@@ -1,4 +1,4 @@
-import type {Editor, EditorPosition} from 'obsidian';
+import {sanitizeHTMLToDom, type Editor, type EditorPosition} from 'obsidian';
 import {EditorView, WidgetType} from "@codemirror/view"
 
 import {ABConvertManager} from "@/ABConverter/ABConvertManager"
@@ -38,7 +38,7 @@ export class ABReplacer_Widget extends WidgetType {
         cls: ["ab-button", "ab-button-1", "edit-block-button"], // cm-embed-block和edit-block-button是自带的js样式，用来悬浮显示的，不是我写的
         attr: {"aria-label": "Edit the block - "+this.rangeSpec.header},
       });
-      dom_edit.insertAdjacentHTML("beforeend", ABReplacer_Widget.STR_ICON_CODE2)
+      dom_edit.empty(); dom_edit.appendChild(sanitizeHTMLToDom(ABReplacer_Widget.STR_ICON_CODE2));
       dom_edit.onclick = ()=>{this.moveCursor()}
     }
 
@@ -48,7 +48,7 @@ export class ABReplacer_Widget extends WidgetType {
         cls: ["ab-button", "ab-button-2", "edit-block-button"],
         attr: {"aria-label": "Refresh the block"}
       });
-      dom_edit.insertAdjacentHTML("beforeend", ABReplacer_Widget.STR_ICON_REFRESH)
+      dom_edit.empty(); dom_edit.appendChild(sanitizeHTMLToDom(ABReplacer_Widget.STR_ICON_REFRESH));
       dom_edit.onclick = ()=>{abConvertEvent(this.div); this.moveCursor(-1)}
     }
 

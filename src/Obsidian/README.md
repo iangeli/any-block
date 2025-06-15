@@ -129,13 +129,18 @@ MarkdownRenderer.render(...) // 新
 
 ```ts
 // new
+el.empty();
+el.addChild(sanitizeHTMLToDom(html));
+
+// old
 insertAdjacentHTML("beforeend", "xxx")
 
 // old
 innerHTML = "xxx"
 
 // 区别:
-// 前者插入，不清空内容（但还是解析HTML，只安全一点点）
+// insertAdjacetHTML插入，不清空内容（但还是解析HTML，只安全一点点）
+// sanitizeHTMLToDom 更安全
 ```
 
 > [!quote]

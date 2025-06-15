@@ -25,6 +25,16 @@ export default {
   'Custom alias4': 'Alias replacement',
   'Custom alias5': 'The parameter-based replacement function is currently not available. It will be enabled only when there is a need for multiple users.',
 
+  'Custom processor': '自定义处理器 - 将废弃',
+  'Custom processor2': '处理器唯一id',
+  'Custom processor3': '不与其他处理器冲突即可',
+  'Custom processor4': '注册器名',
+  'Custom processor5': '可以随便填，给自己看的',
+  'Custom processor6': '注册器匹配名',
+  'Custom processor7': '用 `/` 包括起来则表示正则',
+  'Custom processor8': '注册器替换为',
+  'Custom processor9': '用 `/` 包括起来则表示正则',
+
   // General
   'Submit': 'Submit',
   'Edit': 'Edit',
