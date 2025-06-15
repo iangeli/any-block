@@ -7,7 +7,7 @@
  * - 接管渲染后 (渲染/阅读模式)
  */
 
-import { MarkdownRenderChild, MarkdownRenderer, loadMermaid, Plugin, MarkdownView, MarkdownPostProcessorContext } from 'obsidian'
+import { MarkdownRenderChild, MarkdownRenderer, loadMermaid, Plugin, MarkdownView, type MarkdownPostProcessorContext } from 'obsidian'
 
 // 转换器模块
 import { ABConvertManager } from "@/ABConverter/index.min" // [!code hl] min
