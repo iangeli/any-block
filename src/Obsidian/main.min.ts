@@ -7,7 +7,7 @@
  * - 接管渲染后 (渲染/阅读模式)
  */
 
-import { MarkdownRenderChild, MarkdownRenderer, loadMermaid, Plugin, MarkdownView } from 'obsidian'
+import { MarkdownRenderChild, MarkdownRenderer, loadMermaid, Plugin, MarkdownView, MarkdownPostProcessorContext } from 'obsidian'
 
 // 转换器模块
 import { ABConvertManager } from "@/ABConverter/index.min" // [!code hl] min
@@ -27,7 +27,7 @@ export default class AnyBlockPlugin extends Plugin {
     this.addSettingTab(new ABSettingTab(this.app, this));
 
     // 适配 - 将ob的渲染行为传入回调函数 (目的是将转换器和Obsidian相解耦合)
-    ABConvertManager.getInstance().redefine_renderMarkdown((markdown: string, el: HTMLElement, ctx?: any): void => {
+    ABConvertManager.getInstance().redefine_renderMarkdown((markdown: string, el: HTMLElement, ctx?: MarkdownPostProcessorContext): void => {
       el.classList.add("markdown-rendered")
 
       /*
