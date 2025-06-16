@@ -1160,7 +1160,7 @@ table.ab-table-fc th[col_index="0"], table.ab-table-fc td[col_index="0"] {
 }
 
 /**************** 兼容性补充 ******************/
-[aria-hidden=true] {
+.markmap-foreign [aria-hidden=true] {
   display: none;
 }
 

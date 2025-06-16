@@ -1177,7 +1177,7 @@ table.ab-table-fc {
 /**************** 兼容性补充 ******************/
 
 // markmap 需要这个样式，否则公式渲染会存在问题 (原内容没隐藏，且宽度过大)
-[aria-hidden="true"] {
+.markmap-foreign [aria-hidden="true"] { // .katex-html
   display: none;
 }
 
